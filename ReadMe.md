@@ -1,0 +1,13 @@
+# The Dreamers
+
+MSSV | Họ và tên | Email | Số điện thoại
+--- | --- | --- | ---
+1612360 | Lê Công Luận | lecongluan111198@gmail.com | ...
+1612484 | Huỳnh Kim Ninh | kimninh1610@gmail.com | 0904.461.762
+1612511 | Phan Anh Phú | anhphuphan29@gmail.com | ...
+1612520 | Châu Hoàng Phúc | chauhoangphuc432@gmail.com | ...
+1612523 | Nguyễn Văn Phước | phuocpr1998@gmail.com | ...
+
+[Trello Page](https://trello.com/b/ToKC24Jk)
+
+[Slack Workspace](https://the-dreamers-world.slack.com)
