@@ -1,0 +1,29 @@
+﻿thay đổi thông tin cá nhân:
++ Tên thật: chứa ký tự không hợp lệ
++ Tên thật: trống
++ email: không hợp lệ
++ email: trống
++ số điện thoại: chứa ký tự ko phải số
++ số điện thoại: chiều dài không hợp lệ
++ số điện thoại: trống
++ mật khẩu mới trùng mật khẩu cũ
++ mật khẩu quá ngắn ( < 3 ký tự) (độ dài tối thiểu tự quy ước)
++ mất kết nối khi nhấn lưu
++ mất kết nối ngay khi vừa vào layout
+
+thay đổi thông tin quán:
++Tên quán: Chứa ký tự đặc biệt
++Tên quán: rỗng
++Địa chỉ: rỗng
++ số điện thoại: chứa ký tự ko phải số
++ số điện thoại: chiều dài không hợp lệ
++ số điện thoại: rỗng
++ mất kết nối khi nhấn lưu
++ mất kết nối ngay khi vừa vào layout
+
+thay đổi thông tin món ăn:
++Tên món: chứa ký tự đặc biệt
++Tên món:rỗng
++Giá tiền: chứa ký tự không phải số
++Giá tiền:rỗng
++Mất kết nối khi vừa nhấn thêm
