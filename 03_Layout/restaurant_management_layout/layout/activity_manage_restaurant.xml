@@ -143,13 +143,16 @@ android:layout_height="match_parent">
         android:textSize="18sp"
         android:padding="10dp"/>
 
-    <ListView
-        android:id="@android:id/list"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_border">
-    </ListView>
-
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_border">
+        </ListView>
+    </ScrollView>
 </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
