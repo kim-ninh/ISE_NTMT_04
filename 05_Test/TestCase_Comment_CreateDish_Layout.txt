@@ -1,0 +1,15 @@
+﻿-Comment layout
+	+Content rỗng mà nhấn submit
+	+Nhấn submit nhưng mất kết nối internet
+	+Load giao diện bình luận nhưng không kết nối internet
+	+Chưa đăng nhập mà bình luận
+	+
+-Add dish layout
+	+Tên món ăn rỗng
+	+Giá món ăn rỗng
+	+Giá món ăn nhỏ hơn 0
+	+Giá món ăn không phải là số
+	+Chưa đăng nhập mà thêm món ăn
+	+Loại món ăn rỗng
+	+Mất kết nối internet khi submit
+	+Load giao diện nhưng không kết nối internet
