@@ -1,0 +1,2 @@
+﻿Dish Detail Activity
+	1. Mất kết nối Internet khi nhấn vào các món ăn kèm.
