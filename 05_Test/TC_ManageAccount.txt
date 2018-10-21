@@ -1,0 +1,12 @@
+﻿thay đổi thông tin cá nhân:
++ Tên thật: chứa ký tự không hợp lệ
++ Tên thật: trống
++ email: không hợp lệ
++ email: trống
++ số điện thoại: chứa ký tự ko phải số
++ số điện thoại: chiều dài không hợp lệ
++ số điện thoại: trống
++ mật khẩu mới trùng mật khẩu cũ
++ mật khẩu quá ngắn ( < 3 ký tự) (độ dài tối thiểu tự quy ước)
++ mất kết nối khi nhấn lưu
++ mất kết nối ngay khi vừa vào layout
