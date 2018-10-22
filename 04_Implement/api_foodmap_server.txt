@@ -1,0 +1,277 @@
+﻿Mô tả API FoodMapServer: tất cả các api đều có baseaddress là: http://foodmap.tk/
+** Các trường hợp không hợp lệ sẽ có các responde["status"] lần lượt là:
+	+ 200 : Success
+	+ 404 : Not Found
+	+ 400 : Invalid request
+	+ 444 : token invalid
+
+- Login:
+	+ url: login.php
+	+ type: POST
+	+ data_post:
+		* username
+		* password
+	+ responde: chuỗi json gồm
+		* status: 200
+		* message: Success
+		* data: 
+			** username
+			** password
+			** name
+			** phone_number
+			** email
+			** token
+			
+- createAccount:
+	+ url: createAccount.php
+	+ type: POST
+	+ data_post:
+		* username
+		* password
+		* name
+		* phone_number
+		* email
+	+ responde: chuỗi json gồm
+		* status: 200
+		* message: Success
+		
+- comment: giúp thêm comment cho nhà hàng
+	+ url: comment.php
+	+ type: POST
+	+ data_post: 
+		* id_rest
+		* comment // đoạn bình luận
+		* guest_email/owner_email (chỉ gửi 1 trong 2)
+		* token // được gửi về lúc đăng nhập
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- createDish:
+	+ url: createDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* price
+		* url_image
+		* id_catalog // hiện tại gửi mặc định 1 là cơm
+		* token
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- createRestaurant:
+	+ url: createRestaurant.php
+	+ type: POST
+	+ data_post:
+		* id_user //email của user
+		* name
+		* address
+		* phone_number
+		* describe_text
+		* timeopen
+		* timeclose
+		* lat // tọa độ kinh độ
+		* lon // tọa độ vĩ độ
+		* token
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- deleteDish:
+	+ url: deleteDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* token
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- deleteAccount:
+	+ url: deleteAccount.php
+	+ type: POST
+	+ data_post:
+		* username // username của account
+		* token
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- updateAccount:
+	+ url: updateAccount.php
+	+ type: POST
+	+ data_post:
+		* username
+		* token
+		* các giá trị cần chỉnh sửa
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- updateDish:
+	+ url: updateDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* token
+		* các giá trị cần sửa
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- updateLocation:
+	+ url: updateLocation.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* lat
+		* lon
+		* token
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- updateRestaurant
+	+ url: updateRestaurant.php
+	+ type: POST
+	+ data_post:
+		* id_rest // id của nhà hàng
+		* token
+		* các giá trị cần sửa
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- getComment:
+	+ url: getComment.php
+	+ type: GET
+	+ data_get:
+		* id_rest //id của nhà hàng cần lấy comment
+	+ responde:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				date_time,
+				guest_email,
+				owner_email,
+				comment
+			] // mảng
+			
+- getLocation
+	+ url: getLocation.php
+	+ type: GET
+	+ data_get:
+		* id_rest //id của nhà hàng cần lấy comment
+	+ responde:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id_rest,
+				lat,
+				lon
+			] // mảng
+			
+- getRestaurant:
+	+ url: getRestaurant.php
+	+ type: GET
+	+ responde:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id,
+				id_user,
+				name,
+				address,
+				phone_number,
+				describe_text,
+				url_image,
+				time_open,
+				time_close,
+				lacation:
+					[
+						lat,
+						lon
+					],
+				ranks:
+					[
+						email, // email của người đánh giá
+						star // số sao đánh giá
+					],// mảng
+				comments:
+					[
+						date_time, // thời gian gửi comment
+						guest_email, // nếu là khách comment thì mục này sẽ có giá trị ngược lại thì không
+						owner_email, // nếu là owner comment thì mục này sẽ có giá trị ngược lại thì không
+						comment // nội dung comment
+					], // mảng
+				dishs:
+					[
+						name, 
+						price,
+						url_image,
+						id_catalog
+					] //mảng
+			] // mảng
+
+			
+- upload: // upload hình ảnh
+	+ url: upload.php
+	+ type: POST
+	+ data_post:
+		* name // tên hình ảnh
+		* data // chuổi encode Base64 của hình ảnh
+		* id // id của quán ăn
+	+ responde:
+		* status: 200
+		* message: Success
+		* url // đường dẫn của hình ảnh trên host
+		
+- deletePicture:
+	+ url: deletePicture.php
+	+ type: POST
+	+ data_post:
+		* url // đường dẫn trên host nhận ở trên upload
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- resetPassword:
+	+ url: resetPassword.php
+	+ type: POST
+	+ data_post:
+		* email // email của tài khoản cần reset
+	+ responde:
+		* status: 200
+		* message: Success
+		* Nếu thành công sẽ có mail gửi mã code reset về mail của người yêu cầu
+
+		
+- checkCode:
+	+ url: resetPassword.php
+	+ type: POST
+	+ data_post:
+		* email // email của tài khoản cần reset
+		* code // được lấy trong mail gửi ở bước resetPassword
+	+ responde:
+		* status: 200
+		* message: Success
+		
+- getCatalog:
+	+ url: getCatalog.php
+	+ type: GET
+	+ data_get: // không có
+	+ responde:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id,
+				name
+			] // mảng
