@@ -187,7 +187,7 @@ class database
 
 	public function GetToken($username)
 	{
-		$strQuery = 'SELECT FC_GETTOKEN("'.$res->username.'") AS TOKEN;';
+		$strQuery = 'SELECT FC_GETTOKEN("'.$username.'") AS TOKEN;';
 		$token = $this->query($strQuery);
 		foreach($token as $row)
 		{
