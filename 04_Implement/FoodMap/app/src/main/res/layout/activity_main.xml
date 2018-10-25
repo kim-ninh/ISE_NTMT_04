@@ -13,7 +13,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-<<<<<<< HEAD
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -31,13 +30,12 @@
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp">
-=======
+
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_list"
             android:layout_gravity="center_vertical"/>
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
 
             <ImageView
                 android:layout_width="40dp"
