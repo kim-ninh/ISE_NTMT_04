@@ -6,11 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-<<<<<<< HEAD
-=======
-import android.location.Location;
-import android.location.LocationListener;
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
+
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -21,16 +17,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-<<<<<<< HEAD
+
 import android.support.v7.widget.Toolbar;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
-=======
+
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
@@ -40,7 +35,6 @@ import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.model.Owner;
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -57,18 +51,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-<<<<<<< HEAD
-public class MainActivity extends AppCompatActivity {
-
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationMenu;
-=======
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationMenu;
 
     private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
@@ -97,15 +87,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
         // setup map
         mapInit();
         navmenuToolbarInit();
-=======
-        //start debug
 
+        // debug
         Owner owner = Owner.getInstance();
         owner.setUsername("sdddd");
         owner.setPassword("aeaersa");
@@ -142,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
         // check permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
@@ -180,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
     {
         mMap.getOverlays().add(marker);
         mMap.invalidate();
-<<<<<<< HEAD
     }
 
     private void mapInit()
@@ -208,11 +194,6 @@ public class MainActivity extends AppCompatActivity {
         mMap.getOverlays().add(this.mLocationOverlay);
     }
 
-=======
-    }
-
-
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
     // kiểm tra permission
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -240,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-<<<<<<< HEAD
     // navigation menu and toolbar init
     void navmenuToolbarInit(){
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
@@ -267,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-=======
+
     class Test extends AsyncTask<Owner, Void , String> {
 
         @Override
@@ -290,6 +270,4 @@ public class MainActivity extends AppCompatActivity {
             return "";
         }
     }
-
->>>>>>> e65f062585c9cd90a64c483d9ad0789cbeae8733
 }

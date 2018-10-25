@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FoodMap</string>
+    <string name="app_name" translatable="false">FoodMap</string>
     <string name="nav_open">Open nav menu</string>
     <string name="nav_close">Close nav menu</string>
 </resources>
