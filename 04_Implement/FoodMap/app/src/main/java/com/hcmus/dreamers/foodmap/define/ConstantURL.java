@@ -1,6 +1,6 @@
 package com.hcmus.dreamers.foodmap.define;
 
-public class Constant {
+public class ConstantURL {
     public static final String BASEURL                     = "http://foodmap.tk/";
     public static final String LOGIN                       = "login.php";
     public static final String CREATEACCOUNT               = "createAccount.php";
@@ -21,8 +21,4 @@ public class Constant {
     public static final String RESETPASSWORD               = "resetPassword.php";
     public static final String CHECKCODE                   = "resetPassword.php";
     public static final String GETCATALOG                  = "getCatalog.php";
-    public static final int SUCCESS                     = 200;
-    public static final int NOTFOUND                    = 404;
-    public static final int INVALIDREQUEST              = 400;
-    public static final int TOKENINVALID                = 444;
 }

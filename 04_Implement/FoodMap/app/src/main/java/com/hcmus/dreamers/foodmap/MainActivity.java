@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -16,9 +17,15 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.common.ResponseJSON;
+import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
+import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
+import com.hcmus.dreamers.foodmap.model.Owner;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -31,7 +38,14 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +75,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //start debug
+
+        Owner owner = Owner.getInstance();
+        owner.setUsername("sdddd");
+        owner.setPassword("aeaersa");
+        owner.setPhoneNumber("029839843");
+        owner.setEmail("dhsfh@gmail.com");
+        owner.setName("Châu Hoàng Phúc");
+
+        (new Test()).execute(owner);
+
+        //end debug
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
@@ -152,4 +179,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    class Test extends AsyncTask<Owner, Void , String> {
+
+        @Override
+        protected void onPostExecute(String s) {
+            ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
+            Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected String doInBackground(Owner...owners) {
+
+            Request request = null;
+            try {
+                request = GenerateRequest.createAccount(owners[0]);
+                String response = SendRequest.send(request);
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+    }
+
 }
