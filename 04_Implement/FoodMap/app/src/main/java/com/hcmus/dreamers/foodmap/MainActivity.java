@@ -6,16 +6,20 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
@@ -25,7 +29,6 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -34,6 +37,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationMenu;
 
     private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
@@ -64,29 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
-
-        // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
-        if (Build.VERSION.SDK_INT >= 16)
-            mMap.setHasTransientState(true);
-
-        mapController = mMap.getController();
-        mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
-        mMap.setTileSource(TileSourceFactory.MAPNIK);
-
-        //list marker
-        markers = new ArrayList<OverlayItem>();
-
-        // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
-        // thêm marker vào
-        mMap.getOverlays().add(this.mLocationOverlay);
-
+        // setup map
+        mapInit();
+        navmenuToolbarInit();
         // check permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
@@ -126,6 +112,30 @@ public class MainActivity extends AppCompatActivity {
         mMap.invalidate();
     }
 
+    private void mapInit()
+    {
+        // cài đặt map
+        mMap.setBuiltInZoomControls(true);
+        mMap.setMultiTouchControls(true);
+        if (Build.VERSION.SDK_INT >= 16)
+            mMap.setHasTransientState(true);
+
+        mapController = mMap.getController();
+        mapController.setZoom(17.0);
+        mMap = (MapView) findViewById(R.id.map);
+        mMap.setTileSource(TileSourceFactory.MAPNIK);
+
+        //list marker
+        markers = new ArrayList<OverlayItem>();
+
+        // cài đặt marker vị trí
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
+        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        mLocationOverlay.setPersonIcon(iconMyLocation);
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        // thêm marker vào
+        mMap.getOverlays().add(this.mLocationOverlay);
+    }
 
     // kiểm tra permission
     @TargetApi(Build.VERSION_CODES.M)
@@ -150,6 +160,34 @@ public class MainActivity extends AppCompatActivity {
                 isPermissionOK = false;
                 break;
             }
+        }
+    }
+
+
+    // navigation menu and toolbar init
+    void navmenuToolbarInit(){
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.nav_open,R.string.nav_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // change header
+        navigationMenu = (NavigationView)findViewById(R.id.nav_view);
+        navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
+        navigationMenu.inflateHeaderView(R.layout.nav_header);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+        }
+        else {
+            super.onBackPressed();
         }
     }
 }
