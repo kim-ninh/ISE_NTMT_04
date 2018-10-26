@@ -264,7 +264,7 @@ class database
 	// get catalog
 	public function GetCatalog()
 	{
-		$strQuery = "SELECT * FROM CATALOG";
+		$strQuery = "SELECT * FROM CATALOGS";
 		return $this->query($strQuery);
 	}
 
