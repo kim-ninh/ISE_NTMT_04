@@ -1,4 +1,7 @@
-package com.hcmus.dreamers.foodmap.model;
+package com.hcmus.dreamers.foodmap.Model;
+
+import com.google.gson.annotations.SerializedName;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -8,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Restaurant {
-
     private int id;
+    private int id_user;
     private String name;
     private String phoneNumber;
     private String description;
@@ -125,4 +128,8 @@ public class Restaurant {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public int getId_user() { return id_user; }
+
+    public void setId_user(int id_user) { this.id_user = id_user; }
 }

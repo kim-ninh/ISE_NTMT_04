@@ -1,12 +1,16 @@
-package com.hcmus.dreamers.foodmap.model;
+package com.hcmus.dreamers.foodmap.Model;
 
-public class Owner extends User {
+import com.google.gson.annotations.SerializedName;
 
+public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private static Owner instance;
+    @SerializedName("username")
     private String username;
+    @SerializedName("password")
     private String password;
+    @SerializedName("phoneNumber")
     private String phoneNumber;
-    private Restaurant restaurant;
+    private com.hcmus.dreamers.foodmap.Model.Restaurant restaurant;
 
     private Owner() {
         super();
@@ -16,11 +20,11 @@ public class Owner extends User {
         super(name, email);
     }
 
-    public Restaurant getRestaurant() {
+    public com.hcmus.dreamers.foodmap.Model.Restaurant getRestaurant() {
         return restaurant;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
+    public void setRestaurant(com.hcmus.dreamers.foodmap.Model.Restaurant restaurant) {
         this.restaurant = restaurant;
     }
 

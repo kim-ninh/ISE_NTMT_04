@@ -65,7 +65,7 @@
 	+ url: createRestaurant.php
 	+ type: POST
 	+ data_post:
-		* id_user //email của user
+		* owner_user // tên đăng nhập
 		* name
 		* address
 		* phone_number
