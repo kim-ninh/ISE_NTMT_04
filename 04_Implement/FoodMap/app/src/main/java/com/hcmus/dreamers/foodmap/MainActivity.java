@@ -23,6 +23,7 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
+import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
@@ -34,8 +35,9 @@ import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
-import com.hcmus.dreamers.foodmap.model.Owner;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -50,6 +52,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -95,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
         // debug
         Owner owner = Owner.getInstance();
-        owner.setUsername("sdddd");
+        owner.setUsername("mmmmm");
         owner.setPassword("aeaersa");
         owner.setPhoneNumber("029839843");
-        owner.setEmail("dhsfh@gmail.com");
-        owner.setName("Châu Hoàng Phúc");
+        owner.setEmail("dhsfhs@gmail.com");
+        owner.setName("Chau Hoang Phuc");
 
         (new Test()).execute(owner);
 
@@ -252,8 +255,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
-            Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+            ResponseJSON responseJSON = null;
+            try {
+                responseJSON = ParseJSON.parseFromAllResponse(s);
+                List<Catalog> owner = ParseJSON.parseCatalog(s);
+                Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -261,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
             Request request = null;
             try {
-                request = GenerateRequest.createAccount(owners[0]);
+                request = GenerateRequest.getCatalog();
                 String response = SendRequest.send(request);
                 return response;
             } catch (IOException e) {
