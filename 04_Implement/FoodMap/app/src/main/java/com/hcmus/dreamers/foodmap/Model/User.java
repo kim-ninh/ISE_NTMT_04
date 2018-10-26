@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.model;
+package com.hcmus.dreamers.foodmap.Model;
 
 public abstract class User {
     private String name;

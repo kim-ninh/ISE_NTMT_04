@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.model;
+package com.hcmus.dreamers.foodmap.Model;
 
 public class Dish {
     private String name;

@@ -34,7 +34,7 @@ import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
-import com.hcmus.dreamers.foodmap.model.Owner;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -252,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
             Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
         }

@@ -1,4 +1,11 @@
-package com.hcmus.dreamers.foodmap.model;
+package com.hcmus.dreamers.foodmap.Model;
+
+import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.common.SendRequest;
+
+import java.io.IOException;
+
+import okhttp3.Request;
 
 public class Owner extends User {
 
@@ -7,6 +14,7 @@ public class Owner extends User {
     private String password;
     private String phoneNumber;
     private Restaurant restaurant;
+    private String token;
 
     private Owner() {
         super();
@@ -57,5 +65,45 @@ public class Owner extends User {
             instance = new Owner();
         return instance;
     }
+
+    //uncomplete....
+    public static boolean Login(String username, String password)
+    {
+        instance.username = username;
+        instance.password = password;
+
+        Request request;
+        String respond;
+
+        try {
+            request = GenerateRequest.checkLogin(instance);
+            respond = SendRequest.send(request);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public boolean changePassword(String newPassword)
+    {
+
+        Request request;
+        String respond;
+
+        instance.password = password;
+
+        try {
+            request = GenerateRequest.updateAccount(instance, token);
+            respond = SendRequest.send(request);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
 
 }
