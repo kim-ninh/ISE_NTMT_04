@@ -3,7 +3,7 @@ include "../private/checkToken.php";
 
 $response = array();
 
-if (isset($_POST["id_user"]) && isset($_POST["name"]) && isset($_POST["address"]) && isset($_POST["phone_number"]) && isset($_POST["describe_text"]) && isset($_POST["timeopen"]) && isset($_POST["timeclose"]) && isset($_POST["lat"]) && isset($_POST["lon"]) && isset($_POST["token"]))
+if (isset($_POST["owner_user"]) && isset($_POST["name"]) && isset($_POST["address"]) && isset($_POST["phone_number"]) && isset($_POST["describe_text"]) && isset($_POST["timeopen"]) && isset($_POST["timeclose"]) && isset($_POST["lat"]) && isset($_POST["lon"]) && isset($_POST["token"]))
 {
 	$valueRes = '';
 	
@@ -20,7 +20,7 @@ if (isset($_POST["id_user"]) && isset($_POST["name"]) && isset($_POST["address"]
 		{
 			if ($key != 'lat' && $key != 'lon' && $key != 'token')
 			{
-				$valueRes .= $key . ' = "'. $value . '",';
+				$valueRes .= strtoupper($key) . ' = "'. $value . '",';
 			}
 		}
 		$valueRes[strlen($valueRes) - 1] = ' '; // xóa dấu ',' cuối
@@ -29,7 +29,7 @@ if (isset($_POST["id_user"]) && isset($_POST["name"]) && isset($_POST["address"]
 		$conn = new database();
 		$conn->connect();
 
-		if ($conn->CreateRestaurant($valueRes, $lat, $lon) != -1)
+		if ($conn->CreateRestaurant($valueRes, $lat, $lon) !== -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";

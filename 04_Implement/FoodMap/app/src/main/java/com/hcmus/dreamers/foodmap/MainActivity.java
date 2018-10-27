@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,9 +24,13 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
+import com.hcmus.dreamers.foodmap.Model.Catalog;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
@@ -34,6 +39,7 @@ import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -46,6 +52,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import okhttp3.Request;
 
@@ -89,17 +98,29 @@ public class MainActivity extends AppCompatActivity {
 
         // debug
         Owner owner = Owner.getInstance();
-        owner.setUsername("sdddd");
+        owner.setUsername("mmmmm");
         owner.setPassword("aeaersa");
         owner.setPhoneNumber("029839843");
-        owner.setEmail("dhsfh@gmail.com");
-        owner.setName("Châu Hoàng Phúc");
+        owner.setEmail("dhsfhs@gmail.com");
+        owner.setName("Chau Hoang Phuc");
 
         (new Test()).execute(owner);
 
-        //owner.Login("sdddd", "aeaersa");
+
+        /*String is = owner.Login("mmmmm", "aeaersa");
+
+        Toast.makeText(this, is, Toast.LENGTH_LONG).show();*/
 
         //(new Test1()).execute(owner);
+
+        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
+
+        imgSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RestaurantInfo.class));
+            }
+        });*/
 
         //end debug
 
@@ -255,6 +276,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
             Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+
+            try {
+                responseJSON = ParseJSON.parseFromAllResponse(s);
+                List<Catalog> owner = ParseJSON.parseCatalog(s);
+                Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
         @Override
@@ -262,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
             Request request = null;
             try {
-                request = GenerateRequest.createAccount(owners[0]);
+                request = GenerateRequest.getCatalog();
                 String response = SendRequest.send(request);
                 return response;
             } catch (IOException e) {

@@ -3,7 +3,7 @@ package com.hcmus.dreamers.foodmap.common;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseJSON {
-    @SerializedName("code")
+    @SerializedName("status")
     private int code;
     @SerializedName("message")
     private String message;

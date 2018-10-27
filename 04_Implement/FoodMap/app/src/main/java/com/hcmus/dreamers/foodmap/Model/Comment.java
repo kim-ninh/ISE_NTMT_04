@@ -5,22 +5,22 @@ import java.util.Date;
 public class Comment {
     private Date dateTime;
     private String comment;
-    private User user;
+    private com.hcmus.dreamers.foodmap.Model.User user;
 
     public Comment() {
     }
 
-    public Comment(Date dateTime, String comment, User user) {
+    public Comment(Date dateTime, String comment, com.hcmus.dreamers.foodmap.Model.User user) {
         this.dateTime = dateTime;
         this.comment = comment;
         this.user = user;
     }
 
-    public User getUser() {
+    public com.hcmus.dreamers.foodmap.Model.User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(com.hcmus.dreamers.foodmap.Model.User user) {
         this.user = user;
     }
 

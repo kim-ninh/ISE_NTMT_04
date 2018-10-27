@@ -51,9 +51,7 @@ public class GenerateRequest {
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());
         params.put("password", owner.getPassword());
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -70,9 +68,7 @@ public class GenerateRequest {
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
         params.put("email", owner.getEmail());
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -92,9 +88,7 @@ public class GenerateRequest {
         else
             params.put("owner_email", owner_email);
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -112,9 +106,7 @@ public class GenerateRequest {
         params.put("url_image", dish.getUrlImage());
         params.put("id_catalog", String.valueOf(dish.getCatalog().getId()));
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -136,9 +128,7 @@ public class GenerateRequest {
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -153,9 +143,7 @@ public class GenerateRequest {
         params.put("id_rest", String.valueOf(id_rest));
         params.put("name", name);
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -169,9 +157,7 @@ public class GenerateRequest {
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -189,9 +175,7 @@ public class GenerateRequest {
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
         params.put("email", owner.getEmail());
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -209,9 +193,7 @@ public class GenerateRequest {
         params.put("price", String.valueOf(dish.getPrice()));
         params.put("url_image", dish.getUrlImage());
         params.put("id_catalog", String.valueOf(dish.getCatalog().getId()));
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -228,9 +210,7 @@ public class GenerateRequest {
         params.put("lat", String.valueOf(location.getLatitude()));
         params.put("lon", String.valueOf(location.getLongitude()));
         params.put("token", token);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -252,9 +232,7 @@ public class GenerateRequest {
         params.put("timeclose", restaurant.getTimeClose().toString());
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -263,15 +241,13 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request upload(final int id_rest,final String name, final String data){
+    public static okhttp3.Request upload(final int id_rest, final String name, final String data){
         String url = ConstantURL.BASEURL + ConstantURL.UPLOAD;
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("data", data);
         params.put("id", String.valueOf(id_rest));
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -284,9 +260,7 @@ public class GenerateRequest {
         String url = ConstantURL.BASEURL + ConstantURL.DELETEPICTURE;
         Map<String, String> params = new HashMap<>();
         params.put("url", urlImage);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -299,9 +273,7 @@ public class GenerateRequest {
         String url = ConstantURL.BASEURL + ConstantURL.RESETPASSWORD;
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -315,9 +287,7 @@ public class GenerateRequest {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("code", codeCheck);
-        String body = Utils.buildParameter(params);
-        MediaType mime = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
-        RequestBody bodyRequest = RequestBody.create(mime, body);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
                 .post(bodyRequest)
@@ -325,4 +295,50 @@ public class GenerateRequest {
                 .build();
         return request;
     }
+
+    public static okhttp3.Request getComment(final int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCOMMENT;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+
+    public static okhttp3.Request getLocation(final int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETLOCATION;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getRestaurant(){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETRESTAURANT;
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(baseUrl)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getCatalog(){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCATALOG;
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(baseUrl)
+                .build();
+        return request;
+    }
+
 }

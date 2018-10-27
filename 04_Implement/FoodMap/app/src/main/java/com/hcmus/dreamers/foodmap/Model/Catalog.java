@@ -1,7 +1,12 @@
 package com.hcmus.dreamers.foodmap.Model;
 
+
+import com.google.gson.annotations.SerializedName;
+
 public class Catalog {
+    @SerializedName("id")
     private int id;
+    @SerializedName("name")
     private String name;
 
     public Catalog() {
