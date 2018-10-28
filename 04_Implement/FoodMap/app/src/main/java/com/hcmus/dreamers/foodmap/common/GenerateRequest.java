@@ -34,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,8 +124,8 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", restaurant.getTimeOpen().toString());
-        params.put("timeclose", restaurant.getTimeClose().toString());
+        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()));
+        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         params.put("token", token);
@@ -219,6 +220,11 @@ public class GenerateRequest {
         return request;
     }
 
+    private static String transferDateToTime(Date date){
+        String result = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        return result;
+    }
+
     public static okhttp3.Request updateRestaurant(final Restaurant restaurant, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.UPDATERESTAURANT;
         Map<String, String> params = new HashMap<>();
@@ -228,8 +234,8 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", restaurant.getTimeOpen().toString());
-        params.put("timeclose", restaurant.getTimeClose().toString());
+        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()) );
+        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         RequestBody bodyRequest = Utils.buildParameter(params);

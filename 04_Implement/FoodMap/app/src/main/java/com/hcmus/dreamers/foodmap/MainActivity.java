@@ -28,6 +28,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
@@ -51,6 +52,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         mMap.onResume();
     }
 
+    String token = "cd687a1d5ddaf0b0c623d57e3fe049d8cGh1b2NwcjExMjM=";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,22 +100,53 @@ public class MainActivity extends AppCompatActivity {
         navmenuToolbarInit();
 
         // debug
-        Owner owner = Owner.getInstance();
-        owner.setUsername("mmmmm");
-        owner.setPassword("aeaersa");
-        owner.setPhoneNumber("029839843");
-        owner.setEmail("dhsfhs@gmail.com");
-        owner.setName("Chau Hoang Phuc");
+//        Owner owner = Owner.getInstance();
+//        owner.setUsername("mmmmm");
+//        owner.setPassword("aeaersa");
+//        owner.setPhoneNumber("029839843");
+//        owner.setEmail("dhsfhs@gmail.com");
+//        owner.setName("Chau Hoang Phuc");
+//
+//        TaskRequest taskRequest = new TaskRequest();
+//        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+//            @Override
+//            public void OnTaskComplete(Object response) {
+//                try {
+//                    token = ParseJSON.getTokenFromCreateAccount(response.toString());
+//                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+//                } catch (JSONException e) {
+//                    Toast.makeText(MainActivity.this, "Lỗi parse json", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//        });
+//        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
 
+        //while(token.equals(""));
+
+
+        Restaurant rest = new Restaurant();
+        rest.setId_user("phuocpr1123");
+        rest.setName("TEST");
+        rest.setPhoneNumber("09484783434");
+        rest.setAddress("Bình Tân, HCM");
+        rest.setLocation(new GeoPoint(120.0, 210.0));
+        rest.setDescription("sea food restaurant");
         TaskRequest taskRequest = new TaskRequest();
+        try {
+            rest.setTimeOpen(new SimpleDateFormat("HH:mm").parse("07:00"));
+            rest.setTimeClose(new SimpleDateFormat("HH:mm").parse("22:00"));
+        } catch (ParseException e) {
+            Toast.makeText(MainActivity.this, "Lỗi parse date", Toast.LENGTH_SHORT).show();
+        }
+
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
-                Toast.makeText(MainActivity.this, response.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
-
+        taskRequest.execute(new DoingTask(GenerateRequest.createRestaurant(rest, token)));
         //boolean check = owner.Login("mmmmm", "aeaersa");
 
         //(new Test1()).execute(owner);
