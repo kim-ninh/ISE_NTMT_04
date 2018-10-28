@@ -110,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
 
-        //boolean check = owner.Login("mmmmm", "aeaersa");
+        //String check = owner.Login("mmmmm", "aeaersa");
 
+        //Toast.makeText(this, check, Toast.LENGTH_LONG).show();
         //(new Test1()).execute(owner);
 
         /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);

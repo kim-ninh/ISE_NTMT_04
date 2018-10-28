@@ -1,9 +1,10 @@
 package com.hcmus.dreamers.foodmap.Model;
 
-import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskCreateRestaurant;
-import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskDelete;
-import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskForLogin;
-import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskUpdateInfo;
+import android.util.Log;
+
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
@@ -24,9 +25,6 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private String password;
     @SerializedName("phoneNumber")
     private String phoneNumber;
-
-    private Restaurant restaurant;
-
     @SerializedName("token")
     private String token;
 
@@ -100,132 +98,161 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static boolean Login(String username, String password)
+    public static void Login(String username, String password)
     {
 
         instance.username = username;
         instance.password = password;
 
-        String respond;
 
-        AsyncTaskForLogin asyncTaskForLogin = new AsyncTaskForLogin();
-        asyncTaskForLogin.execute(instance);
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
 
-        respond = asyncTaskForLogin.getRespond();
+                if(Sresponse != null) {
+                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
-
-        if(parseJSON.getCode() == 200)
-        {
-            try {
-                instance = ParseJSON.parseOwnerFromCreateAccount(respond);
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-                return false;
+                    if(parseJSON.getCode() == 200) {
+                        try {
+                            instance = ParseJSON.parseOwnerFromCreateAccount(Sresponse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.i("LOGINRESPONSE", parseJSON.getMessage());
+                }
+                else
+                {
+                    Log.i("LOGINRESPONSE", "null");
+                }
             }
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(instance)));
+
     }
 
-    public boolean changePassword(String newPassword)
+   public void changePassword(String newPassword)
     {
-        String pass_temp = instance.password;
+        final String pass_temp = instance.password;
         instance.password = newPassword;
 
-        AsyncTaskUpdateInfo asyncTaskUpdateInfo = new AsyncTaskUpdateInfo();
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
 
-        asyncTaskUpdateInfo.execute(instance);
+                if (Sresponse != null) {
+                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-        String respond = asyncTaskUpdateInfo.getRespond();
+                    if (parseJSON.getCode() != 200) {
+                        instance.password = pass_temp;
+                    }
+                    Log.i("CHANGE_PASS_RESPONSE", parseJSON.getMessage());
+                }
+                else
+                {
+                    Log.i("CHANGE_PASS_RESPONSE", "null");
+                }
+            }
 
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
+        });
 
-        if(parseJSON.getCode() == 200)
-        {
-            return true;
-        }
-        else
-        {
-            instance.password = pass_temp;
-            return false;
-        }
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.token)));
+
     }
 
-    public boolean updateInformation(String name, String phoneNumber, String email)
+    public void updateInformation(String name, String phoneNumber, String email)
     {
-        String name_temp = instance.getName();
-        String phone_temp = instance.phoneNumber;
-        String email_temp = instance.getEmail();
+        final String name_temp = instance.getName();
+        final String phone_temp = instance.phoneNumber;
+        final String email_temp = instance.getEmail();
         instance.setName(name);
         instance.phoneNumber = phoneNumber;
         instance.setEmail(email);
 
-        AsyncTaskUpdateInfo asyncTaskUpdateInfo = new AsyncTaskUpdateInfo();
 
-        asyncTaskUpdateInfo.execute(instance);
+        TaskRequest taskRequest = new TaskRequest();
 
-        String respond = asyncTaskUpdateInfo.getRespond();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+                if (Sresponse != null) {
+                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
+                    if (parseJSON.getCode() != 200) {
+                        instance.setName(name_temp);
+                        instance.phoneNumber = phone_temp;
+                        instance.setEmail(email_temp);
+                    }
+                    Log.i("UPDATE_INFO_RESPONSE", parseJSON.getMessage());
+                }
+                else
+                {
+                    Log.i("UPDATE_INFO_RESPONSE", "null");
+                }
+            }
+        });
 
-        if(parseJSON.getCode() == 200)
-        {
-            return true;
-        }
-        else
-        {
-            instance.setName(name_temp);
-            instance.phoneNumber = phone_temp;
-            instance.setEmail(email_temp);
-            return false;
-        }
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.token)));
+
+
     }
 
-    public boolean deleteAcount()
+    public void deleteAcount()
     {
-        AsyncTaskDelete asyncTaskDelete = new AsyncTaskDelete();
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-        asyncTaskDelete.execute(instance.username, instance.token);
+                    Log.i("DELETE_ACCOUNT_RESPONSE", responseJSON.getMessage());
+                }
+                else{
+                    Log.i("DELETE_ACCOUNT_RESPONSE", "null");
+                }
+            }
+        });
 
-        String respond = asyncTaskDelete.getRespond();
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteAccount(instance.username,instance.token)));
 
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
-
-        if(parseJSON.getCode() == 200)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
-    public boolean createRestaurant(Restaurant restaurant)
+    public void createRestaurant(final Restaurant restaurant)
     {
         addRestaurant(restaurant);
 
-        AsyncTaskCreateRestaurant asyncTaskCreateRestaurant = new AsyncTaskCreateRestaurant();
+        TaskRequest taskRequest = new TaskRequest();
 
-        asyncTaskCreateRestaurant.execute(instance);
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
 
-        String respond = asyncTaskCreateRestaurant.getRespond();
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
+                    if(responseJSON.getCode() != 200)
+                    {
+                        instance.listRestaurant.remove(restaurant);
+                    }
+                    Log.i("CREATE_REST_RESPONSE", responseJSON.getMessage());
+                }
+                else{
+                    Log.i("CREATE_REST_RESPONSE", "null");
+                }
 
-        if(parseJSON.getCode() == 200)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+            }
+        });
+
+        int index = instance.listRestaurant.size() - 1;
+        taskRequest.execute(new DoingTask(GenerateRequest.createRestaurant(instance.listRestaurant.get(index), instance.token)));
     }
 
 }
