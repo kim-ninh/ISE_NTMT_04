@@ -100,17 +100,16 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static String Login(String username, String password)
+    public static boolean Login(String username, String password)
     {
-        Owner owner = null;
 
-        owner.username = username;
-        owner.password = password;
+        instance.username = username;
+        instance.password = password;
 
         String respond;
 
         AsyncTaskForLogin asyncTaskForLogin = new AsyncTaskForLogin();
-        asyncTaskForLogin.execute(owner);
+        asyncTaskForLogin.execute(instance);
 
         respond = asyncTaskForLogin.getRespond();
 
@@ -119,27 +118,17 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         if(parseJSON.getCode() == 200)
         {
             try {
-                owner = ParseJSON.parseOwnerFromCreateAccount(respond);
-                instance.username = owner.username;
-                instance.password = owner.password;
-                instance.phoneNumber = owner.phoneNumber;
-                instance.setName(owner.getName());
-                instance.setEmail(owner.getEmail());
-                instance.token = owner.token;
-
+                instance = ParseJSON.parseOwnerFromCreateAccount(respond);
             } catch (JSONException e) {
                 e.printStackTrace();
 
-                return "";
-                //return false;
+                return false;
             }
-            return respond;
-            //return true;
+            return true;
         }
         else
         {
-            return "";
-            //return false;
+            return false;
         }
     }
 

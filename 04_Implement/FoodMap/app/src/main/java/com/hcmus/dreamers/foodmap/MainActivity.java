@@ -98,12 +98,8 @@ public class MainActivity extends AppCompatActivity {
         owner.setEmail("dhsfhs@gmail.com");
         owner.setName("Chau Hoang Phuc");
 
-        (new Test()).execute(owner);
 
-
-        /*String is = owner.Login("mmmmm", "aeaersa");
-
-        Toast.makeText(this, is, Toast.LENGTH_LONG).show();*/
+        boolean check = owner.Login("mmmmm", "aeaersa");
 
         //(new Test1()).execute(owner);
 
