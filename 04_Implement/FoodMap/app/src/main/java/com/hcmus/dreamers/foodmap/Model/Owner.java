@@ -1,7 +1,11 @@
 package com.hcmus.dreamers.foodmap.Model;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
+import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskCreateRestaurant;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskDelete;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskForLogin;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskUpdateInfo;
@@ -10,9 +14,17 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
+<<<<<<< HEAD
 >>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
 
+=======
+>>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private static Owner instance;
@@ -23,11 +35,19 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     @SerializedName("phoneNumber")
     private String phoneNumber;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private com.hcmus.dreamers.foodmap.Model.Restaurant restaurant;
 =======
     private Restaurant restaurant;
     private String token;
 >>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
+=======
+    @SerializedName("token")
+    private String token;
+
+    private List<Restaurant> listRestaurant;
+
+>>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
     private Owner() {
         super();
@@ -37,12 +57,25 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         super(name, email);
     }
 
-    public com.hcmus.dreamers.foodmap.Model.Restaurant getRestaurant() {
-        return restaurant;
+    public List<Restaurant> getlistRestaurant() {
+        return listRestaurant;
     }
 
-    public void setRestaurant(com.hcmus.dreamers.foodmap.Model.Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setlistRestaurant(List<Restaurant> listRestaurant) {
+        this.listRestaurant = listRestaurant;
+    }
+
+    public List<Restaurant> getListRestaurant() {
+        return listRestaurant;
+    }
+
+    public Restaurant getRestaurant(int index) {
+        return listRestaurant.get(index);
+    }
+
+    private void addRestaurant(Restaurant restaurant) {
+        listRestaurant.add(restaurant);
+
     }
 
     public static void setInstance(Owner instance) {
@@ -83,18 +116,17 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static boolean Login(String username, String password)
+    public static String Login(String username, String password)
     {
-        String user_temp = instance.username;
-        String pass_temp = instance.password;
+        Owner owner = null;
 
-        instance.username = username;
-        instance.password = password;
+        owner.username = username;
+        owner.password = password;
 
         String respond;
 
         AsyncTaskForLogin asyncTaskForLogin = new AsyncTaskForLogin();
-        asyncTaskForLogin.execute(instance);
+        asyncTaskForLogin.execute(owner);
 
         respond = asyncTaskForLogin.getRespond();
 
@@ -102,31 +134,41 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
         if(parseJSON.getCode() == 200)
         {
-           /*instance.setName(parseJSON.getName());
-            instance.phoneNumber = parseJSON.getPhoneNumber();
-            instance.setEmail(parseJSON.getEmail());
-            instance.token = parseJSON.getToken();*/
-            return true;
+            try {
+                owner = ParseJSON.parseOwnerFromCreateAccount(respond);
+                instance.username = owner.username;
+                instance.password = owner.password;
+                instance.phoneNumber = owner.phoneNumber;
+                instance.setName(owner.getName());
+                instance.setEmail(owner.getEmail());
+                instance.token = owner.token;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+                return "";
+                //return false;
+            }
+            return respond;
+            //return true;
         }
         else
         {
-            instance.username = user_temp;
-            instance.password = pass_temp;
-            return false;
+            return "";
+            //return false;
         }
     }
 
     public boolean changePassword(String newPassword)
     {
-        String respond;
         String pass_temp = instance.password;
         instance.password = newPassword;
 
         AsyncTaskUpdateInfo asyncTaskUpdateInfo = new AsyncTaskUpdateInfo();
 
-        asyncTaskUpdateInfo.equals(instance);
+        asyncTaskUpdateInfo.execute(instance);
 
-        respond = asyncTaskUpdateInfo.getRespond();
+        String respond = asyncTaskUpdateInfo.getRespond();
 
         ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
 
@@ -143,7 +185,6 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
     public boolean updateInformation(String name, String phoneNumber, String email)
     {
-        String respond;
         String name_temp = instance.getName();
         String phone_temp = instance.phoneNumber;
         String email_temp = instance.getEmail();
@@ -155,7 +196,7 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
         asyncTaskUpdateInfo.execute(instance);
 
-        respond = asyncTaskUpdateInfo.getRespond();
+        String respond = asyncTaskUpdateInfo.getRespond();
 
         ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
 
@@ -174,13 +215,33 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
     public boolean deleteAcount()
     {
-        String respond;
-
         AsyncTaskDelete asyncTaskDelete = new AsyncTaskDelete();
 
         asyncTaskDelete.execute(instance.username, instance.token);
 
-        respond = asyncTaskDelete.getRespond();
+        String respond = asyncTaskDelete.getRespond();
+
+        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
+
+        if(parseJSON.getCode() == 200)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public boolean createRestaurant(Restaurant restaurant)
+    {
+        addRestaurant(restaurant);
+
+        AsyncTaskCreateRestaurant asyncTaskCreateRestaurant = new AsyncTaskCreateRestaurant();
+
+        asyncTaskCreateRestaurant.execute(instance);
+
+        String respond = asyncTaskCreateRestaurant.getRespond();
 
         ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
 

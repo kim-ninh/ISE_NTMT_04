@@ -1,9 +1,14 @@
 package com.hcmus.dreamers.foodmap.Model;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 =======
 >>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
+=======
+
+import com.hcmus.dreamers.foodmap.Model.Catalog;
+>>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
 public class Dish {
     private String name;

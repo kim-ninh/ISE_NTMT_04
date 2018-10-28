@@ -1,9 +1,7 @@
 package com.hcmus.dreamers.foodmap.Model;
-<<<<<<< HEAD
 
 import com.google.gson.annotations.SerializedName;
-=======
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
+
 
 public abstract class User {
     @SerializedName("name")
