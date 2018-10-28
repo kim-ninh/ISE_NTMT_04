@@ -78,15 +78,15 @@ public class GenerateRequest {
 
     }
 
-    public static okhttp3.Request comment(final String id_rest, final Comment comment, @Nullable final String guest_email, @Nullable final String owner_email, final String token){
+    public static okhttp3.Request comment(final String id_rest, final Comment comment, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.COMMENT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("comment", comment.getComment());
-        if(guest_email == null)
-            params.put("guest_email", guest_email);
+        if(!comment.getEmailGuest().equals(""))
+            params.put("guest_email", comment.getEmailGuest());
         else
-            params.put("owner_email", owner_email);
+            params.put("owner_email", comment.getEmailOwner());
         params.put("token", token);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
@@ -115,10 +115,10 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createRestaurant(final String id_user, final Restaurant restaurant,final String token){
+    public static okhttp3.Request createRestaurant(final Restaurant restaurant,final String token){
         String url = ConstantURL.BASEURL + ConstantURL.CREATERESTAURANT;
         Map<String, String> params = new HashMap<>();
-        params.put("id_user", id_user);
+        params.put("id_user", restaurant.getId_user());
         params.put("name", restaurant.getName());
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());

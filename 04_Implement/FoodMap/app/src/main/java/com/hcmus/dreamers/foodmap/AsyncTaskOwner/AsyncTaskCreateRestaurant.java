@@ -26,14 +26,14 @@ public class AsyncTaskCreateRestaurant extends AsyncTask<Owner, Void, String> {
     @Override
     protected String doInBackground(Owner... owners) {
         Request request = null;
-        try {
-            request = GenerateRequest.createRestaurant(owners[0].getUsername(),
-                    owners[0].getRestaurant(owners[0].getListRestaurant().size() - 1), owners[0].getToken());
-            String response = SendRequest.send(request);
-            return response;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+////            request = GenerateRequest.createRestaurant(owners[0].getUsername(),
+////                    owners[0].getRestaurant(owners[0].getListRestaurant().size() - 1), owners[0].getToken());
+////            String response = SendRequest.send(request);
+//            return response;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return "";
     }
 

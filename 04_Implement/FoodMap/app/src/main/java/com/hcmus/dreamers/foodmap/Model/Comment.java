@@ -11,6 +11,8 @@ public class Comment {
     private String emailOwner;
 
     public Comment() {
+        this.emailGuest = "";
+        this.emailOwner = "";
     }
 
     public Comment(Date dateTime, String comment, String emailGuest, String emailOwner) {

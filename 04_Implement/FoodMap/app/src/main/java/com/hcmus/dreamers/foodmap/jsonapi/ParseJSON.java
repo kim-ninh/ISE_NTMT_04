@@ -134,7 +134,7 @@ public class ParseJSON {
             JSONObject o = array.getJSONObject(i);
             Restaurant rest = new Restaurant();
             rest.setId(o.getInt("id"));
-            rest.setId_user((o.getInt("id_user")));
+            rest.setId_user((o.getString("id_user")));
             rest.setName(o.getString("name"));
             rest.setAddress(o.getString("address"));
             rest.setPhoneNumber(o.getString("phone_number"));
