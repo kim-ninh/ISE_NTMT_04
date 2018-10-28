@@ -1,14 +1,7 @@
 package com.hcmus.dreamers.foodmap.Model;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 import com.google.gson.annotations.SerializedName;
 import com.hcmus.dreamers.foodmap.Model.Dish;
-=======
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
-=======
-
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
 import org.osmdroid.util.GeoPoint;
 

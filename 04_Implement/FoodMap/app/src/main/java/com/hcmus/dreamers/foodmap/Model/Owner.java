@@ -1,9 +1,4 @@
 package com.hcmus.dreamers.foodmap.Model;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskCreateRestaurant;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskDelete;
@@ -14,11 +9,6 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
-<<<<<<< HEAD
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
-
-=======
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -34,20 +24,14 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private String password;
     @SerializedName("phoneNumber")
     private String phoneNumber;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    private com.hcmus.dreamers.foodmap.Model.Restaurant restaurant;
-=======
+
     private Restaurant restaurant;
-    private String token;
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
-=======
+
     @SerializedName("token")
     private String token;
 
     private List<Restaurant> listRestaurant;
 
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
     private Owner() {
         super();
@@ -116,17 +100,16 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static String Login(String username, String password)
+    public static boolean Login(String username, String password)
     {
-        Owner owner = null;
 
-        owner.username = username;
-        owner.password = password;
+        instance.username = username;
+        instance.password = password;
 
         String respond;
 
         AsyncTaskForLogin asyncTaskForLogin = new AsyncTaskForLogin();
-        asyncTaskForLogin.execute(owner);
+        asyncTaskForLogin.execute(instance);
 
         respond = asyncTaskForLogin.getRespond();
 
@@ -135,27 +118,17 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         if(parseJSON.getCode() == 200)
         {
             try {
-                owner = ParseJSON.parseOwnerFromCreateAccount(respond);
-                instance.username = owner.username;
-                instance.password = owner.password;
-                instance.phoneNumber = owner.phoneNumber;
-                instance.setName(owner.getName());
-                instance.setEmail(owner.getEmail());
-                instance.token = owner.token;
-
+                instance = ParseJSON.parseOwnerFromCreateAccount(respond);
             } catch (JSONException e) {
                 e.printStackTrace();
 
-                return "";
-                //return false;
+                return false;
             }
-            return respond;
-            //return true;
+            return true;
         }
         else
         {
-            return "";
-            //return false;
+            return false;
         }
     }
 
