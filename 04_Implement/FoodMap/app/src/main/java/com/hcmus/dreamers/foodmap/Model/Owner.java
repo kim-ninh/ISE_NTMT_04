@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap.Model;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskCreateRestaurant;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskDelete;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskForLogin;
@@ -100,36 +101,9 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static boolean Login(String username, String password)
+    public static void Login(String username, String password)
     {
 
-        instance.username = username;
-        instance.password = password;
-
-        String respond;
-
-        AsyncTaskForLogin asyncTaskForLogin = new AsyncTaskForLogin();
-        asyncTaskForLogin.execute(instance);
-
-        respond = asyncTaskForLogin.getRespond();
-
-        ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(respond);
-
-        if(parseJSON.getCode() == 200)
-        {
-            try {
-                instance = ParseJSON.parseOwnerFromCreateAccount(respond);
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-                return false;
-            }
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     public boolean changePassword(String newPassword)
