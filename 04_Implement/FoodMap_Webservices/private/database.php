@@ -268,6 +268,34 @@ class database
 		return $this->query($strQuery);
 	}
 
+	// thêm offer
+	public function AddOffer($guest_email, $total, $id_discount)
+	{
+		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.')';
+		return $this->query($strQuery);
+	}
+
+	// tạo discount
+	public function CreateDiscount($id_rest, $namedish, $discount_percent, $timestart, $timeend)
+	{
+		$strQuery = 'INSERT INTO DISCOUNT (ID_REST, NAMEDISH, DISCOUNT_PERCENT, TIMESTART, TIMEEND) VALUES ('.$id_rest.', "'.$namedish.'", '.$discount_percent.', "'.$timestart.'", "'.$timeend.'")';
+		return $this->query($strQuery);
+	}
+
+	// lấy discount của một nhà hàng
+	public function GetDiscount($id_rest)
+	{
+		$strQuery = 'SELECT * FROM DISCOUNT DC WHERE DC.ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	// lấy ofer của nhà hàng
+	public function GetOffer($id_rest)
+	{
+		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
 	// close connection
 	public function disconnect()
 	{
