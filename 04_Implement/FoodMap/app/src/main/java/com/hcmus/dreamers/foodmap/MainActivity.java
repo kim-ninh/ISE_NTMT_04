@@ -32,8 +32,6 @@ import android.widget.Toast;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
-import com.hcmus.dreamers.foodmap.event.LocationChange;
-import com.hcmus.dreamers.foodmap.event.MarkerClick;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 
@@ -48,15 +46,11 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -105,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
         owner.setName("Chau Hoang Phuc");
 
         (new Test()).execute(owner);
+
+        //owner.Login("sdddd", "aeaersa");
+
+        //(new Test1()).execute(owner);
 
         //end debug
 
@@ -157,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         mapController.setZoom(17.0);
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new MarkerClick());
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new MarkerClick(getApplicationContext()));
         mOverlay.setFocusItemsOnTap(true);
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
@@ -263,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
 
         @Override
@@ -272,6 +269,30 @@ public class MainActivity extends AppCompatActivity {
             Request request = null;
             try {
                 request = GenerateRequest.getCatalog();
+                String response = SendRequest.send(request);
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+    }
+
+    class Test1 extends AsyncTask<Owner, Void , String> {
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+            ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
+            Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected String doInBackground(Owner...owners) {
+
+            Request request = null;
+            try {
+                request = GenerateRequest.checkLogin(owners[0]);
                 String response = SendRequest.send(request);
                 return response;
             } catch (IOException e) {

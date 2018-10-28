@@ -1,17 +1,33 @@
 package com.hcmus.dreamers.foodmap.event;
 
+
+import android.content.Context;
+import android.content.Intent;
+
+
+import com.hcmus.dreamers.foodmap.RestaurantInfo;
+
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 public class MarkerClick implements ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
-    @Override
-    public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
 
-        return false;
+    private Context context;
+
+    public MarkerClick(Context context)
+    {
+        this.context = context;
     }
 
     @Override
-    public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+    public boolean onItemSingleTapUp(int index, OverlayItem overlayItem) {
+
+        context.startActivity(new Intent(context, RestaurantInfo.class));
+        return true;
+    }
+
+    @Override
+    public boolean onItemLongPress(int index, OverlayItem overlayItem) {
 
         return false;
     }
