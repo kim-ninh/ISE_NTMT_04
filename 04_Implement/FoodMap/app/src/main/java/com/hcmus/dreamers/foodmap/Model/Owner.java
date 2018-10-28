@@ -1,9 +1,4 @@
 package com.hcmus.dreamers.foodmap.Model;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskCreateRestaurant;
 import com.hcmus.dreamers.foodmap.AsyncTaskOwner.AsyncTaskDelete;
@@ -14,11 +9,6 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
-<<<<<<< HEAD
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
-
-=======
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -34,20 +24,14 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private String password;
     @SerializedName("phoneNumber")
     private String phoneNumber;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    private com.hcmus.dreamers.foodmap.Model.Restaurant restaurant;
-=======
+
     private Restaurant restaurant;
-    private String token;
->>>>>>> 1f75ee0703c52a89cb505e966fffdcd4f95bb295
-=======
+
     @SerializedName("token")
     private String token;
 
     private List<Restaurant> listRestaurant;
 
->>>>>>> 4699d4b57b07c302afafa523ac3181478c538834
 
     private Owner() {
         super();
