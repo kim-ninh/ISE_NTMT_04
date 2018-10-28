@@ -1,6 +1,6 @@
 package com.hcmus.dreamers.foodmap.define;
 
-public class ConstantURL {
+public interface ConstantURL {
     public static final String BASEURL                     = "http://foodmap.tk/";
     public static final String LOGIN                       = "login.php";
     public static final String CREATEACCOUNT               = "createAccount.php";

@@ -108,20 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, response.toString(),Toast.LENGTH_SHORT).show();
             }
         });
-        taskRequest.execute(new DoingTask() {
-            @Override
-            public Object doInBackground() {
-                Request request = GenerateRequest.checkLogin(Owner.getInstance());
-
-                String response = "";
-                try {
-                    response = SendRequest.send(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
-        });
+        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
 
         //boolean check = owner.Login("mmmmm", "aeaersa");
 
