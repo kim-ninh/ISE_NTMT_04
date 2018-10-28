@@ -23,6 +23,9 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
@@ -98,8 +101,29 @@ public class MainActivity extends AppCompatActivity {
         owner.setEmail("dhsfhs@gmail.com");
         owner.setName("Chau Hoang Phuc");
 
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                Toast.makeText(MainActivity.this, response.toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        taskRequest.execute(new DoingTask() {
+            @Override
+            public Object doInBackground() {
+                Request request = GenerateRequest.checkLogin(Owner.getInstance());
 
-        boolean check = owner.Login("mmmmm", "aeaersa");
+                String response = "";
+                try {
+                    response = SendRequest.send(request);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return response;
+            }
+        });
+
+        //boolean check = owner.Login("mmmmm", "aeaersa");
 
         //(new Test1()).execute(owner);
 
