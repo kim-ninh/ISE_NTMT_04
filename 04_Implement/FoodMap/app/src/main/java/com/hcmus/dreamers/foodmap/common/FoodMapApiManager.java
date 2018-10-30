@@ -12,6 +12,8 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+
 public class FoodMapApiManager {
 
     public static final int SUCCESS = 0;
@@ -148,9 +150,36 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.resetPassword(email)));
     }
 
+    public static void createAccount(Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.createAccount(owner)));
+    }
+
     // lấy dữ liệu từ api và lưu xuống database
     public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){
-
+        
     }
 
     // dành cho owner

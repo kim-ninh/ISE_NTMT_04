@@ -331,7 +331,15 @@
 	+ response:
 		* status: 200
 		* message: Success
-
+- addGuest:
+	+ url: addGuest.php
+	+ type: POST
+	+ data_post:
+		*email
+		*name
+	+response:
+		* status: 200
+		* message: Success
 
 
 

@@ -133,6 +133,12 @@ class database
 	}
 
 
+	public function AddGuest($email, $name)
+	{
+		$strQuery = 'INSERT INTO GUEST (EMAIL, NAME) VALUES ("'.$email.'", "'.$name.'")';
+		return $this->query($strQuery);
+	}
+
 	public function DeleteDish($id_rest, $name)
 	{
 		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = '.$name;

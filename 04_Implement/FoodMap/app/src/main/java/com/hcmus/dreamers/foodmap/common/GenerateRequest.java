@@ -62,7 +62,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createAccount(final Owner owner) throws IOException {
+    public static okhttp3.Request createAccount(final Owner owner){
         String url = ConstantURL.BASEURL + ConstantURL.CREATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());

@@ -1,20 +1,15 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,30 +91,4 @@ public class RestaurantInfo extends AppCompatActivity {
 }
 
 
-class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
-    @SuppressLint("StaticFieldLeak")
-    private ImageView bmImage;
-
-    public DownloadImageTask(ImageView bmImage) {
-        this.bmImage = bmImage;
-    }
-
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
-        bmImage.setImageBitmap(bitmap);
-    }
-
-    @Override
-    protected Bitmap doInBackground(String... urls) {
-        Bitmap mIcon = null;
-        try {
-            InputStream in = new java.net.URL(urls[0]).openStream();
-            mIcon = BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return mIcon;
-    }
-}
