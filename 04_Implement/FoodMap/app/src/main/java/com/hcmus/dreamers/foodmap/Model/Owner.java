@@ -40,6 +40,11 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         super(name, email);
     }
 
+    private Owner(String name, String email, String phoneNumber) {
+        super(name, email);
+        this.phoneNumber = phoneNumber;
+    }
+
     public List<Restaurant> getlistRestaurant() {
         return listRestaurant;
     }
@@ -56,9 +61,8 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return listRestaurant.get(index);
     }
 
-    private void addRestaurant(Restaurant restaurant) {
+    public void addRestaurant(Restaurant restaurant) {
         listRestaurant.add(restaurant);
-
     }
 
     public static void setInstance(Owner instance) {
@@ -99,45 +103,10 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         return token;
     }
 
-    public static void Login(String username, String password)
+    public void changePassword(String newPassword)
     {
-
-        instance.username = username;
-        instance.password = password;
-
-
-        TaskRequest taskRequest = new TaskRequest();
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                String Sresponse = response.toString();
-
-                if(Sresponse != null) {
-                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
-
-                    if(parseJSON.getCode() == 200) {
-                        try {
-                            instance = ParseJSON.parseOwnerFromCreateAccount(Sresponse);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    Log.i("LOGINRESPONSE", parseJSON.getMessage());
-                }
-                else
-                {
-                    Log.i("LOGINRESPONSE", "null");
-                }
-            }
-        });
-        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(instance)));
-
-    }
-
-   public void changePassword(String newPassword)
-    {
-        final String pass_temp = instance.password;
-        instance.password = newPassword;
+        final String pass_temp = instance.getPassword();
+        instance.setPassword(newPassword);
 
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -149,7 +118,7 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
                     ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if (parseJSON.getCode() != 200) {
-                        instance.password = pass_temp;
+                        Owner.getInstance().setPassword(pass_temp);
                     }
                     Log.i("CHANGE_PASS_RESPONSE", parseJSON.getMessage());
                 }
@@ -161,17 +130,16 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
         });
 
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.token)));
-
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.getToken())));
     }
 
     public void updateInformation(String name, String phoneNumber, String email)
     {
         final String name_temp = instance.getName();
-        final String phone_temp = instance.phoneNumber;
+        final String phone_temp = instance.getPhoneNumber();
         final String email_temp = instance.getEmail();
         instance.setName(name);
-        instance.phoneNumber = phoneNumber;
+        instance.setPhoneNumber(phoneNumber);
         instance.setEmail(email);
 
 
@@ -179,15 +147,15 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
             @Override
-            public void OnTaskComplete(Object response) {
+            public void OnTaskComplete(Object response){
                 String Sresponse = response.toString();
                 if (Sresponse != null) {
                     ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if (parseJSON.getCode() != 200) {
-                        instance.setName(name_temp);
-                        instance.phoneNumber = phone_temp;
-                        instance.setEmail(email_temp);
+                        Owner.getInstance().setName(name_temp);
+                        Owner.getInstance().setPhoneNumber(phone_temp);
+                        Owner.getInstance().setEmail(email_temp);
                     }
                     Log.i("UPDATE_INFO_RESPONSE", parseJSON.getMessage());
                 }
@@ -198,62 +166,6 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
             }
         });
 
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.token)));
-
-
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.getToken())));
     }
-
-    public void deleteAcount()
-    {
-        TaskRequest taskRequest = new TaskRequest();
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                String Sresponse = response.toString();
-                if (Sresponse != null) {
-                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
-
-                    Log.i("DELETE_ACCOUNT_RESPONSE", responseJSON.getMessage());
-                }
-                else{
-                    Log.i("DELETE_ACCOUNT_RESPONSE", "null");
-                }
-            }
-        });
-
-        taskRequest.execute(new DoingTask(GenerateRequest.deleteAccount(instance.username,instance.token)));
-
-    }
-
-    public void createRestaurant(final Restaurant restaurant)
-    {
-        addRestaurant(restaurant);
-
-        TaskRequest taskRequest = new TaskRequest();
-
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                String Sresponse = response.toString();
-
-                if (Sresponse != null) {
-                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
-
-                    if(responseJSON.getCode() != 200)
-                    {
-                        instance.listRestaurant.remove(restaurant);
-                    }
-                    Log.i("CREATE_REST_RESPONSE", responseJSON.getMessage());
-                }
-                else{
-                    Log.i("CREATE_REST_RESPONSE", "null");
-                }
-
-            }
-        });
-
-        int index = instance.listRestaurant.size() - 1;
-        taskRequest.execute(new DoingTask(GenerateRequest.createRestaurant(instance.listRestaurant.get(index), instance.token)));
-    }
-
 }

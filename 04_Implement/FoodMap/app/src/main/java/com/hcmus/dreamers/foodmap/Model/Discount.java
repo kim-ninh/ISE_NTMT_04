@@ -8,7 +8,6 @@ public class Discount implements Serializable{
     private int id_rest;
     private String nameDish;
     private int discountPercent;
-    private String guestEmail;
     private Date timeStart;
     private Date timeEnd;
 
@@ -17,7 +16,6 @@ public class Discount implements Serializable{
         this.id_rest = id_rest;
         this.nameDish = nameDish;
         this.discountPercent = discountPercent;
-        this.guestEmail = guestEmail;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
     }
@@ -55,14 +53,6 @@ public class Discount implements Serializable{
 
     public void setDiscountPercent(int discountPercent) {
         this.discountPercent = discountPercent;
-    }
-
-    public String getGuestEmail() {
-        return guestEmail;
-    }
-
-    public void setGuestEmail(String guestEmail) {
-        this.guestEmail = guestEmail;
     }
 
     public Date getTimeStart() {

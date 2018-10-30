@@ -23,7 +23,6 @@ public class Restaurant {
     private List<Dish> dishes;
     private List<Comment> comments;
     private String address;
-
     // bảng lưu thông tin người đánh giá
     // keyvalue: <email, star>
     private HashMap<String, Integer> ranks;
@@ -132,4 +131,13 @@ public class Restaurant {
     public String getId_user() { return id_user; }
 
     public void setId_user(String id_user) { this.id_user = id_user; }
+
+    // -1 là chưa đánh giá
+    public int findRank(String email){
+        if (ranks.containsValue(email))
+            return ranks.get(email);
+        return -1;
+    }
+
+
 }

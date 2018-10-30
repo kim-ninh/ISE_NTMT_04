@@ -199,7 +199,6 @@ public class ParseJSON {
             discount.setId(o.getInt("id"));
             discount.setId_rest(o.getInt("id_rest"));
             discount.setDiscountPercent(o.getInt("discount_percent"));
-            discount.setGuestEmail(o.getString("guest_email"));
             discount.setTimeStart(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timestart")));
             discount.setTimeEnd(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timeend")));
             list.add(discount);

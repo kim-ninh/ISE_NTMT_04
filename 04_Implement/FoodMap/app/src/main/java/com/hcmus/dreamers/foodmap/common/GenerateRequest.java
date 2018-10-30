@@ -374,12 +374,12 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addOffer(final String guest_email, int total, int id_catalog){
+    public static okhttp3.Request addOffer(final String guest_email, int total, int id_discount){
         String baseUrl = ConstantURL.BASEURL + ConstantURL.ADDOFFER;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guest_email);
         params.put("total", String.valueOf(total));
-        params.put("id_catalog", String.valueOf(id_catalog));
+        params.put("id_discount", String.valueOf(id_discount));
         String url = Utils.buildUrl(baseUrl, params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
