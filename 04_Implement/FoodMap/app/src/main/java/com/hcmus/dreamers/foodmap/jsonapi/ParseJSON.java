@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.Model.User;
@@ -170,6 +172,40 @@ public class ParseJSON {
             listCatalogs.add(catalog);
         }
         return listCatalogs;
+    }
+
+
+    public static  List<Offer>  parseOffer(String response) throws JSONException {
+        List<Offer> list = new ArrayList<>();
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("data");
+        int length = array.length();
+        for(int i = 0; i < length; i++){
+            Offer offer = gson.fromJson(array.getJSONObject(i).toString(), Offer.class);
+            list.add(offer);
+        }
+        return list;
+    }
+
+
+    public static List<Discount> parseDiscount(String response) throws JSONException, ParseException {
+        List<Discount> list = new ArrayList<>();
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("data");
+        int length = array.length();
+        for(int i = 0; i < length; i++){
+            JSONObject o = array.getJSONObject(i);
+            Discount discount = new Discount();
+            discount.setId(o.getInt("id"));
+            discount.setId_rest(o.getInt("id_rest"));
+            discount.setDiscountPercent(o.getInt("discount_percent"));
+            discount.setGuestEmail(o.getString("guest_email"));
+            discount.setTimeStart(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timestart")));
+            discount.setTimeEnd(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timeend")));
+            list.add(discount);
+        }
+        return list;
+
     }
 
 }

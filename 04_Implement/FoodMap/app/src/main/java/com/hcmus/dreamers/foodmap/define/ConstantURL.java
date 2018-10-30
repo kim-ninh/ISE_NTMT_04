@@ -21,4 +21,7 @@ public interface ConstantURL {
     public static final String RESETPASSWORD               = "resetPassword.php";
     public static final String CHECKCODE                   = "resetPassword.php";
     public static final String GETCATALOG                  = "getCatalog.php";
+    public static final String GETOFFER                    = "getOffer.php";
+    public static final String GETDISCOUNT                 = "getDiscount.php";
+    public static final String ADDOFFER                    = "addOffer.php";
 }

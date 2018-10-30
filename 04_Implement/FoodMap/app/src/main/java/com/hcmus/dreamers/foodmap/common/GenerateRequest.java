@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
+import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
@@ -343,6 +344,47 @@ public class GenerateRequest {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCATALOG;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getOffer(int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETOFFER;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getDiscount(int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETDISCOUNT;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request addOffer(final String guest_email, int total, int id_catalog){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.ADDOFFER;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guest_email);
+        params.put("total", String.valueOf(total));
+        params.put("id_catalog", String.valueOf(id_catalog));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
     }
