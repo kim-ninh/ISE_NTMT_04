@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseJSON {
+
     @SerializedName("status")
     private int code;
     @SerializedName("message")
