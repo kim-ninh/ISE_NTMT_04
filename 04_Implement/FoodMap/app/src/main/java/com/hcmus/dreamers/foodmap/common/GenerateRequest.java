@@ -63,14 +63,14 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createAccount(final Owner owner){
+    public static okhttp3.Request createAccount(String username, String password, String name, String phoneNumber, String email){
         String url = ConstantURL.BASEURL + ConstantURL.CREATEACCOUNT;
         Map<String, String> params = new HashMap<>();
-        params.put("username", owner.getUsername());
-        params.put("password", owner.getPassword());
-        params.put("name", owner.getName());
-        params.put("phone_number", owner.getPhoneNumber());
-        params.put("email", owner.getEmail());
+        params.put("username", username);
+        params.put("password", password);
+        params.put("name", name);
+        params.put("phone_number", phoneNumber);
+        params.put("email", email);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)

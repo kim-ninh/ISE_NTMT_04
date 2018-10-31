@@ -30,7 +30,8 @@ public class LoginOwnerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_owner);
 
         progressDialog = new ProgressDialog(LoginOwnerActivity.this);
-        progressDialog.setTitle("Check login...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle("Check login");
 
         edtUsername = (EditText)findViewById(R.id.edtUsername);
         edtPassword = (EditText)findViewById(R.id.edtPassword);
@@ -71,7 +72,8 @@ public class LoginOwnerActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent intent = new Intent(LoginOwnerActivity.this, RegisterOwnerActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -103,7 +103,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS)
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS)
                     {
                         Owner.getInstance().getListRestaurant().remove(restaurant);
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
@@ -134,7 +134,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else {
@@ -150,7 +150,7 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.resetPassword(email)));
     }
 
-    public static void createAccount(Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
+    public static void createAccount(String username, String password, String name, String phoneNumber, String email, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -161,7 +161,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else {
@@ -174,7 +174,7 @@ public class FoodMapApiManager {
 
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.createAccount(owner)));
+        taskRequest.execute(new DoingTask(GenerateRequest.createAccount(username,password,name, phoneNumber, email)));
     }
 
     public static void addGuest(Guest guest, final TaskCompleteCallBack taskCompleteCallBack){
@@ -188,7 +188,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else { // trường hợp guest đã tồn tại

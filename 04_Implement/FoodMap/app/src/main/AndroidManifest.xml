@@ -42,7 +42,8 @@
         <activity
             android:name=".ManageRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".RegisterOwnerActivity"></activity>
     </application>
 
 </manifest>
