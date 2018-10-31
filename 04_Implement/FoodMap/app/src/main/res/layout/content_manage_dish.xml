@@ -61,7 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Giá tiền"
-            android:labelFor="@id/txtAddress"/>
+            android:labelFor="@id/txtDishCost"/>
 
         <EditText
             android:id="@+id/txtDishCost"
