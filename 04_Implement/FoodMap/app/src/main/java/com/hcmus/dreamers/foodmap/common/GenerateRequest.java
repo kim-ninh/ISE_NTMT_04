@@ -404,4 +404,18 @@ public class GenerateRequest {
         return request;
     }
 
+    public static okhttp3.Request addGuest(final String email, final String name){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
 }
