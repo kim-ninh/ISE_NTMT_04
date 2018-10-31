@@ -34,6 +34,7 @@
         <activity android:name=".RestaurantInfo" />
         <activity android:name=".LoginOwnerActivity"/>
         <activity android:name=".MainActivity"/>
+        <activity android:name=".ManageDishActivity"/>
     </application>
 
 
