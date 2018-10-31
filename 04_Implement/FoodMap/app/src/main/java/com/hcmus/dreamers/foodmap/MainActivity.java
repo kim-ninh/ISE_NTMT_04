@@ -265,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     void initMenuLoginGuest(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // change header
