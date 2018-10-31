@@ -36,9 +36,13 @@
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
         <activity
-            android:parentActivityName=".ManageRestaurantActivity"
             android:name=".ManageDishActivity"
-            android:label="@string/title_activity_manage_dish"></activity>
+            android:label="@string/title_activity_manage_dish"
+            android:parentActivityName=".ManageRestaurantActivity" />
+        <activity
+            android:name=".ManageRestaurantActivity"
+            android:label="@string/title_activity_manage_restaurant"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

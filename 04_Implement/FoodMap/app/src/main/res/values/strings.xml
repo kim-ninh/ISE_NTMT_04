@@ -6,4 +6,5 @@
     <string name="facebook_app_id">336556870495272</string>
     <string name="fb_login_protocol_scheme">fb336556870495272</string>
     <string name="title_activity_manage_dish">Quản lý món</string>
+    <string name="title_activity_manage_restaurant">Quản lý quán</string>
 </resources>
