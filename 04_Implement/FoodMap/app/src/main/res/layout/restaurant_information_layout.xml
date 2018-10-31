@@ -278,6 +278,7 @@
 
                 <!--2.3.5-->
                 <LinearLayout
+                    android:id="@+id/lnrRate"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:orientation="vertical"
