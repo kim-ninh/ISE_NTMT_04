@@ -24,4 +24,7 @@ public interface ConstantURL {
     public static final String GETOFFER                    = "getOffer.php";
     public static final String GETDISCOUNT                 = "getDiscount.php";
     public static final String ADDOFFER                    = "addOffer.php";
+    public static final String ADDGUEST                    = "addGuest.php";
+    public static final String LINKFORM                    = "https://docs.google.com/forms/d/e/1FAIpQLSdHaSS6SOtcgIDhGkKy_mM0mH5802wyupK9VosbU_Rt7YFuZg/viewform";
+
 }

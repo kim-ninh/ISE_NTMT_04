@@ -4,7 +4,7 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/btnFavorite"
+            android:id="@+id/btnManager"
             android:icon="@drawable/ic_manager"
             android:title="Quản lý quán ăn" />
         <item
@@ -15,6 +15,10 @@
             android:id="@+id/btnFeedBack"
             android:icon="@drawable/ic_email"
             android:title="Phản hồi app" />
+        <item
+            android:id="@+id/btnLogout"
+            android:icon="@drawable/ic_logout"
+            android:title="Đăng xuất" />
         <item
             android:id="@+id/btnAbout"
             android:icon="@drawable/ic_info"

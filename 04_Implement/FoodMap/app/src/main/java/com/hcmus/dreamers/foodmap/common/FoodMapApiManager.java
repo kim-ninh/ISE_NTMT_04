@@ -5,6 +5,7 @@ import android.util.Log;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -40,8 +41,7 @@ public class FoodMapApiManager {
 
                     if(parseJSON.getCode() == ConstantCODE.SUCCESS) {
                         try {
-                            Owner owner = Owner.getInstance();
-                            owner = ParseJSON.parseOwnerFromCreateAccount(Sresponse);
+                            Owner.setInstance(ParseJSON.parseOwnerFromCreateAccount(Sresponse));
                             taskCompleteCallBack.OnTaskComplete(SUCCESS);
                         } catch (JSONException e) {
                             taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
@@ -58,7 +58,7 @@ public class FoodMapApiManager {
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
+        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(username, password)));
     }
 
     public static void deleteAcount(final TaskCompleteCallBack taskCompleteCallBack)
@@ -177,9 +177,36 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.createAccount(owner)));
     }
 
+    public static void addGuest(Guest guest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else { // trường hợp guest đã tồn tại
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.addGuest(guest)));
+    }
+
     // lấy dữ liệu từ api và lưu xuống database
     public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){
-        
+
     }
 
     // dành cho owner

@@ -1,5 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +14,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
@@ -25,7 +29,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 
 import java.util.Arrays;
 
@@ -33,11 +39,16 @@ import java.util.Arrays;
 public class LoginGuestActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginGuestActivity";
+    private static final int LOGIN_OWNER_REQUEST = 1222;
+
     CallbackManager callbackManager;
     FirebaseAuth mAuth;
 
     Button btnLoginFb;
     Button btnLoginOwner;
+
+
+    ProgressDialog progressDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,10 +60,12 @@ public class LoginGuestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginGuestActivity.this, LoginOwnerActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, LOGIN_OWNER_REQUEST);
             }
         });
 
+        progressDialog = new ProgressDialog(LoginGuestActivity.this);
+        progressDialog.setTitle("Check login...");
         // init
         mAuth = FirebaseAuth.getInstance();
         // btnFaceBook Login
@@ -60,24 +73,32 @@ public class LoginGuestActivity extends AppCompatActivity {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess: Login OK");
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-
+                Log.d(TAG, "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Log.d(TAG, "facebook: onError"+ error.getMessage());
+                if (error instanceof FacebookAuthorizationException) {
+                    if (AccessToken.getCurrentAccessToken() != null) {
+                        LoginManager.getInstance().logOut();
+                    }
+                }
             }
         });
+
+        LoginManager.getInstance().logOut();
 
         btnLoginFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginGuestActivity.this, Arrays.asList("public_profile"));
+                LoginManager.getInstance().logInWithReadPermissions(LoginGuestActivity.this, Arrays.asList("email", "public_profile"));
             }
         });
     }
@@ -94,14 +115,24 @@ public class LoginGuestActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            progressDialog.show();
+
                             FirebaseUser user = mAuth.getCurrentUser();
                             ///Todo
                             Guest.getInstance().setName(user.getDisplayName());
                             Guest.getInstance().setEmail(user.getEmail());
                             Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
 
-                            Toast.makeText(LoginGuestActivity.this, user.getDisplayName() + "   " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
+                            FoodMapApiManager.addGuest(Guest.getInstance(), new TaskCompleteCallBack() {
+                                @Override
+                                public void OnTaskComplete(Object response) {
+                                    if ((int)response == FoodMapApiManager.SUCCESS){
+                                        progressDialog.dismiss();
+                                        // đóng activity login guest
+                                        LoginGuestActivity.this.finish();
+                                    }
+                                }
+                            });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -117,6 +148,17 @@ public class LoginGuestActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LOGIN_OWNER_REQUEST){
+            if (resultCode == Activity.RESULT_OK){
+                if (data.getBooleanExtra("isLogin", false) == true)
+                    LoginGuestActivity.this.finish();
+            }
+        }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

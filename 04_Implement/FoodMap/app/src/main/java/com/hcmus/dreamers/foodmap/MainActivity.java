@@ -3,11 +3,13 @@ package com.hcmus.dreamers.foodmap;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -23,15 +25,29 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
@@ -60,7 +76,8 @@ import java.util.List;
 import okhttp3.Request;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "MainActivity";
+    
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
@@ -82,11 +99,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        navmenuToolbarInit();
         mMap.onResume();
     }
-
-    String token = "cd687a1d5ddaf0b0c623d57e3fe049d8cGh1b2NwcjExMjM=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,74 +113,6 @@ public class MainActivity extends AppCompatActivity {
         // setup map
         mapInit();
         navmenuToolbarInit();
-
-        // debug
-//        Owner owner = Owner.getInstance();
-//        owner.setUsername("mmmmm");
-//        owner.setPassword("aeaersa");
-//        owner.setPhoneNumber("029839843");
-//        owner.setEmail("dhsfhs@gmail.com");
-//        owner.setName("Chau Hoang Phuc");
-//
-//        TaskRequest taskRequest = new TaskRequest();
-//        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-//            @Override
-//            public void OnTaskComplete(Object response) {
-//                try {
-//                    token = ParseJSON.getTokenFromCreateAccount(response.toString());
-//                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-//                } catch (JSONException e) {
-//                    Toast.makeText(MainActivity.this, "Lỗi parse json", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
-//        });
-//        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
-
-        //while(token.equals(""));
-
-
-        Restaurant rest = new Restaurant();
-        rest.setId_user("phuocpr1123");
-        rest.setName("TEST");
-        rest.setPhoneNumber("09484783434");
-        rest.setAddress("Bình Tân, HCM");
-        rest.setLocation(new GeoPoint(120.0, 210.0));
-        rest.setDescription("sea food restaurant");
-        TaskRequest taskRequest = new TaskRequest();
-        try {
-            rest.setTimeOpen(new SimpleDateFormat("HH:mm").parse("07:00"));
-            rest.setTimeClose(new SimpleDateFormat("HH:mm").parse("22:00"));
-        } catch (ParseException e) {
-            Toast.makeText(MainActivity.this, "Lỗi parse date", Toast.LENGTH_SHORT).show();
-        }
-
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
-
-        taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(Owner.getInstance())));
-
-        //String check = owner.Login("mmmmm", "aeaersa");
-        taskRequest.execute(new DoingTask(GenerateRequest.createRestaurant(rest, token)));
-        //boolean check = owner.Login("mmmmm", "aeaersa");
-
-        //Toast.makeText(this, check, Toast.LENGTH_LONG).show();
-        //(new Test1()).execute(owner);
-
-        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
-
-        imgSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, RestaurantInfo.class));
-            }
-        });*/
-
-        //end debug
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
@@ -293,10 +240,18 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // change header
-        navigationMenu = (NavigationView)findViewById(R.id.nav_view);
-        navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
-        navigationMenu.inflateHeaderView(R.layout.nav_header);
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        Owner owner = Owner.getInstance();
+        if (isLoggedIn){
+            initMenuLoginGuest();
+        }
+        else if (owner.getToken() != null){
+            initMenuLoginOwner();
+        }
+        else{
+            initMenuNotLogin();
+        }
     }
 
     @Override
@@ -310,56 +265,169 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class Test extends AsyncTask<Owner, Void , String> {
 
-        @Override
-        protected void onPostExecute(String s) {
-            ResponseJSON responseJSON = null;
-            try {
-                responseJSON = ParseJSON.parseFromAllResponse(s);
-                List<Catalog> owner = ParseJSON.parseCatalog(s);
-                Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
-            } catch (JSONException e) {
-                e.printStackTrace();
+    void initMenuLoginGuest(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // change header
+        navigationMenu = (NavigationView)findViewById(R.id.nav_view);
+        navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
+        navigationMenu.inflateHeaderView(R.layout.nav_header);
+
+        Menu menu = navigationMenu.getMenu();
+        menu.clear();
+        getMenuInflater().inflate(R.menu.drawer_menu_guest, menu);
+
+        View head = navigationMenu.getHeaderView(0);
+        TextView txtName = (TextView)head.findViewById(R.id.txtName);
+        TextView txtEmail = (TextView)head.findViewById(R.id.txtEmail);
+        ImageView imgAvatar = (ImageView)head.findViewById(R.id.igvAvatar);
+
+        Guest.getInstance().setName(user.getDisplayName());
+        txtName.setText(user.getDisplayName());
+
+        Guest.getInstance().setEmail(user.getEmail());
+        txtEmail.setText(user.getEmail());
+
+        Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
+        DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
+        taskDownload.execute(user.getPhotoUrl().getPath());
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id){
+                    case R.id.btnFavorite:
+                        Log.d(TAG, "onClick: btnFavorite");
+                        Toast.makeText(MainActivity.this, "onClick: btnFavorite", Toast.LENGTH_SHORT).show();
+                        break;
+                    case  R.id.btnFeedBack:
+                        Log.d(TAG, "onClick: btnFeedBack");
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
+                        startActivity(browserIntent);
+                        break;
+                    case  R.id.btnUpdate:
+                        Log.d(TAG, "onClick: btnUpdate");
+                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btnLogout:
+                        Log.d(TAG, "onClick: btnLogout");
+                        Toast.makeText(MainActivity.this, "onClick: btnLogout", Toast.LENGTH_SHORT).show();
+                        LoginManager.getInstance().logOut();
+                        initMenuNotLogin();
+                        break;
+                    case R.id.btnAbout:
+                        Log.d(TAG, "onClick: btnAbout");
+                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
             }
-        }
-
-        @Override
-        protected String doInBackground(Owner...owners) {
-
-            Request request = null;
-            try {
-                request = GenerateRequest.getCatalog();
-                String response = SendRequest.send(request);
-                return response;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
+        });
     }
 
-    class Test1 extends AsyncTask<Owner, Void , String> {
+    void initMenuNotLogin(){
+        // change header
+        navigationMenu = (NavigationView)findViewById(R.id.nav_view);
+        navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
+        navigationMenu.inflateHeaderView(R.layout.nav_header_notlogin);
 
-        @Override
-        protected void onPostExecute(String s) {
-            Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
-            ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(s);
-            Toast.makeText(MainActivity.this, responseJSON.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        View head = navigationMenu.getHeaderView(0);
+        Button btnLogin = (Button)head.findViewById(R.id.btnNavDangNhap);
 
-        @Override
-        protected String doInBackground(Owner...owners) {
-
-            Request request = null;
-            try {
-                request = GenerateRequest.checkLogin(owners[0]);
-                String response = SendRequest.send(request);
-                return response;
-            } catch (IOException e) {
-                e.printStackTrace();
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginGuestActivity.class);
+                startActivity(intent);
             }
-            return "";
+        });
+
+
+        Menu menu = navigationMenu.getMenu();
+        menu.clear();
+        getMenuInflater().inflate(R.menu.drawer_menu_notlogin, menu);
+
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id){
+                    case  R.id.btnFeedBack:
+                        Log.d(TAG, "onClick: btnFeedBack");
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
+                        startActivity(browserIntent);
+                        break;
+                    case  R.id.btnUpdate:
+                        Log.d(TAG, "onClick: btnUpdate");
+                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btnAbout:
+                        Log.d(TAG, "onClick: btnAbout");
+                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        });
+
+    }
+
+    void initMenuLoginOwner(){
+// change header
+        navigationMenu = (NavigationView)findViewById(R.id.nav_view);
+        navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
+        navigationMenu.inflateHeaderView(R.layout.nav_header);
+
+        Menu menu = navigationMenu.getMenu();
+        menu.clear();
+        getMenuInflater().inflate(R.menu.drawer_menu_guest, menu);
+
+        View head = navigationMenu.getHeaderView(0);
+        TextView txtName = (TextView)head.findViewById(R.id.txtName);
+        TextView txtEmail = (TextView)head.findViewById(R.id.txtEmail);
+        ImageView imgAvatar = (ImageView)head.findViewById(R.id.igvAvatar);
+
+        Owner owner =  Owner.getInstance();
+        txtName.setText(owner.getUsername());
+
+        txtEmail.setText(owner.getEmail());
+
+        if (owner.getRestaurant(0) != null && owner.getRestaurant(0).getUrlImage() != null)
+        {
+            DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
+            taskDownload.execute(owner.getRestaurant(0).getUrlImage());
         }
+
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id){
+                    case R.id.btnManager:
+                        Log.d(TAG, "onClick: btnManager");
+                        Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
+                        break;
+                    case  R.id.btnFeedBack:
+                        Log.d(TAG, "onClick: btnFeedBack");
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
+                        startActivity(browserIntent);
+                        break;
+                    case  R.id.btnUpdate:
+                        Log.d(TAG, "onClick: btnUpdate");
+                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btnLogout:
+                        Log.d(TAG, "onClick: btnLogout");
+                        LoginManager.getInstance().logOut();
+                        initMenuNotLogin();
+                        break;
+                    case R.id.btnAbout:
+                        Log.d(TAG, "onClick: btnAbout");
+                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 }

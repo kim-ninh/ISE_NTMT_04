@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
+import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
@@ -47,12 +48,12 @@ import okhttp3.RequestBody;
 
 public class GenerateRequest {
 
-    public static okhttp3.Request checkLogin(final Owner owner){ //if login is successful then result is not equals null
+    public static okhttp3.Request checkLogin(String username, String password){ //if login is successful then result is not equals null
 
         String url = ConstantURL.BASEURL + ConstantURL.LOGIN;
         Map<String, String> params = new HashMap<>();
-        params.put("username", owner.getUsername());
-        params.put("password", owner.getPassword());
+        params.put("username", username);
+        params.put("password", password);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -78,6 +79,20 @@ public class GenerateRequest {
                 .build();
         return request;
 
+    }
+
+    public static okhttp3.Request addGuest(final Guest owner){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("name", owner.getName());
+        params.put("email", owner.getEmail());
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
     }
 
     public static okhttp3.Request comment(final String id_rest, final Comment comment, final String token){

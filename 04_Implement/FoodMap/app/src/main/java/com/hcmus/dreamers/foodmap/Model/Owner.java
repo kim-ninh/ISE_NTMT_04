@@ -58,6 +58,8 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     }
 
     public Restaurant getRestaurant(int index) {
+        if (listRestaurant == null || listRestaurant.size() == 0)
+            return null;
         return listRestaurant.get(index);
     }
 
