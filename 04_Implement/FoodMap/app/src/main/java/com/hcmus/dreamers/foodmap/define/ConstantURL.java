@@ -26,5 +26,6 @@ public interface ConstantURL {
     public static final String ADDOFFER                    = "addOffer.php";
     public static final String ADDGUEST                    = "addGuest.php";
     public static final String LINKFORM                    = "https://docs.google.com/forms/d/e/1FAIpQLSdHaSS6SOtcgIDhGkKy_mM0mH5802wyupK9VosbU_Rt7YFuZg/viewform";
-
+    public static final String URLOSM                      = "https://api.openrouteservice.org/directions";
+    public static final String KEY                         = "5b3ce3597851110001cf6248624c78400169414fb3c27bead71362ff";
 }
