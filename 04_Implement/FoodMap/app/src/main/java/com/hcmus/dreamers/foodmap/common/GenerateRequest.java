@@ -24,6 +24,7 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -416,6 +417,33 @@ public class GenerateRequest {
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
+    }
+
+    public static okhttp3.Request directionMap(final GeoPoint start, final GeoPoint end){
+        String baseUrl = ConstantURL.URLOSM;
+        Map<String, String> params = new HashMap<>();
+        params.put("api_key", ConstantURL.KEY);
+        params.put("coordinates", buildCoordinates(start, end));
+        params.put("profile", "driving-car");
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Accept", "application/json; charset=utf-8") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    private static String buildCoordinates(final GeoPoint start, final GeoPoint end){
+        StringBuffer data = new StringBuffer();
+        data.append(start.getLatitude());
+        data.append(",");
+        data.append(start.getLongitude());
+        data.append("|");
+        data.append(end.getLatitude());
+        data.append(",");
+        data.append(end.getLongitude());
+        return data.toString();
     }
 
 }
