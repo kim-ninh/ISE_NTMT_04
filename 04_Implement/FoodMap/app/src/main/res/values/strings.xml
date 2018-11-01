@@ -5,4 +5,6 @@
     <string name="OpenrouteApiKey">5b3ce3597851110001cf6248624c78400169414fb3c27bead71362ff</string>
     <string name="facebook_app_id">336556870495272</string>
     <string name="fb_login_protocol_scheme">fb336556870495272</string>
+    <string name="title_activity_manage_dish">Quản lý món</string>
+    <string name="title_activity_manage_restaurant">Quản lý quán</string>
 </resources>

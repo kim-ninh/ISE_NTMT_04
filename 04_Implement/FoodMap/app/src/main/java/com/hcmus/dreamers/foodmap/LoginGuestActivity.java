@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
@@ -40,13 +39,13 @@ public class LoginGuestActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginGuestActivity";
     private static final int LOGIN_OWNER_REQUEST = 1222;
-
+    private static final int REGISTER_OWNER_REQUEST = 1333;
     CallbackManager callbackManager;
     FirebaseAuth mAuth;
 
     Button btnLoginFb;
     Button btnLoginOwner;
-
+    Button btnRegisterOwner;
 
     ProgressDialog progressDialog;
 
@@ -64,8 +63,18 @@ public class LoginGuestActivity extends AppCompatActivity {
             }
         });
 
+        btnRegisterOwner = (Button)findViewById(R.id.btnOwnerRegister);
+        btnRegisterOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginGuestActivity.this, RegisterOwnerActivity.class);
+                startActivityForResult(intent, REGISTER_OWNER_REQUEST);
+            }
+        });
+
         progressDialog = new ProgressDialog(LoginGuestActivity.this);
-        progressDialog.setTitle("Check login...");
+        progressDialog.setTitle("Check login");
+        progressDialog.setCanceledOnTouchOutside(false);
         // init
         mAuth = FirebaseAuth.getInstance();
         // btnFaceBook Login
@@ -98,6 +107,7 @@ public class LoginGuestActivity extends AppCompatActivity {
         btnLoginFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 LoginManager.getInstance().logInWithReadPermissions(LoginGuestActivity.this, Arrays.asList("email", "public_profile"));
             }
         });
@@ -115,7 +125,6 @@ public class LoginGuestActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            progressDialog.show();
 
                             FirebaseUser user = mAuth.getCurrentUser();
                             ///Todo
@@ -149,10 +158,16 @@ public class LoginGuestActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == LOGIN_OWNER_REQUEST){
-            if (resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == LOGIN_OWNER_REQUEST){
                 if (data.getBooleanExtra("isLogin", false) == true)
                     LoginGuestActivity.this.finish();
+            }
+            else if (requestCode == REGISTER_OWNER_REQUEST){
+                if (data.getBooleanExtra("isRegister", false) == true){
+                    Intent intent = new Intent(LoginGuestActivity.this, LoginOwnerActivity.class);
+                    startActivityForResult(intent, LOGIN_OWNER_REQUEST);
+                }
             }
         }
     }

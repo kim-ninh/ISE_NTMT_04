@@ -103,7 +103,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Tên thật"
-                android:labelFor="@id/txtAddress"/>
+                android:labelFor="@id/txtRealName"/>
 
             <EditText
                 android:id="@+id/txtRealName"

@@ -24,6 +24,7 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -63,14 +64,14 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createAccount(final Owner owner){
+    public static okhttp3.Request createAccount(String username, String password, String name, String phoneNumber, String email){
         String url = ConstantURL.BASEURL + ConstantURL.CREATEACCOUNT;
         Map<String, String> params = new HashMap<>();
-        params.put("username", owner.getUsername());
-        params.put("password", owner.getPassword());
-        params.put("name", owner.getName());
-        params.put("phone_number", owner.getPhoneNumber());
-        params.put("email", owner.getEmail());
+        params.put("username", username);
+        params.put("password", password);
+        params.put("name", name);
+        params.put("phone_number", phoneNumber);
+        params.put("email", email);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -183,11 +184,11 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateAccount(final Owner owner, final String token){
+    public static okhttp3.Request updateAccount(final Owner owner){
         String url = ConstantURL.BASEURL + ConstantURL.UPDATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());
-        params.put("token", token);
+        params.put("token", owner.getToken());
         params.put("password", owner.getPassword());
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
@@ -402,6 +403,47 @@ public class GenerateRequest {
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
+    }
+
+    public static okhttp3.Request addGuest(final String email, final String name){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request directionMap(final GeoPoint start, final GeoPoint end){
+        String baseUrl = ConstantURL.URLOSM;
+        Map<String, String> params = new HashMap<>();
+        params.put("api_key", ConstantURL.KEY);
+        params.put("coordinates", buildCoordinates(start, end));
+        params.put("profile", "driving-car");
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Accept", "application/json; charset=utf-8") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    private static String buildCoordinates(final GeoPoint start, final GeoPoint end){
+        StringBuffer data = new StringBuffer();
+        data.append(start.getLatitude());
+        data.append(",");
+        data.append(start.getLongitude());
+        data.append("|");
+        data.append(end.getLatitude());
+        data.append(",");
+        data.append(end.getLongitude());
+        return data.toString();
     }
 
 }

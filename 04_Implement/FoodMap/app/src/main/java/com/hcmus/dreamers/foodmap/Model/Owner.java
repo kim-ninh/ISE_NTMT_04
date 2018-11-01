@@ -132,7 +132,7 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
         });
 
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.getToken())));
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance)));
     }
 
     public void updateInformation(String name, String phoneNumber, String email)
@@ -168,6 +168,6 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
             }
         });
 
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance, instance.getToken())));
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance)));
     }
 }

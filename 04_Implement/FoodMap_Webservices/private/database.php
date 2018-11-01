@@ -145,7 +145,7 @@ class database
 		return $this->query($strQuery);
 	}
 
-	public function DeleteAccount($username)
+	public function DeleteOwner($username)
 	{
 		$strQuery = 'CALL SP_DELETE_ACCOUNT('.$username.')';
 		return $this->query($strQuery);
@@ -219,7 +219,7 @@ class database
 
 	public function UpdateAccount($username, $value)
 	{
-		$strQuery = "UPDATE ACCOUNT SET ".$value." WHERE ID = ".$username;
+		$strQuery = 'UPDATE OWNER SET '.$value.' WHERE USERNAME = "'.$username.'"';
 		return $this->query($strQuery);
 	}
 
@@ -245,10 +245,11 @@ class database
 	public function GetCode($email)
 	{
 		$strQuery = 'SELECT FC_GETCODE("'.$email.'") AS CODE';
-		foreach($token as $row)
+		$result = $this->query($strQuery);
+
+		foreach($result as $row)
 		{
 			return $row["CODE"];
-			break;
 		}
 		return -1;
 	}
@@ -256,15 +257,18 @@ class database
 	// kiểm tra xem mã code đã đúng chưa
 	public function CheckCode($email, $code)
 	{
-		$strQuery = 'SELECT FC_CHECKCODE("'.$email.'","'.$code.'") AS RESULT';
-		$check = false;
-		foreach($token as $row)
+		$strQuery = 'SELECT FC_CHECKCODE("'.$email.'",'.$code.') AS RESULT';
+		$result = $this->query($strQuery);
+
+		foreach($result as $row)
 		{
-			if ($row["RESULT"] == 1)
-				$check = true;
-			break;
+			if ($row["RESULT"] === "1")
+			{
+				$strQuery = 'SELECT * FROM OWNER OW WHERE OW.EMAIL = "'.$email.'"';
+				return $this->query($strQuery);
+			}
 		}
-		return $check;
+		return -1;
 	}
 
 	// get catalog

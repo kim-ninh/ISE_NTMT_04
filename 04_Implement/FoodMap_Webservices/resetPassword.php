@@ -1,6 +1,16 @@
 <?php
 include "../private/mail.php";
 include "../private/database.php";
+class Owner{
+		function Owner($username, $password, $name, $phone_number, $email, $token){
+			$this->username = $username;
+			$this->password = $password;
+			$this->name = $name;
+			$this->phone_number = $phone_number;
+			$this->email = $email;
+			$this->token = $token;
+		}
+	}
 
 $response = array();
 
@@ -20,10 +30,18 @@ if (isset($_POST["email"]))
 		$code = $_POST["code"];
 		$check = $conn->CheckCode($email, $code);
 
-		if ($check == true)
+		if ($check != -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";
+
+			foreach ($check as $row) 
+			{
+				$token = $conn->GetToken($row["USERNAME"]);
+				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $token);
+				$response["data"] = $owner;
+				break;
+			}
 		}
 		else
 		{
@@ -40,8 +58,8 @@ if (isset($_POST["email"]))
 			$response["status"] = 200;
 			$response["message"] = "Success";
 
-			$body = "<h1>Mã reset password của bạn là:</h1><br>".$code."<b><b/>";
-
+			$body = "<h1>Mã reset password của bạn là:</h1><b>".$code."<b/>";
+			$subject = "Đặt lại mật khẩu";
 			$mail->SetSubject($subject);
 			$mail->SetContext($body);
 			$mail->SendMail();

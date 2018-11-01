@@ -142,8 +142,8 @@ public class ParseJSON {
             rest.setPhoneNumber(o.getString("phone_number"));
             rest.setDescription(o.getString("describe_text"));
             rest.setUrlImage(o.getString("url_image"));
-            rest.setTimeOpen(new SimpleDateFormat("HH:mm").parse(o.getString("time_open")));
-            rest.setTimeClose(new SimpleDateFormat("HH:mm").parse(o.getString("time_close")));
+            rest.setTimeOpen(new SimpleDateFormat("HH:mm:ss").parse(o.getString("time_open")));
+            rest.setTimeClose(new SimpleDateFormat("HH:mm:ss").parse(o.getString("time_close")));
             JSONObject locate = o.getJSONObject("location");
             rest.setLocation(new GeoPoint(locate.getDouble("lat"), locate.getDouble("lon")));
             rest.setRanks(parseRanks(o.getJSONArray("ranks")));

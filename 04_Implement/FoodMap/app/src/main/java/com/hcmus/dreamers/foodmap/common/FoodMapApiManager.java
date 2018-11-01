@@ -1,7 +1,5 @@
 package com.hcmus.dreamers.foodmap.common;
 
-import android.util.Log;
-
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -13,14 +11,11 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
-import java.io.IOException;
-
 public class FoodMapApiManager {
 
     public static final int SUCCESS = 0;
     public static final int PARSE_FAIL = 1;
     public static final int FAIL_INFO = 2;
-    public static final int REQUEST_FAIL = 3;
 
     private boolean isLogin(){
         if (Owner.getInstance().getToken() == null)
@@ -54,7 +49,7 @@ public class FoodMapApiManager {
                 }
                 else
                 {
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
             }
         });
@@ -80,7 +75,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
             }
         });
@@ -103,7 +98,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS)
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS)
                     {
                         Owner.getInstance().getListRestaurant().remove(restaurant);
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
@@ -113,7 +108,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -134,7 +129,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else {
@@ -142,7 +137,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -150,7 +145,7 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.resetPassword(email)));
     }
 
-    public static void createAccount(Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
+    public static void checkCode(String email, String code, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -161,7 +156,62 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            Owner.setInstance(ParseJSON.parseOwnerFromCreateAccount(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                        }
+                    }
+                    else {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.checkCode(email, code)));
+    }
+
+    public static void updateAccount(final Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String data = response.toString();
+                if (data != null){
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(data);
+                    if (responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND){
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(owner)));
+    }
+
+    public static void createAccount(String username, String password, String name, String phoneNumber, String email, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else {
@@ -169,12 +219,12 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.createAccount(owner)));
+        taskRequest.execute(new DoingTask(GenerateRequest.createAccount(username,password,name, phoneNumber, email)));
     }
 
     public static void addGuest(Guest guest, final TaskCompleteCallBack taskCompleteCallBack){
@@ -188,7 +238,7 @@ public class FoodMapApiManager {
                 if (Sresponse != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
-                    if(responseJSON.getCode() != ConstantCODE.SUCCESS){
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else { // trường hợp guest đã tồn tại
@@ -196,7 +246,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
