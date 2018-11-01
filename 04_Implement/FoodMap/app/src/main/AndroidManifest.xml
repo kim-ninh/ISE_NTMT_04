@@ -43,7 +43,7 @@
             android:name=".ManageRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".RegisterOwnerActivity"></activity>
+        <activity android:name=".RegisterOwnerActivity" />
     </application>
 
 </manifest>

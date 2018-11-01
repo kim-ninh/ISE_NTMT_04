@@ -262,7 +262,14 @@
 	+ response:
 		* status: 200
 		* message: Success
-		
+		* data:
+			** username
+			** password
+			** name
+			** phone_number
+			** email
+			** token
+			
 - getCatalog:
 	+ url: getCatalog.php
 	+ type: GET

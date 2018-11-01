@@ -18,6 +18,7 @@ class Mail
 		$this->mail->Port       = 587;
 		$this->mail->SMTPDebug  = 2;
 		$this->mail->SMTPAuth   = true;
+		$this->mail->SMTPDebug = 0;
 
 		$this->mail->Username   = 'the.dreamers.k16';
 		$this->mail->Password   = 'iNMAZso1A22j';
@@ -41,7 +42,7 @@ class Mail
 		$this->mail->Subject = $subject;
 	}
 
-	public function SetConext($context)
+	public function SetContext($context)
 	{
 		$this->mail->MsgHTML($context);
 	}

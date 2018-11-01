@@ -1,7 +1,5 @@
 package com.hcmus.dreamers.foodmap.common;
 
-import android.util.Log;
-
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -12,8 +10,6 @@ import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
-
-import java.io.IOException;
 
 public class FoodMapApiManager {
 
@@ -149,6 +145,39 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.resetPassword(email)));
     }
+
+    public static void checkCode(String email, String code, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            Owner.setInstance(ParseJSON.parseOwnerFromCreateAccount(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                        }
+                    }
+                    else {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.checkCode(email, code)));
+    }
+
 
     public static void createAccount(String username, String password, String name, String phoneNumber, String email, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
