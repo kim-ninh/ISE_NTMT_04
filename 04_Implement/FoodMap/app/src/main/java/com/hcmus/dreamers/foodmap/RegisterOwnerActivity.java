@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 public class RegisterOwnerActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edtUsername;
@@ -89,6 +90,9 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
                         }
                         else if ((int)response == FoodMapApiManager.FAIL_INFO) {
                             Toast.makeText(RegisterOwnerActivity.this, "Tên đăng nhập hoặc email đã tồn tại",Toast.LENGTH_LONG).show();
+                        }
+                        else if ((int)response == ConstantCODE.NOTINTERNET){
+                            Toast.makeText(RegisterOwnerActivity.this, "Kiểm tra lại kết nối internet", Toast.LENGTH_LONG).show();
                         }
                         else{
                             Toast.makeText(RegisterOwnerActivity.this, "Đăng ký lỗi",Toast.LENGTH_LONG).show();

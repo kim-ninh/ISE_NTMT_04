@@ -37,7 +37,8 @@ if (isset($_POST["email"]))
 
 			foreach ($check as $row) 
 			{
-				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $row["TOKEN"]);
+				$token = $conn->GetToken($row["USERNAME"]);
+				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $token);
 				$response["data"] = $owner;
 				break;
 			}

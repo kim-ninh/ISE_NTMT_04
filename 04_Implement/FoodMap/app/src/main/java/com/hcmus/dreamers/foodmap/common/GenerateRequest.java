@@ -183,11 +183,11 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateAccount(final Owner owner, final String token){
+    public static okhttp3.Request updateAccount(final Owner owner){
         String url = ConstantURL.BASEURL + ConstantURL.UPDATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());
-        params.put("token", token);
+        params.put("token", owner.getToken());
         params.put("password", owner.getPassword());
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());

@@ -145,7 +145,7 @@ class database
 		return $this->query($strQuery);
 	}
 
-	public function DeleteAccount($username)
+	public function DeleteOwner($username)
 	{
 		$strQuery = 'CALL SP_DELETE_ACCOUNT('.$username.')';
 		return $this->query($strQuery);
@@ -219,7 +219,7 @@ class database
 
 	public function UpdateAccount($username, $value)
 	{
-		$strQuery = "UPDATE ACCOUNT SET ".$value." WHERE ID = ".$username;
+		$strQuery = 'UPDATE OWNER SET '.$value.' WHERE USERNAME = "'.$username.'"';
 		return $this->query($strQuery);
 	}
 
@@ -262,12 +262,11 @@ class database
 
 		foreach($result as $row)
 		{
-			if ($row["RESULT"] == 1)
+			if ($row["RESULT"] === "1")
 			{
-				$strQuery = 'SELECT OWNER.* , FC_GETTOKEN("'.$email.'") AS TOKEN FROM OWNER OW WHERE OW.EMAIL = "'.$email.'"';
+				$strQuery = 'SELECT * FROM OWNER OW WHERE OW.EMAIL = "'.$email.'"';
 				return $this->query($strQuery);
 			}
-			break;
 		}
 		return -1;
 	}

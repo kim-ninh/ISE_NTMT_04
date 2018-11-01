@@ -14,7 +14,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["token"]))
 	{
 		if ($key != "id" && $key != "token")
 		{
-			$valueCol .= $key . '= "' . $value .'",';
+			$valueCol .= strtoupper($key) . '= "' . $value .'",';
 		}
 	}
 

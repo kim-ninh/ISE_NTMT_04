@@ -16,7 +16,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 		$conn->connect();
 
 		
-		if ($conn->DeleteAccount($strQuery))
+		if ($conn->DeleteOwner($strQuery))
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";

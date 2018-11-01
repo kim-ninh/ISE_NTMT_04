@@ -19,7 +19,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 		if ($key != "username" && $key != "token")
 		{
 			//get value
-			$valueCol .= $key . "=" . $value .",";
+			$valueCol .= strtoupper($key) . '= "' . $value .'",';
 		}
 	}
 	$valueCol[strlen($valueCol) - 1] = ' ';
@@ -32,7 +32,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 		$conn = new database();
 		$conn->connect();
 
-		if ($conn->UpdateAccount($username, $valueCol)!= -1)
+		if ($conn->UpdateAccount($username, $valueCol) != -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";

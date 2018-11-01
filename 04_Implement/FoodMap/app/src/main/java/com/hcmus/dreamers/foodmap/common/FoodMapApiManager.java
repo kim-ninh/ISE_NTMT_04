@@ -16,7 +16,6 @@ public class FoodMapApiManager {
     public static final int SUCCESS = 0;
     public static final int PARSE_FAIL = 1;
     public static final int FAIL_INFO = 2;
-    public static final int REQUEST_FAIL = 3;
 
     private boolean isLogin(){
         if (Owner.getInstance().getToken() == null)
@@ -50,7 +49,7 @@ public class FoodMapApiManager {
                 }
                 else
                 {
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
             }
         });
@@ -76,7 +75,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
             }
         });
@@ -109,7 +108,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -138,7 +137,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -170,7 +169,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -178,6 +177,28 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.checkCode(email, code)));
     }
 
+    public static void updateAccount(final Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String data = response.toString();
+                if (data != null){
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(data);
+                    if (responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND){
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(owner)));
+    }
 
     public static void createAccount(String username, String password, String name, String phoneNumber, String email, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
@@ -198,7 +219,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
@@ -225,7 +246,7 @@ public class FoodMapApiManager {
                     }
                 }
                 else{
-                    taskCompleteCallBack.OnTaskComplete(REQUEST_FAIL);
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
 
             }
