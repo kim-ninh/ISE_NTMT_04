@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
         //debug
-       /* ImageView img = (ImageView)findViewById(R.id.imgSearch);
+       /*ImageView img = (ImageView)findViewById(R.id.imgSearch);
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,8 +299,12 @@ public class MainActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
 
         Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
-        DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
-        taskDownload.execute(user.getPhotoUrl().getPath());
+
+        //DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
+        //taskDownload.execute(user.getPhotoUrl().getPath());
+        DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
+        taskDownload.loadImageFromUrl(user.getPhotoUrl().getPath());
+
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -404,8 +408,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (owner.getRestaurant(0) != null && owner.getRestaurant(0).getUrlImage() != null)
         {
-            DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
-            taskDownload.execute(owner.getRestaurant(0).getUrlImage());
+            //DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
+            //taskDownload.execute(owner.getRestaurant(0).getUrlImage());
+            DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
+            taskDownload.loadImageFromUrl(owner.getRestaurant(0).getUrlImage());
         }
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

@@ -1,38 +1,39 @@
 package com.hcmus.dreamers.foodmap.AsyncTask;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.widget.ImageView;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.hcmus.dreamers.foodmap.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
-public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageTask {
+    private ImageView imageView;
+    private Context context;
 
-    @SuppressLint("StaticFieldLeak")
-    private ImageView bmImage;
-
-    public DownloadImageTask(ImageView bmImage) {
-        this.bmImage = bmImage;
+    public DownloadImageTask(ImageView imageView, Context context)
+    {
+        this.imageView = imageView;
+        this.context = context;
     }
 
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
-        bmImage.setImageBitmap(bitmap);
+    public void loadImageFromUrl(String url)
+    {
+        Picasso.with(context).load(url).placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
     }
 
-    @Override
-    protected Bitmap doInBackground(String... urls) {
-        Bitmap mIcon = null;
-        try {
-            InputStream in = new java.net.URL(urls[0]).openStream();
-            mIcon = BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return mIcon;
-    }
 }

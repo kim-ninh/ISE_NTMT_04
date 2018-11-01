@@ -13,14 +13,18 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,10 +47,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_info);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tlbRestInfo);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        txtRestName = (TextView) findViewById(R.id.txtResName);
+        txtRestName = (TextView) findViewById(R.id.txtRestName);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         txtOpenTime = (TextView) findViewById(R.id.txtOpenTime);
         txtLocation = (TextView) findViewById(R.id.txtLocation);
@@ -54,27 +59,42 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
 
-
+        //debug
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        try {
+            restaurant.setTimeOpen(simpleDateFormat.parse("08:00"));
+            restaurant.setTimeClose(simpleDateFormat.parse("22:00"));
+        } catch (ParseException e) {
+            Log.d("Time",e.toString());
+            e.printStackTrace();
+        }
+        restaurant.setName("anbcaso");
         restaurant.setPhoneNumber("0377389063");
+        restaurant.setAddress("227 Nguyen Van Cu");
+
+        setLayoutInfo();
+        //endbug
         PhoneStateListener phoneStateListener = new PhoneStateListener();
         TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         LinearLayout lnrContact = (LinearLayout) findViewById(R.id.lnrContact);
+        lnrContact.setOnClickListener(this);
 
-        lnrContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + restaurant.getPhoneNumber()));
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
-                    return;
-                }
-                startActivity(callIntent);
-            }
-        });
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void setRestaurant(Restaurant restaurant) {
@@ -84,9 +104,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     @SuppressLint("SetTextI18n")
     private void setLayoutInfo() {
         //set Description Image
-        {
-            new DownloadImageTask(imgDescription).execute(restaurant.getUrlImage());
-        }
+        DownloadImageTask taskDownload = new DownloadImageTask(imgDescription, getApplicationContext());
+        taskDownload.loadImageFromUrl(restaurant.getUrlImage());
 
         //set Restaurant name
         txtRestName.setText(restaurant.getName());
@@ -100,31 +119,35 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtOpenTime.setText(simpleDateFormat.format(restaurant.getTimeOpen()) + " - " + simpleDateFormat.format(restaurant.getTimeClose()));
 
         Date date = Calendar.getInstance().getTime();
-        try {
-            date = simpleDateFormat.parse(date.toString());
-            if (!restaurant.getTimeOpen().after(date) && !restaurant.getTimeClose().before(date)) {
-                txtStatus.setText("OPENING");
-                txtStatus.setTextColor(Color.GREEN);
-            } else {
-                txtStatus.setText("CLOSING");
-                txtStatus.setTextColor(Color.RED);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        Date start = Calendar.getInstance().getTime();
+        Date end = Calendar.getInstance().getTime();
+        start.setHours(restaurant.getTimeOpen().getHours());
+        start.setMinutes(restaurant.getTimeOpen().getMinutes());
+        end.setHours(restaurant.getTimeClose().getHours());
+        end.setMinutes(restaurant.getTimeClose().getMinutes());
+
+        if (!start.after(date) && !end.before(date))
+        {
+            txtStatus.setText("OPENING");
+            txtStatus.setTextColor(Color.GREEN);
+        } else {
+            txtStatus.setText("CLOSING");
+            txtStatus.setTextColor(Color.RED);
         }
+
 
         //set Restaurant address
         txtLocation.setText(restaurant.getAddress());
 
         //Set Restaurant description
-        txtDescription.setText((restaurant.getDescription()));
+        //txtDescription.setText((restaurant.getDescription()));
 
         //Set Price range of restaurant
 
 
         //set Menu
-        DishInfoList dishInfoList = new DishInfoList(this, R.layout.row_dish_info, restaurant.getDishes());
-        lstDish.setAdapter(dishInfoList);
+        /*DishInfoList dishInfoList = new DishInfoList(this, R.layout.row_dish_info, restaurant.getDishes());
+        lstDish.setAdapter(dishInfoList);*/
     }
 
     @Override
@@ -144,6 +167,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             case R.id.lnrRate:
                 break;
             case R.id.lnrContact:
+                Toast.makeText(this, restaurant.getPhoneNumber(), Toast.LENGTH_LONG).show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + restaurant.getPhoneNumber()));
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
