@@ -108,6 +108,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        TaskRequest task = new TaskRequest();
+//        task.setOnCompleteCallBack(new TaskCompleteCallBack() {
+//            @Override
+//            public void OnTaskComplete(Object response) {
+//                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG);
+//            }
+//        });
+//
+//        task.execute(new DoingTask(GenerateRequest.directionMap(new GeoPoint(10.0900, 11.0098), new GeoPoint(10.8347, 11.8374))));
+
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
         // setup map
