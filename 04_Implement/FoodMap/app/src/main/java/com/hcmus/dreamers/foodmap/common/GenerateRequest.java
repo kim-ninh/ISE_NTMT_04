@@ -96,7 +96,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request comment(final String id_rest, final Comment comment, final String token){
+    public static okhttp3.Request comment(final int id_rest, final Comment comment, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.COMMENT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
