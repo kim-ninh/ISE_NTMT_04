@@ -15,12 +15,12 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 
 import java.util.List;
 
-public class DishInfoList extends ArrayAdapter<Dish>
+public class DishInfoListAdapter extends ArrayAdapter<Dish>
 {
     private  Context context;
     private List<Dish> dishes;
 
-    public DishInfoList(@NonNull Context context, int resource, @NonNull List<Dish> dishes) {
+    public DishInfoListAdapter(@NonNull Context context, int resource, @NonNull List<Dish> dishes) {
         super(context, resource, dishes);
 
         this.context = context;

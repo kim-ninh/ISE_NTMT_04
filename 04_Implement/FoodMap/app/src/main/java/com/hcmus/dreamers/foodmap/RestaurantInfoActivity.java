@@ -105,6 +105,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     }
 
+    //set click event for toolbar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -165,7 +166,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
 
         //set Menu
-        /*DishInfoList dishInfoList = new DishInfoList(this, R.layout.row_dish_info, restaurant.getDishes());
+        /*DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.row_dish_info, restaurant.getDishes());
         lstDish.setAdapter(dishInfoList);*/
     }
 

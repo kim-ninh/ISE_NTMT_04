@@ -162,17 +162,9 @@ public class MainActivity extends AppCompatActivity {
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                    //Bundle bundle = intent.getExtras();
-                    //bundle.putInt("RestID", 123);
-                    intent.putExtra("RestID",123);
+                Intent intent = new Intent(MainActivity.this, FavoriteRestaurantsActivity.class);
 
-                    startActivity(intent);
-                }catch (Exception e)
-                {
-                    Toast.makeText(getApplicationContext(),"error: Cannot open this restaurant",Toast.LENGTH_LONG).show();
-                }
+                startActivity(intent);
             }
         });*/
 
