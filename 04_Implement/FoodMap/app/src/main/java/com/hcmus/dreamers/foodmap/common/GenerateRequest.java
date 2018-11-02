@@ -425,6 +425,7 @@ public class GenerateRequest {
         params.put("api_key", ConstantURL.KEY);
         params.put("coordinates", buildCoordinates(start, end));
         params.put("profile", "driving-car");
+        params.put("geometry_format", "polyline");
         String url = Utils.buildUrl(baseUrl, params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)

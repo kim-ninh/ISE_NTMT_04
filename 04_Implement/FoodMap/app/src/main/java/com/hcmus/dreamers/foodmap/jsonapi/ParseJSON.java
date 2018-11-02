@@ -12,6 +12,7 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.Model.User;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
+import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -205,6 +206,15 @@ public class ParseJSON {
         }
         return list;
 
+    }
+
+
+    public static LocationDirection parseLocationDirection(final String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("routes");
+        JSONObject o = array.getJSONObject(0);
+        LocationDirection locationDirection = gson.fromJson(o.toString(), LocationDirection.class);
+        return locationDirection;
     }
 
 }

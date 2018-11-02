@@ -55,6 +55,7 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
@@ -107,6 +108,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        TaskRequest task = new TaskRequest();
+//        task.setOnCompleteCallBack(new TaskCompleteCallBack() {
+//            @Override
+//            public void OnTaskComplete(Object response) {
+//                try {
+//                    LocationDirection locationDirection = ParseJSON.parseLocationDirection(response.toString());
+//                    Toast.makeText(MainActivity.this, "" + locationDirection.getListLocation().size(), Toast.LENGTH_LONG);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        task.execute(new DoingTask(GenerateRequest.directionMap(new GeoPoint(10.0900, 11.0098), new GeoPoint(10.8347, 11.8374))));
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
