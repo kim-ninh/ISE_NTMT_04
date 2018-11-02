@@ -33,6 +33,7 @@ import java.util.Date;
 
 public class RestaurantInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "RestAcitvity";
     TextView txtRestName;
     TextView txtStatus;
     TextView txtOpenTime;
@@ -47,6 +48,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_info);
 
+        //set header toolbar in the layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.tlbRestInfo);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,6 +61,20 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
 
+        //get Restaurant
+        Intent intent = this.getIntent();
+        int RestID = intent.getIntExtra("RestID", -1);
+        if(RestID == -1)
+        {
+            Log.i(TAG,"can't get restaurant data");
+            Toast.makeText(this,"can't get restaurant data", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            //get data
+            Toast.makeText(this,"ok", Toast.LENGTH_LONG).show();
+        }
+
         //debug
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
         try {
@@ -68,12 +84,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             Log.d("Time",e.toString());
             e.printStackTrace();
         }
+        restaurant.setUrlImage("https://i.pinimg.com/236x/82/fa/8a/82fa8a8d0abac9e28614df1f5c45efeb.jpg");
         restaurant.setName("anbcaso");
         restaurant.setPhoneNumber("0377389063");
         restaurant.setAddress("227 Nguyen Van Cu");
 
         setLayoutInfo();
         //endbug
+
+
         PhoneStateListener phoneStateListener = new PhoneStateListener();
         TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);

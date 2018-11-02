@@ -1,8 +1,6 @@
 package com.hcmus.dreamers.foodmap.AsyncTask;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.widget.ImageView;
 
 import com.hcmus.dreamers.foodmap.R;
@@ -21,7 +19,8 @@ public class DownloadImageTask {
 
     public void loadImageFromUrl(String url)
     {
-        Picasso.with(context).load(url).placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
+        Picasso.with(context).load(url)
+                .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .into(imageView, new Callback() {
                     @Override

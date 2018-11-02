@@ -13,11 +13,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-<<<<<<< HEAD
-    <style name="HeaderBar">
-        <item name="android:background">@color/colorAccent</item>
-    </style>
-=======
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -26,5 +21,4 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
->>>>>>> b0194c99b1928c697e4683fe367a5455e7f3d34a
 </resources>
