@@ -31,6 +31,28 @@ public class Restaurant {
         dishes = new ArrayList<Dish>();
         comments = new ArrayList<Comment>();
     }
+	
+	    public Restaurant(int id_rest,
+                      String id_user,
+                      String name,
+                      String address,
+                      String phoneNumber,
+                      String description,
+                      String urlImage,
+                      Date timeOpen,
+                      Date timeClose,
+                      GeoPoint location) {
+        this.id = id_rest;
+        this.id_user = id_user;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.description = description;
+        this.urlImage = urlImage;
+        this.timeOpen = timeOpen;
+        this.timeClose = timeClose;
+        this.location = location;
+	}
 
     public List<Comment> getComments() {
         return comments;
