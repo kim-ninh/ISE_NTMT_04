@@ -397,6 +397,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
                         Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        //Goto_NinhShortcut();
                         break;
                 }
                 return true;
@@ -406,11 +407,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Goto_NinhShortcut() {
-        Restaurant rest = new Restaurant();
-        Gson gson = new Gson();
-        Intent main_manageDish = new Intent(MainActivity.this,ManageDishActivity.class);
-        main_manageDish.putExtra("restJSON",gson.toJson(rest));
-        startActivity(main_manageDish);
+//        Restaurant rest = new Restaurant();
+//        Gson gson = new Gson();
+//        Intent main_manageDish = new Intent(MainActivity.this,ManageDishActivity.class);
+//        main_manageDish.putExtra("restJSON",gson.toJson(rest));
+//        startActivity(main_manageDish);
+
+        Intent main_manageRest = new Intent(MainActivity.this,
+                ManageRestaurantActivity.class);
+        startActivity(main_manageRest);
     }
 
     void initMenuLoginOwner(){
