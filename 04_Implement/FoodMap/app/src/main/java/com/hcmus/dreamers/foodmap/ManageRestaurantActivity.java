@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,9 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.zxing.client.result.EmailDoCoMoResultParser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -32,6 +38,11 @@ import java.util.List;
 public class ManageRestaurantActivity extends AppCompatActivity {
 
     List<Dish> dishes = new ArrayList<>();
+    EditText txtResName;
+    EditText txtAddress;
+    EditText txtPhoneNumber;
+    TextView lblOpenHour;
+    TextView lblCloseHour;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //region DEFAULT INIT
@@ -39,6 +50,11 @@ public class ManageRestaurantActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_restaurant);
         Toolbar toolbar = (Toolbar) findViewById(R.id.edit_restaurant_toolbar);
         ListView dishListView = (ListView) findViewById(R.id.dish_list);
+        txtAddress = (EditText) findViewById(R.id.txtAddress);
+        txtResName = (EditText) findViewById(R.id.txtResName);
+        txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
+        lblCloseHour = (TextView) findViewById(R.id.closeHour);
+        lblOpenHour = (TextView) findViewById(R.id.openHour);
         //endregion
 
         //Enable the Up button
@@ -70,6 +86,38 @@ public class ManageRestaurantActivity extends AppCompatActivity {
         );
         dishListView.setAdapter(adapter);
         //endregion
+
+        //region List_View_item click event here
+        //transfer dish object to the next activity
+        dishListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Dish dish = dishes.get(position);
+                //Restaurant restaurant = Owner.getInstance().getRestaurant();
+
+                Intent manageRest_manageDish = new Intent(
+                        ManageRestaurantActivity.this,
+                        ManageDishActivity.class);
+
+                Gson gson = new Gson();
+                manageRest_manageDish.putExtra("dishJSON", gson.toJson(dish));
+                //manageRest_manageDish.putExtra("restID", restaurant.getId());
+
+                startActivity(manageRest_manageDish);
+            }
+        });
+        //endregion
+
+
+        //TODO Remove the comment below when the Owner has only ONE RESTAURANT!
+        // Restaurant Obj -> Text View
+//        Restaurant restaurant = Owner.getInstance().getRestaurant(0);
+//
+//        txtPhoneNumber.setText(restaurant.getPhoneNumber());
+//        txtResName.setText(restaurant.getName());
+//        txtAddress.setText(restaurant.getAddress());
+//        lblOpenHour.setText(restaurant.getTimeOpen().toString());
+//        lblCloseHour.setText(restaurant.getTimeClose().toString());
     }
 
     private void generateFakeDishList() {
