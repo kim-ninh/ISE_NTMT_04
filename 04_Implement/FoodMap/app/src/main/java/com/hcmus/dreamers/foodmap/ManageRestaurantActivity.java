@@ -1,7 +1,9 @@
 package com.hcmus.dreamers.foodmap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,31 +40,51 @@ import java.util.List;
 
 public class ManageRestaurantActivity extends AppCompatActivity {
 
+
+    Bundle transferData = new Bundle();
     List<Dish> dishes = new ArrayList<>();
+    Restaurant restaurant;
+
     EditText txtResName;
     EditText txtAddress;
     EditText txtPhoneNumber;
     TextView lblOpenHour;
     TextView lblCloseHour;
+    Toolbar toolbar;
+    ListView dishListView;
+
+    // arbitrary interprocess communication ID (just a nickname!)
+    private final int IPC_ID = (int) (10001 * Math.random());
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //region DEFAULT INIT
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_restaurant);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.edit_restaurant_toolbar);
-        ListView dishListView = (ListView) findViewById(R.id.dish_list);
-        txtAddress = (EditText) findViewById(R.id.txtAddress);
-        txtResName = (EditText) findViewById(R.id.txtResName);
-        txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
-        lblCloseHour = (TextView) findViewById(R.id.closeHour);
-        lblOpenHour = (TextView) findViewById(R.id.openHour);
-        //endregion
+
+
+        takeReferenceFromResource();
+        //restaurant = Owner.getInstance().getRestaurant(0);  TODO Remove this comment when the data is ready!
+        //dishes = restaurant.getDishes();                    TODO Remove this comment when the data is ready!
+
+
+        generateFakeDishList();                             //TODO Remove this line when the data is ready!
+        //putDataToViews();                                 //TODO Remove this comment when the data is ready!
+        DishInfoListAdapter adapter = new DishInfoListAdapter(
+                this,
+                R.layout.row_dish_info,
+                dishes
+        );
+        dishListView.setAdapter(adapter);
+
 
         //Enable the Up button
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Add_Floating_Button_Click event here
+
+        // HANDLE Click event
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddDish);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,56 +94,92 @@ public class ManageRestaurantActivity extends AppCompatActivity {
             }
         });
 
-        //region dish info -> dist_list_view
-        //TODO Remove the comment below when the Owner has only ONE RESTAURANT!
-//        dishes = Owner.getInstance()
-//                .getRestaurant()
-//                .getDishes();
 
-        generateFakeDishList();   //TODO Remove this line when the data is ready!
-
-        DishInfoListAdapter adapter = new DishInfoListAdapter(
-                this,
-                R.layout.row_dish_info,
-                dishes
-        );
-        dishListView.setAdapter(adapter);
-        //endregion
-
-        //region List_View_item click event here
-        //transfer dish object to the next activity
         dishListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dish dish = dishes.get(position);
-                //Restaurant restaurant = Owner.getInstance().getRestaurant();
-
-                Intent manageRest_manageDish = new Intent(
-                        ManageRestaurantActivity.this,
-                        ManageDishActivity.class);
-
-                Gson gson = new Gson();
-                manageRest_manageDish.putExtra("dishJSON", gson.toJson(dish));
-                //manageRest_manageDish.putExtra("restID", restaurant.getId());
-
-                startActivity(manageRest_manageDish);
+                transferData2NextActivity(dish ,position);
             }
         });
-        //endregion
+    }
 
+    private void transferData2NextActivity(Dish dish, int position) {
 
-        //TODO Remove the comment below when the Owner has only ONE RESTAURANT!
-        // Restaurant Obj -> Text View
-//        Restaurant restaurant = Owner.getInstance().getRestaurant(0);
-//
-//        txtPhoneNumber.setText(restaurant.getPhoneNumber());
-//        txtResName.setText(restaurant.getName());
-//        txtAddress.setText(restaurant.getAddress());
-//        lblOpenHour.setText(restaurant.getTimeOpen().toString());
-//        lblCloseHour.setText(restaurant.getTimeClose().toString());
+        Gson gson = new Gson();
+        Intent manageRest_manageDish = new Intent(
+                ManageRestaurantActivity.this,
+                ManageDishActivity.class);
+
+        transferData.putString("dishJSON",gson.toJson(dish));
+        //transferData.putInt("restID", restaurant.getId());       TODO Remove this comment when the data is ready!
+        transferData.putInt("dishRow", position);
+
+        manageRest_manageDish.putExtras(transferData);
+        startActivityForResult(manageRest_manageDish, IPC_ID);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try{
+            if (IPC_ID == requestCode) {
+
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    Gson gson = new Gson();
+                    Dish dish;
+                    int dishRowID;
+
+                    transferData = data.getExtras();
+
+                    String dishJSON =  transferData.getString("dishJSON");
+                    dishRowID = transferData.getInt("dishRow");
+                    dish = gson.fromJson(dishJSON, Dish.class);
+
+                    View dishRow =  dishListView.getChildAt(dishRowID);
+                    updateDishRowView(dishRow, dish);
+                }
+            }
+        }catch (Exception e){
+            Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        } //try
+    }// onActivityResult
+
+    private void updateDishRowView(View dishRow, Dish dish) {
+        TextView lblDishName = (TextView) dishRow.findViewById(R.id.lblDishName);
+        TextView lblDisgPrice = (TextView) dishRow.findViewById(R.id.lblDishPrice);
+        ImageView icon = (ImageView) dishRow.findViewById(R.id.dish_thumb);
+
+        lblDishName.setText(dish.getName());
+        lblDisgPrice.setText(Integer.toString(dish.getPrice()));
+        //TODO Remember uncommnet section bellow when the image file path is ready
+        //icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+    }
+
+    private void putDataToViews() {
+
+        txtPhoneNumber.setText(restaurant.getPhoneNumber());
+        txtResName.setText(restaurant.getName());
+        txtAddress.setText(restaurant.getAddress());
+        lblOpenHour.setText(restaurant.getTimeOpen().toString());
+        lblCloseHour.setText(restaurant.getTimeClose().toString());
+    }
+
+    private void takeReferenceFromResource() {
+        toolbar = (Toolbar) findViewById(R.id.edit_restaurant_toolbar);
+        dishListView = (ListView) findViewById(R.id.dish_list);
+        txtAddress = (EditText) findViewById(R.id.txtAddress);
+        txtResName = (EditText) findViewById(R.id.txtResName);
+        txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
+        lblCloseHour = (TextView) findViewById(R.id.closeHour);
+        lblOpenHour = (TextView) findViewById(R.id.openHour);
     }
 
     private void generateFakeDishList() {
+        dishes = new ArrayList<>();
         dishes.add(new Dish("Bánh tráng trộn",100000,"",null));
         dishes.add(new Dish("Bánh tráng trộn",5000,"",null));
         dishes.add(new Dish("Bánh tráng trộn",80000,"",null));
