@@ -448,7 +448,7 @@ public class GenerateRequest {
     }
 
     public static okhttp3.Request addRank(final String guestEmail, int idRest, int star){
-        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        String url = ConstantURL.BASEURL + ConstantURL.ADDRANK;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guestEmail);
         params.put("id_rest", String.valueOf(idRest));
@@ -463,7 +463,7 @@ public class GenerateRequest {
     }
 
     public static okhttp3.Request deleteRestaurant(int idRest, final String token){
-        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        String url = ConstantURL.BASEURL + ConstantURL.DELETERESTAURANT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(idRest));
         params.put("token", token);
