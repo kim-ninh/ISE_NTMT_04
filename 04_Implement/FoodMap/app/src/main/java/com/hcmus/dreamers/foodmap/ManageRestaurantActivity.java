@@ -79,7 +79,7 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
         generateFakeDishList();   //TODO Remove this line when the data is ready!
 
-        DishInfoList adapter = new DishInfoList(
+        DishInfoListAdapter adapter = new DishInfoListAdapter(
                 this,
                 R.layout.row_dish_info,
                 dishes
