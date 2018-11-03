@@ -447,4 +447,33 @@ public class GenerateRequest {
         return data.toString();
     }
 
+    public static okhttp3.Request addRank(final String guestEmail, int idRest, int star){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guestEmail);
+        params.put("id_rest", String.valueOf(idRest));
+        params.put("star", String.valueOf(star));
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request deleteRestaurant(int idRest, final String token){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(idRest));
+        params.put("token", token);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
 }
