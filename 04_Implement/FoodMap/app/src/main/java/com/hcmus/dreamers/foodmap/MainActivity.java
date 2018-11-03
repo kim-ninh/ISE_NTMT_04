@@ -56,6 +56,7 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.common.SendRequest;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
@@ -113,7 +114,12 @@ public class MainActivity extends AppCompatActivity {
 //        task.setOnCompleteCallBack(new TaskCompleteCallBack() {
 //            @Override
 //            public void OnTaskComplete(Object response) {
-//                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG);
+//                try {
+//                    LocationDirection locationDirection = ParseJSON.parseLocationDirection(response.toString());
+//                    Toast.makeText(MainActivity.this, "" + locationDirection.getListLocation().size(), Toast.LENGTH_LONG);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 //            }
 //        });
 //
@@ -173,17 +179,9 @@ public class MainActivity extends AppCompatActivity {
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                    //Bundle bundle = intent.getExtras();
-                    //bundle.putInt("RestID", 123);
-                    intent.putExtra("RestID",123);
+                Intent intent = new Intent(MainActivity.this, FavoriteRestaurantsActivity.class);
 
-                    startActivity(intent);
-                }catch (Exception e)
-                {
-                    Toast.makeText(getApplicationContext(),"error: Cannot open this restaurant",Toast.LENGTH_LONG).show();
-                }
+                startActivity(intent);
             }
         });*/
 
