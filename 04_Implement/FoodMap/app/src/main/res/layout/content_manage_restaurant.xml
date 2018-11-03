@@ -145,15 +145,12 @@
             android:textSize="18sp"
             android:padding="10dp"/>
 
-        <ScrollView
+        <ListView
+            android:id="@+id/dish_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ListView
-                android:id="@android:id/list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_border">
-            </ListView>
-        </ScrollView>
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_border">
+        </ListView>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

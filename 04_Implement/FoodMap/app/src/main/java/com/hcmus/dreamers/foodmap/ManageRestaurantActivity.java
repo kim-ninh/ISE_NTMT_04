@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
@@ -23,20 +24,28 @@ import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.osmdroid.util.GeoPoint;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ManageRestaurantActivity extends AppCompatActivity {
 
+    List<Dish> dishes = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //region DEFAULT INIT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_restaurant);
         Toolbar toolbar = (Toolbar) findViewById(R.id.edit_restaurant_toolbar);
-        setSupportActionBar(toolbar);
+        ListView dishListView = (ListView) findViewById(R.id.dish_list);
+        //endregion
 
         //Enable the Up button
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Add_Floating_Button_Click event here
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddDish);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +54,33 @@ public class ManageRestaurantActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        //region dish info -> dist_list_view
+        //TODO Remove the comment below when the Owner has only ONE RESTAURANT!
+//        dishes = Owner.getInstance()
+//                .getRestaurant()
+//                .getDishes();
+
+        generateFakeDishList();   //TODO Remove this line when the data is ready!
+
+        DishInfoList adapter = new DishInfoList(
+                this,
+                R.layout.row_dish_info,
+                dishes
+        );
+        dishListView.setAdapter(adapter);
+        //endregion
+    }
+
+    private void generateFakeDishList() {
+        dishes.add(new Dish("Bánh tráng trộn",100000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",5000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",80000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",90000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",0,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",70000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",10000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",20000,"",null));
     }
 
     @Override

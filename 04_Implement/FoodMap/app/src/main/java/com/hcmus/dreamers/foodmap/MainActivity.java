@@ -29,6 +29,7 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -406,6 +407,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void Goto_NinhShortcut() {
+        Restaurant rest = new Restaurant();
+        Gson gson = new Gson();
+        Intent main_manageDish = new Intent(MainActivity.this,ManageDishActivity.class);
+        main_manageDish.putExtra("restJSON",gson.toJson(rest));
+        startActivity(main_manageDish);
+    }
+
     void initMenuLoginOwner(){
 // change header
         navigationMenu = (NavigationView)findViewById(R.id.nav_view);
@@ -441,7 +450,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (id){
                     case R.id.btnManager:
                         Log.d(TAG, "onClick: btnManager");
-                        Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
+                        Intent main_manageRest = new Intent(MainActivity.this,
+                                ManageRestaurantActivity.class);
+                        startActivity(main_manageRest);
                         break;
                     case  R.id.btnFeedBack:
                         Log.d(TAG, "onClick: btnFeedBack");

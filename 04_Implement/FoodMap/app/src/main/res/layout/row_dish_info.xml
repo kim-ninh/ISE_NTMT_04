@@ -7,7 +7,7 @@
     android:background="@drawable/custom_border">
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/dish_thumb"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginRight="10dp"
