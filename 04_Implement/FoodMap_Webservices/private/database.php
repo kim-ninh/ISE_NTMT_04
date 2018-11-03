@@ -133,6 +133,12 @@ class database
 	}
 
 
+	public function AddRank($id_rest, $email, $star)
+	{
+		$strQuery = 'CALL SP_ADDRANK('.$id_rest.', "'.$email.'", '.$star.')';
+		return $this->query($strQuery);
+	}
+
 	public function AddGuest($email, $name)
 	{
 		$strQuery = 'INSERT INTO GUEST (EMAIL, NAME) VALUES ("'.$email.'", "'.$name.'")';
@@ -147,7 +153,13 @@ class database
 
 	public function DeleteOwner($username)
 	{
-		$strQuery = 'CALL SP_DELETE_ACCOUNT('.$username.')';
+		$strQuery = 'CALL SP_DELETE_OWNER("'.$username.'")';
+		return $this->query($strQuery);
+	}
+
+	public function DeleteRestaurant($id_rest)
+	{
+		$strQuery = 'CALL SP_DELETE_REST('.$id_rest.')';
 		return $this->query($strQuery);
 	}
 

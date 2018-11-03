@@ -3,9 +3,9 @@ include "../private/checkToken.php";
 
 $response = array();
 
-if (isset($_POST["username"]) && isset($_POST["token"]))
+if (isset($_POST["id_rest"]) && isset($_POST["token"]))
 {
-	$username = $_POST["username"];
+	$id_rest = $_POST["id_rest"];
 	$token = $_POST["token"];
 	
 	$check = checkToken($token);
@@ -15,7 +15,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 		$conn = new database();
 		$conn->connect();
 
-		if ($conn->DeleteOwner($username) != -1)
+		if ($conn->DeleteRestaurant($id_rest) != -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";
