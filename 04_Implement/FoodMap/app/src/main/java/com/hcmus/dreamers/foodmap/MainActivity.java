@@ -319,8 +319,6 @@ public class MainActivity extends AppCompatActivity {
 
         Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
 
-        //DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
-        //taskDownload.execute(user.getPhotoUrl().getPath());
         DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
         taskDownload.loadImageFromUrl(user.getPhotoUrl().getPath());
 
@@ -430,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
 
         Menu menu = navigationMenu.getMenu();
         menu.clear();
-        getMenuInflater().inflate(R.menu.drawer_menu_guest, menu);
+        getMenuInflater().inflate(R.menu.drawer_menu_owner, menu);
 
         View head = navigationMenu.getHeaderView(0);
         TextView txtName = (TextView)head.findViewById(R.id.txtName);
@@ -444,8 +442,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (owner.getRestaurant(0) != null && owner.getRestaurant(0).getUrlImage() != null)
         {
-            //DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar);
-            //taskDownload.execute(owner.getRestaurant(0).getUrlImage());
             DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
             taskDownload.loadImageFromUrl(owner.getRestaurant(0).getUrlImage());
         }
@@ -473,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.btnLogout:
                         Log.d(TAG, "onClick: btnLogout");
-                        LoginManager.getInstance().logOut();
+                        Owner.setInstance(null);
                         initMenuNotLogin();
                         break;
                     case R.id.btnAbout:

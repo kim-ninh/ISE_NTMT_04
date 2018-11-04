@@ -42,14 +42,12 @@ public class FoodMapApiManager {
                             taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
                         }
                     }
-                    else
-                    {
+                    else if (parseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
-                }
-                else
-                {
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    else if (parseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
             }
         });
@@ -70,12 +68,12 @@ public class FoodMapApiManager {
                     {
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else{
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
-                }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
             }
         });
@@ -103,14 +101,13 @@ public class FoodMapApiManager {
                         Owner.getInstance().getListRestaurant().remove(restaurant);
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else{
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
-                }
-
             }
         });
 
@@ -132,14 +129,13 @@ public class FoodMapApiManager {
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else {
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
-                }
-
             }
         });
         taskRequest.execute(new DoingTask(GenerateRequest.resetPassword(email)));
@@ -164,14 +160,13 @@ public class FoodMapApiManager {
                             taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
                         }
                     }
-                    else {
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
-                }
-
             }
         });
         taskRequest.execute(new DoingTask(GenerateRequest.checkCode(email, code)));
@@ -188,12 +183,12 @@ public class FoodMapApiManager {
                     if (responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND){
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
-                }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
             }
         });
@@ -214,14 +209,13 @@ public class FoodMapApiManager {
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else {
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
                 }
-                else{
-                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
-                }
-
             }
         });
         taskRequest.execute(new DoingTask(GenerateRequest.createAccount(username,password,name, phoneNumber, email)));
@@ -241,8 +235,11 @@ public class FoodMapApiManager {
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
-                    else { // trường hợp guest đã tồn tại
-                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                     }
                 }
                 else{
