@@ -43,6 +43,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
     Bundle transferData = new Bundle();
     List<Dish> dishes = new ArrayList<>();
     Restaurant restaurant;
+    DishInfoListAdapter adapter;
 
     EditText txtResName;
     EditText txtAddress;
@@ -70,7 +71,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         generateFakeDishList();                             //TODO Remove this line when the data is ready!
         //putDataToViews();                                 //TODO Remove this comment when the data is ready!
-        DishInfoListAdapter adapter = new DishInfoListAdapter(
+        adapter = new DishInfoListAdapter(
                 this,
                 R.layout.row_dish_info,
                 dishes
@@ -131,14 +132,19 @@ public class EditRestaurantActivity extends AppCompatActivity {
                     Dish dish;
                     int dishRowID;
 
-                    transferData = data.getExtras();
-
-                    String dishJSON =  transferData.getString("dishJSON");
-                    dishRowID = transferData.getInt("dishRow");
-                    dish = gson.fromJson(dishJSON, Dish.class);
-
-                    View dishRow =  dishListView.getChildAt(dishRowID);
-                    updateDishRowView(dishRow, dish);
+                    int delete = data.getIntExtra("delete", -1);
+                    if(delete == -1){
+                        String dishJSON =  data.getStringExtra("dishJSON");
+                        dishRowID = data.getIntExtra("dishRow", -1);
+                        dish = gson.fromJson(dishJSON, Dish.class);
+                        dishes.set(dishRowID, dish);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(EditRestaurantActivity.this, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
+                    }else{
+                        dishes.remove(delete);
+                        Toast.makeText(EditRestaurantActivity.this, "Xóa thành công!", Toast.LENGTH_LONG).show();
+                    }
+                    adapter.notifyDataSetChanged();
                 }
             }
         }catch (Exception e){
@@ -147,25 +153,25 @@ public class EditRestaurantActivity extends AppCompatActivity {
         } //try
     }// onActivityResult
 
-    private void updateDishRowView(View dishRow, Dish dish) {
-        TextView lblDishName = (TextView) dishRow.findViewById(R.id.lblDishName);
-        TextView lblDisgPrice = (TextView) dishRow.findViewById(R.id.lblDishPrice);
-        ImageView icon = (ImageView) dishRow.findViewById(R.id.dish_thumb);
-
-        lblDishName.setText(dish.getName());
-        lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-        //TODO Remember uncommnet section bellow when the image file path is ready
-        //icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
-    }
-
-    private void putDataToViews() {
-
-        txtPhoneNumber.setText(restaurant.getPhoneNumber());
-        txtResName.setText(restaurant.getName());
-        txtAddress.setText(restaurant.getAddress());
-        lblOpenHour.setText(restaurant.getTimeOpen().toString());
-        lblCloseHour.setText(restaurant.getTimeClose().toString());
-    }
+//    private void updateDishRowView(View dishRow, Dish dish) {
+//        TextView lblDishName = (TextView) dishRow.findViewById(R.id.lblDishName);
+//        TextView lblDisgPrice = (TextView) dishRow.findViewById(R.id.lblDishPrice);
+//        ImageView icon = (ImageView) dishRow.findViewById(R.id.dish_thumb);
+//
+//        lblDishName.setText(dish.getName());
+//        lblDisgPrice.setText(Integer.toString(dish.getPrice()));
+//        //TODO Remember uncommnet section bellow when the image file path is ready
+//        //icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+//    }
+//
+//    private void putDataToViews() {
+//
+//        txtPhoneNumber.setText(restaurant.getPhoneNumber());
+//        txtResName.setText(restaurant.getName());
+//        txtAddress.setText(restaurant.getAddress());
+//        lblOpenHour.setText(restaurant.getTimeOpen().toString());
+//        lblCloseHour.setText(restaurant.getTimeClose().toString());
+//    }
 
     private void takeReferenceFromResource() {
         toolbar = (Toolbar) findViewById(R.id.edit_restaurant_toolbar);
@@ -297,42 +303,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
         // Invoke task
         addDishTask.execute(new DoingTask(GenerateRequest
                 .createDish(id_rest, dish, Owner.getInstance().getToken())));
-    }
-
-    public void DeleteDish(int id_rest, String dishName) {
-        TaskRequest deleteDish = new TaskRequest();
-
-        // Implement call back
-        deleteDish.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                try
-                {
-                    ResponseJSON responseJSON =  ParseJSON.parseFromAllResponse(response.toString());
-
-                    // Pop-up the result message through Toast
-                    if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(EditRestaurantActivity.this,
-                                "Update successful!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(EditRestaurantActivity.this,
-                                responseJSON.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                }catch (Exception e){
-                    Toast.makeText(EditRestaurantActivity.this,
-                            e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        // Invoke task
-        deleteDish.execute(new DoingTask(GenerateRequest
-                .deleteDish(id_rest, dishName, Owner.getInstance().getToken())));
     }
 
     public void AddComment(int id_rest, Comment comment) {

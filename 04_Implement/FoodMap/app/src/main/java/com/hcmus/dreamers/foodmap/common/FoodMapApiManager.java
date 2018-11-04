@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap.common;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
@@ -250,6 +251,71 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.addGuest(guest)));
     }
+
+
+
+    public static void deleteDish(int id_rest, final String dishName, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteDish(id_rest, dishName, Owner.getInstance().getToken())));
+    }
+
+
+    public static void updateDish(int id_rest, final Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateDish(id_rest, dish, Owner.getInstance().getToken())));
+    }
+
+
 
     // lấy dữ liệu từ api và lưu xuống database
     public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){

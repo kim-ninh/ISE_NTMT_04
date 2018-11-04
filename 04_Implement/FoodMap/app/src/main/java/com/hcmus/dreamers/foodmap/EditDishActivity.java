@@ -25,6 +25,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -44,6 +45,7 @@ public class EditDishActivity extends AppCompatActivity {
     Bundle transferData = new Bundle();
 
     int rest_id;
+    int row;
     Dish dish;
 
 
@@ -105,6 +107,7 @@ public class EditDishActivity extends AppCompatActivity {
         //rest_id = transferData.getInt("restID");                TODO Remove this comment when the data is ready!
         String dishJSON = transferData.getString("dishJSON");
         dish = gson.fromJson(dishJSON, Dish.class);
+        row = transferData.getInt("dishRow");
     }
 
     private void takeReferenceFromResource() {
@@ -121,25 +124,46 @@ public class EditDishActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.action_delete:
-                Toast.makeText(EditDishActivity.this, "action delete selected",
-                        Toast.LENGTH_LONG).show();
+                FoodMapApiManager.deleteDish(rest_id, dish.getName(), new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        if((int)response == FoodMapApiManager.SUCCESS){
+                            Intent intent = new Intent();
+                            intent.putExtra("delete", row);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }else if((int)response == ConstantCODE.NOTINTERNET){
+                            Toast.makeText(EditDishActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(EditDishActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 return true;
 
             case R.id.action_done:
-                Toast.makeText(EditDishActivity.this, "action done selected",
-                        Toast.LENGTH_LONG).show();
-
-                if (checkInputValid() == false)
-                {
-                    Toast.makeText(EditDishActivity.this, "There's something wrong",
-                            Toast.LENGTH_LONG).show();
-                    return true;
+                if(checkInputValid()){
+                    FoodMapApiManager.updateDish(rest_id, dish, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            if((int)response == FoodMapApiManager.SUCCESS) {
+                                Gson gson = new Gson();
+                                Intent intent = new Intent();
+                                intent.putExtra("dishJSON", gson.toJson(dish));
+                                intent.putExtra("dishRow", row);
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }else if((int)response == ConstantCODE.NOTINTERNET){
+                                Toast.makeText(EditDishActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(EditDishActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(EditDishActivity.this, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
                 }
-/*                updateInfomation(txtDishName.getText().toString(),
-                        Integer.parseInt(txtDishCost.getText().toString()),
-                        );*/
 
-                //setResult(Activity.RESULT_OK, manageRest_manageDish);
 
                 return true;
 
@@ -149,68 +173,17 @@ public class EditDishActivity extends AppCompatActivity {
     }
 
     private boolean checkInputValid() {
-        return true;
+        if(txtDishName.length() > 0 && txtDishCost.length() > 0){
+            dish.setName(txtDishName.getText().toString());
+            dish.setPrice(Integer.parseInt(txtDishCost.getText().toString()));
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_item_menu,menu);
         return true;
-    }
-
-    public void updateInfomation(String name,
-                                 int price,
-                                 String urlImage,
-                                 Catalog catalog,
-                                 int rest_id){
-
-        // Set the new Dish info
-        final Dish newDish = new Dish(name,price,urlImage,catalog);
-
-        TaskRequest updateDishInfoTask = new TaskRequest();
-
-        // Implement call back
-        updateDishInfoTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                try
-                {
-                    ResponseJSON responseJSON =  ParseJSON
-                            .parseFromAllResponse(response.toString());
-
-                    // Pop-up the result message through Toast
-                    if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(EditDishActivity.this,
-                                "Update successful!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(EditDishActivity.this,
-                                responseJSON.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                }catch (Exception e){
-                    Toast.makeText(EditDishActivity.this,
-                            e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        // Invoke task
-        updateDishInfoTask.execute(new DoingTask(
-                GenerateRequest
-                        .updateDish(
-                                rest_id,
-                                newDish,
-                                Owner.getInstance().getToken())));
-
-        // Send the new Dish back to previous activity
-        // ...
-        Gson gson = new Gson();
-        gson.toJson(newDish);
-        transferData.putString("dishJSON",gson.toString());
-
     }
 }
