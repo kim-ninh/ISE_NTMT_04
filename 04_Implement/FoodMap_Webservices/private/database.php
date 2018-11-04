@@ -132,16 +132,51 @@ class database
 		}
 	}
 
-
-	public function DeleteDish($id_rest, $name)
+	public function AddRank($id_rest, $email, $star)
 	{
-		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = '.$name;
+		$strQuery = 'CALL SP_ADDRANK('.$id_rest.', "'.$email.'", '.$star.')';
 		return $this->query($strQuery);
 	}
 
-	public function DeleteAccount($username)
+	public function AddFavorite($id_rest, $guest_email)
 	{
-		$strQuery = 'CALL SP_DELETE_ACCOUNT('.$username.')';
+		$strQuery = 'INSERT INTO FAVORITE (ID_REST, GUEST_EMAIL) VALUES ('.$id_rest.', "'.$guest_email.'")';
+		return $this->query($strQuery);
+	}
+
+	public function GetFavorite($guest_email)
+	{
+		$strQuery = 'SELECT * FROM FAVORITE WHERE GUEST_EMAIL="'.$guest_email.'"';
+		return $this->query($strQuery); 
+	}
+
+	public function DeleteFavorite($id_rest, $guest_email)
+	{
+		$strQuery = 'DELETE FROM FAVORITE WHERE ID_REST = '.$id_rest.' AND GUEST_EMAIL = "'.$guest_email.'"';
+		return $this->query($strQuery);
+	}
+
+	public function AddGuest($email, $name)
+	{
+		$strQuery = 'INSERT INTO GUEST (EMAIL, NAME) VALUES ("'.$email.'", "'.$name.'")';
+		return $this->query($strQuery);
+	}
+
+	public function DeleteDish($id_rest, $name)
+	{
+		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = "'.$name.'"';
+		return $this->query($strQuery);
+	}
+
+	public function DeleteOwner($username)
+	{
+		$strQuery = 'CALL SP_DELETE_OWNER("'.$username.'")';
+		return $this->query($strQuery);
+	}
+
+	public function DeleteRestaurant($id_rest)
+	{
+		$strQuery = 'CALL SP_DELETE_REST('.$id_rest.')';
 		return $this->query($strQuery);
 	}
 
@@ -213,13 +248,13 @@ class database
 
 	public function UpdateAccount($username, $value)
 	{
-		$strQuery = "UPDATE ACCOUNT SET ".$value." WHERE ID = ".$username;
+		$strQuery = 'UPDATE OWNER SET '.$value.' WHERE USERNAME = "'.$username.'"';
 		return $this->query($strQuery);
 	}
 
 	public function UpdateDish($id_rest, $name, $value)
 	{
-		$strQuery = "UPDATE DISH SET ".$value." WHERE ID = ".$id_rest ." AND NAME = ". $name;
+		$strQuery = "UPDATE DISH SET ".$value." WHERE ID_REST = ".$id_rest .' AND NAME = "'. $name.'"';
 		return $this->query($strQuery);
 	}
 
@@ -239,10 +274,11 @@ class database
 	public function GetCode($email)
 	{
 		$strQuery = 'SELECT FC_GETCODE("'.$email.'") AS CODE';
-		foreach($token as $row)
+		$result = $this->query($strQuery);
+
+		foreach($result as $row)
 		{
 			return $row["CODE"];
-			break;
 		}
 		return -1;
 	}
@@ -250,21 +286,52 @@ class database
 	// kiểm tra xem mã code đã đúng chưa
 	public function CheckCode($email, $code)
 	{
-		$strQuery = 'SELECT FC_CHECKCODE("'.$email.'","'.$code.'") AS RESULT';
-		$check = false;
-		foreach($token as $row)
+		$strQuery = 'SELECT FC_CHECKCODE("'.$email.'",'.$code.') AS RESULT';
+		$result = $this->query($strQuery);
+
+		foreach($result as $row)
 		{
-			if ($row["RESULT"] == 1)
-				$check = true;
-			break;
+			if ($row["RESULT"] === "1")
+			{
+				$strQuery = 'SELECT * FROM OWNER OW WHERE OW.EMAIL = "'.$email.'"';
+				return $this->query($strQuery);
+			}
 		}
-		return $check;
+		return -1;
 	}
 
 	// get catalog
 	public function GetCatalog()
 	{
 		$strQuery = "SELECT * FROM CATALOGS";
+		return $this->query($strQuery);
+	}
+
+	// thêm offer
+	public function AddOffer($guest_email, $total, $id_discount)
+	{
+		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.')';
+		return $this->query($strQuery);
+	}
+
+	// tạo discount
+	public function CreateDiscount($id_rest, $namedish, $discount_percent, $timestart, $timeend)
+	{
+		$strQuery = 'INSERT INTO DISCOUNT (ID_REST, NAMEDISH, DISCOUNT_PERCENT, TIMESTART, TIMEEND) VALUES ('.$id_rest.', "'.$namedish.'", '.$discount_percent.', "'.$timestart.'", "'.$timeend.'")';
+		return $this->query($strQuery);
+	}
+
+	// lấy discount của một nhà hàng
+	public function GetDiscount($id_rest)
+	{
+		$strQuery = 'SELECT * FROM DISCOUNT DC WHERE DC.ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	// lấy ofer của nhà hàng
+	public function GetOffer($id_rest)
+	{
+		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
 		return $this->query($strQuery);
 	}
 

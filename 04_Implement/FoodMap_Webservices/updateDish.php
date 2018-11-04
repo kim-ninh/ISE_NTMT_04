@@ -15,7 +15,14 @@ if (isset($_POST["id_rest"]) && isset($_POST["name"]) && isset($_POST["token"]))
 	{
 		if ($key != "id_rest" && $key != "name" && $key != "token")
 		{
-			$valueCol .= $key . "=" . $value .",";
+			if ($key != "url_image")
+			{
+				$valueCol .= strtoupper($key) . "=" . $value .",";
+			}
+			else 
+			{
+				$valueCol .= strtoupper($key) . '="' . $value .'",';
+			}
 		}
 	}
 	//check token
@@ -24,7 +31,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["name"]) && isset($_POST["token"]))
 	if ($check == true)
 	{
 		$valueCol[strlen($valueCol) - 1] = ' ';
-		if ($id != '' && $name != '')
+		if ($id_rest != '' && $name != '')
 		{
 			$conn = new database();
 			$conn->connect();

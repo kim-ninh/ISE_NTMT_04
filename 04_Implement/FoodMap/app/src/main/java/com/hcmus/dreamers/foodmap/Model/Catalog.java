@@ -9,6 +9,13 @@ public class Catalog {
     @SerializedName("name")
     private String name;
 
+    private static String[] dishTypes = {"Vỉa hè",
+            "Thức ăn nhanh",
+            "Giải khát",
+            "Đồ nướng",
+            "Ẩm thực đường phố",
+            "Bình dân"};
+
     public Catalog() {
     }
 
@@ -32,5 +39,9 @@ public class Catalog {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static String[] getDishTypes(){
+        return dishTypes;
     }
 }

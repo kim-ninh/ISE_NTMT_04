@@ -9,9 +9,14 @@ public class Dish {
 
     //
     public Dish() {
-
     }
 
+    public Dish(String name, int price, String urlImage, Catalog catalog) {
+        this.name = name;
+        this.price = price;
+        this.urlImage = urlImage;
+        this.catalog = catalog;
+    }
 
     public Catalog getCatalog() {
         return catalog;
@@ -44,4 +49,7 @@ public class Dish {
     public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
     }
+
+
+
 }

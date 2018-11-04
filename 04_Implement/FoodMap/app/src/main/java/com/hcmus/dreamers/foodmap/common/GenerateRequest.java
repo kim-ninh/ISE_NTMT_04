@@ -16,12 +16,15 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
+import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,12 +49,12 @@ import okhttp3.RequestBody;
 
 public class GenerateRequest {
 
-    public static okhttp3.Request checkLogin(final Owner owner){ //if login is successful then result is not equals null
+    public static okhttp3.Request checkLogin(String username, String password){ //if login is successful then result is not equals null
 
         String url = ConstantURL.BASEURL + ConstantURL.LOGIN;
         Map<String, String> params = new HashMap<>();
-        params.put("username", owner.getUsername());
-        params.put("password", owner.getPassword());
+        params.put("username", username);
+        params.put("password", password);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -60,13 +64,28 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createAccount(final Owner owner) throws IOException {
+    public static okhttp3.Request createAccount(String username, String password, String name, String phoneNumber, String email){
         String url = ConstantURL.BASEURL + ConstantURL.CREATEACCOUNT;
         Map<String, String> params = new HashMap<>();
-        params.put("username", owner.getUsername());
-        params.put("password", owner.getPassword());
+        params.put("username", username);
+        params.put("password", password);
+        params.put("name", name);
+        params.put("phone_number", phoneNumber);
+        params.put("email", email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+
+    }
+
+    public static okhttp3.Request addGuest(final Guest owner){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
         params.put("name", owner.getName());
-        params.put("phone_number", owner.getPhoneNumber());
         params.put("email", owner.getEmail());
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
@@ -75,18 +94,17 @@ public class GenerateRequest {
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
-
     }
 
-    public static okhttp3.Request comment(final String id_rest, final Comment comment, @Nullable final String guest_email, @Nullable final String owner_email, final String token){
+    public static okhttp3.Request comment(final int id_rest, final Comment comment, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.COMMENT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("comment", comment.getComment());
-        if(guest_email == null)
-            params.put("guest_email", guest_email);
+        if(!comment.getEmailGuest().equals(""))
+            params.put("guest_email", comment.getEmailGuest());
         else
-            params.put("owner_email", owner_email);
+            params.put("owner_email", comment.getEmailOwner());
         params.put("token", token);
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
@@ -115,16 +133,16 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createRestaurant(final String id_user, final Restaurant restaurant,final String token){
+    public static okhttp3.Request createRestaurant(final Restaurant restaurant,final String token){
         String url = ConstantURL.BASEURL + ConstantURL.CREATERESTAURANT;
         Map<String, String> params = new HashMap<>();
-        params.put("id_user", id_user);
+        params.put("owner_username", restaurant.getId_user());
         params.put("name", restaurant.getName());
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", restaurant.getTimeOpen().toString());
-        params.put("timeclose", restaurant.getTimeClose().toString());
+        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()));
+        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         params.put("token", token);
@@ -152,6 +170,47 @@ public class GenerateRequest {
         return request;
     }
 
+    public static okhttp3.Request addFavorite(final int id_rest, final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request deleteFavorite(final int id_rest, final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.DELETEFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getFavorite(final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.GETFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
     public static okhttp3.Request deleteAccount(final String username, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.DELETEACCOUNT;
         Map<String, String> params = new HashMap<>();
@@ -166,11 +225,11 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateAccount(final Owner owner, final String token){
+    public static okhttp3.Request updateAccount(final Owner owner){
         String url = ConstantURL.BASEURL + ConstantURL.UPDATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());
-        params.put("token", token);
+        params.put("token", owner.getToken());
         params.put("password", owner.getPassword());
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
@@ -219,6 +278,11 @@ public class GenerateRequest {
         return request;
     }
 
+    private static String transferDateToTime(Date date){
+        String result = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        return result;
+    }
+
     public static okhttp3.Request updateRestaurant(final Restaurant restaurant, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.UPDATERESTAURANT;
         Map<String, String> params = new HashMap<>();
@@ -228,8 +292,8 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", restaurant.getTimeOpen().toString());
-        params.put("timeclose", restaurant.getTimeClose().toString());
+        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()) );
+        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         RequestBody bodyRequest = Utils.buildParameter(params);
@@ -337,6 +401,118 @@ public class GenerateRequest {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCATALOG;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getOffer(int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETOFFER;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getDiscount(int id_rest){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETDISCOUNT;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request addOffer(final String guest_email, int total, int id_discount){
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.ADDOFFER;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guest_email);
+        params.put("total", String.valueOf(total));
+        params.put("id_discount", String.valueOf(id_discount));
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request addGuest(final String email, final String name){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("name", name);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request directionMap(final GeoPoint start, final GeoPoint end){
+        String baseUrl = ConstantURL.URLOSM;
+        Map<String, String> params = new HashMap<>();
+        params.put("api_key", ConstantURL.KEY);
+        params.put("coordinates", buildCoordinates(start, end));
+        params.put("profile", "driving-car");
+        params.put("geometry_format", "polyline");
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Accept", "application/json; charset=utf-8") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    private static String buildCoordinates(final GeoPoint start, final GeoPoint end){
+        StringBuffer data = new StringBuffer();
+        data.append(start.getLatitude());
+        data.append(",");
+        data.append(start.getLongitude());
+        data.append("|");
+        data.append(end.getLatitude());
+        data.append(",");
+        data.append(end.getLongitude());
+        return data.toString();
+    }
+
+    public static okhttp3.Request addRank(final String guestEmail, int idRest, int star){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDRANK;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guestEmail);
+        params.put("id_rest", String.valueOf(idRest));
+        params.put("star", String.valueOf(star));
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request deleteRestaurant(int idRest, final String token){
+        String url = ConstantURL.BASEURL + ConstantURL.DELETERESTAURANT;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(idRest));
+        params.put("token", token);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
     }

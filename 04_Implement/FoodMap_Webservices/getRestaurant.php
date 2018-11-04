@@ -4,9 +4,9 @@ include "../private/database.php";
 
 //create class Restaurant
 class Restaurant{
-	function Restaurant($id, $id_user, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs){
+	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs){
 		$this->id = $id;
-		$this->id_user = $id_user;
+		$this->owner_username= $owner_username;
 		$this->name = $name;
 		$this->address = $address;
 		$this->phone_number = $phone_number;
@@ -97,7 +97,7 @@ if ($listRestaurants != -1)
 		}
 			
 		//
-		array_push($res, new Restaurant($id_rest, $row['ID_USER'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
+		array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
 			$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
 			$row['LAT'], $row['LON'], $ranks, $comments, $dishs));
 	}

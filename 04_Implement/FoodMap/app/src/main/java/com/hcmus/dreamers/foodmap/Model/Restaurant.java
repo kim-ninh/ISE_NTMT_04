@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Restaurant {
     private int id;
-    private int id_user;
+    private String id_user;
     private String name;
     private String phoneNumber;
     private String description;
@@ -23,7 +23,6 @@ public class Restaurant {
     private List<Dish> dishes;
     private List<Comment> comments;
     private String address;
-
     // bảng lưu thông tin người đánh giá
     // keyvalue: <email, star>
     private HashMap<String, Integer> ranks;
@@ -32,6 +31,28 @@ public class Restaurant {
         dishes = new ArrayList<Dish>();
         comments = new ArrayList<Comment>();
     }
+	
+	    public Restaurant(int id_rest,
+                      String id_user,
+                      String name,
+                      String address,
+                      String phoneNumber,
+                      String description,
+                      String urlImage,
+                      Date timeOpen,
+                      Date timeClose,
+                      GeoPoint location) {
+        this.id = id_rest;
+        this.id_user = id_user;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.description = description;
+        this.urlImage = urlImage;
+        this.timeOpen = timeOpen;
+        this.timeClose = timeClose;
+        this.location = location;
+	}
 
     public List<Comment> getComments() {
         return comments;
@@ -129,7 +150,16 @@ public class Restaurant {
         this.address = address;
     }
 
-    public int getId_user() { return id_user; }
+    public String getId_user() { return id_user; }
 
-    public void setId_user(int id_user) { this.id_user = id_user; }
+    public void setId_user(String id_user) { this.id_user = id_user; }
+
+    // -1 là chưa đánh giá
+    public int findRank(String email){
+        if (ranks.containsValue(email))
+            return ranks.get(email);
+        return -1;
+    }
+
+
 }

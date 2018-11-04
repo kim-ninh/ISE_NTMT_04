@@ -1,6 +1,6 @@
 package com.hcmus.dreamers.foodmap.define;
 
-public class ConstantURL {
+public interface ConstantURL {
     public static final String BASEURL                     = "http://foodmap.tk/";
     public static final String LOGIN                       = "login.php";
     public static final String CREATEACCOUNT               = "createAccount.php";
@@ -21,4 +21,16 @@ public class ConstantURL {
     public static final String RESETPASSWORD               = "resetPassword.php";
     public static final String CHECKCODE                   = "resetPassword.php";
     public static final String GETCATALOG                  = "getCatalog.php";
+    public static final String GETOFFER                    = "getOffer.php";
+    public static final String GETDISCOUNT                 = "getDiscount.php";
+    public static final String ADDOFFER                    = "addOffer.php";
+    public static final String ADDGUEST                    = "addGuest.php";
+    public static final String LINKFORM                    = "https://docs.google.com/forms/d/e/1FAIpQLSdHaSS6SOtcgIDhGkKy_mM0mH5802wyupK9VosbU_Rt7YFuZg/viewform";
+    public static final String URLOSM                      = "https://api.openrouteservice.org/directions";
+    public static final String KEY                         = "5b3ce3597851110001cf6248624c78400169414fb3c27bead71362ff";
+    public static final String ADDRANK                     = "addRank.php";
+    public static final String DELETERESTAURANT            = "deleteRestaurant.php";
+    public static final String ADDFAVORITE                 = "addFavorite.php";
+    public static final String DELETEFAVORITE              = "deleteFavorite.php";
+    public static final String GETFAVORITE                 = "getFavorite.php";
 }

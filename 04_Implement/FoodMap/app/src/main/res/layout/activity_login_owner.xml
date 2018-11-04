@@ -5,6 +5,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/login_owner_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorAccent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Đăng nhập" />
+
+    </android.support.design.widget.AppBarLayout>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="134dp"
@@ -51,7 +66,7 @@
         android:id="@+id/btnForgotPassword"/>
 
     <Button
-        android:id="@+id/btnDangNhap"
+        android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -73,10 +88,10 @@
             android:text="Bạn chưa có tài khoản?"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnDangNhap" />
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
         <Button
-            android:id="@+id/btnDangKi"
+            android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"

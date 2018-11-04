@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 
-import com.hcmus.dreamers.foodmap.RestaurantInfo;
+import com.hcmus.dreamers.foodmap.RestaurantInfoActivity;
 
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -22,7 +22,7 @@ public class MarkerClick implements ItemizedIconOverlay.OnItemGestureListener<Ov
     @Override
     public boolean onItemSingleTapUp(int index, OverlayItem overlayItem) {
 
-        context.startActivity(new Intent(context, RestaurantInfo.class));
+        context.startActivity(new Intent(context, RestaurantInfoActivity.class));
         return true;
     }
 
