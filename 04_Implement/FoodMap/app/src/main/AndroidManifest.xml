@@ -44,7 +44,11 @@
             android:label="@string/title_activity_manage_restaurant"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterOwnerActivity" />
-        <activity android:name=".FavoriteRestaurantsActivity"></activity>
+        <activity android:name=".FavoriteRestaurantsActivity" />
+        <activity
+            android:name=".ManageAccountActivity"
+            android:label="@string/title_activity_manage_account"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
