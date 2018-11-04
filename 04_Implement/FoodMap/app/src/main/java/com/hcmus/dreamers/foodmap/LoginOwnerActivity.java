@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,12 +32,20 @@ public class LoginOwnerActivity extends AppCompatActivity {
     Button btnForgotPass;
     Button btnLogin;
     Button btnRegister;
+    Toolbar toolbar;
+
     ProgressDialog progressDialog;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_owner);
+
+        // setup toolbar
+        toolbar = (Toolbar)findViewById(R.id.login_owner_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressDialog = new ProgressDialog(LoginOwnerActivity.this);
         progressDialog.setCanceledOnTouchOutside(false);
@@ -250,4 +260,14 @@ public class LoginOwnerActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                LoginOwnerActivity.this.finish();
+                break;
+        }
+        return true;
+    }
 }

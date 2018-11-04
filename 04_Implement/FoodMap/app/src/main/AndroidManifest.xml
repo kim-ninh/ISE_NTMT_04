@@ -35,6 +35,7 @@
         <activity android:name=".RestaurantInfoActivity" />
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
+
         <activity
             android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"

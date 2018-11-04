@@ -11,6 +11,7 @@ import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.Model.User;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
@@ -67,6 +68,18 @@ public class ParseJSON {
         return listComments;
     }
 
+    public static List<Restaurant> parseFavorite(String response) throws JSONException, ParseException {
+        List<Restaurant> listRestaurants = new ArrayList<>();
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("data");
+        int length = array.length();
+        for(int i = 0; i < length; i++){
+            JSONObject o = array.getJSONObject(i);
+            Restaurant restaurant = FoodMapManager.findRestaurant(o.getInt("id_rest"));
+            listRestaurants.add(restaurant);
+        }
+        return listRestaurants;
+    }
 
     public static List<Restaurant> parseLocation(String response) throws JSONException {
         List<Restaurant> listRestaurants = new ArrayList<>();
