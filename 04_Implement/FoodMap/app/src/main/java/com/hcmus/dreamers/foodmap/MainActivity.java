@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -29,15 +28,8 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
-import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
-import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
-import com.hcmus.dreamers.foodmap.Model.Catalog;
-import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Guest;
-import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
@@ -51,14 +43,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmus.dreamers.foodmap.common.GenerateRequest;
-import com.hcmus.dreamers.foodmap.common.ResponseJSON;
-import com.hcmus.dreamers.foodmap.common.SendRequest;
-import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.Model.Owner;
-import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
-import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -69,13 +55,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.Request;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -384,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(main_manageDish);
 
         Intent main_manageRest = new Intent(MainActivity.this,
-                ManageRestaurantActivity.class);
+                EditRestaurantActivity.class);
         startActivity(main_manageRest);
 
 //        Intent main_manageAccount = new Intent(MainActivity.this,
@@ -435,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onClick: btnManager");
                         //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
                         Intent main_manageRest = new Intent(MainActivity.this,
-                                ManageRestaurantActivity.class);
+                                EditRestaurantActivity.class);
                         startActivity(main_manageRest);
                         break;
                     case  R.id.btnFeedBack:

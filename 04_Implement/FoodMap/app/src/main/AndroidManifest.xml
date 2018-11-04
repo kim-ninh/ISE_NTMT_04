@@ -38,9 +38,9 @@
         <activity
             android:name=".ManageDishActivity"
             android:label="@string/title_activity_manage_dish"
-            android:parentActivityName=".ManageRestaurantActivity" />
+            android:parentActivityName=".EditRestaurantActivity" />
         <activity
-            android:name=".ManageRestaurantActivity"
+            android:name=".EditRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterOwnerActivity" />

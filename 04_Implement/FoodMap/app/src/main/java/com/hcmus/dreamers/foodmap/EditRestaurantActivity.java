@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.zxing.client.result.EmailDoCoMoResultParser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -38,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ManageRestaurantActivity extends AppCompatActivity {
+public class EditRestaurantActivity extends AppCompatActivity {
 
 
     Bundle transferData = new Bundle();
@@ -61,7 +60,7 @@ public class ManageRestaurantActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_restaurant);
+        setContentView(R.layout.activity_edit_restaurant);
 
 
         takeReferenceFromResource();
@@ -108,7 +107,7 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         Intent manageRest_manageDish = new Intent(
-                ManageRestaurantActivity.this,
+                EditRestaurantActivity.this,
                 ManageDishActivity.class);
 
         transferData.putString("dishJSON",gson.toJson(dish));
@@ -195,12 +194,12 @@ public class ManageRestaurantActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.action_delete:
-                Toast.makeText(ManageRestaurantActivity.this, "action delete selected",
+                Toast.makeText(EditRestaurantActivity.this, "action delete selected",
                         Toast.LENGTH_LONG).show();
                 return true;
 
             case R.id.action_done:
-                Toast.makeText(ManageRestaurantActivity.this, "action done selected",
+                Toast.makeText(EditRestaurantActivity.this, "action done selected",
                         Toast.LENGTH_LONG).show();
                 return true;
 
@@ -241,18 +240,18 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
                     // Pop-up the result message through Toast
                     if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 "Update successful!",
                                 Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 responseJSON.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
 
                 }catch (Exception e){
-                    Toast.makeText(ManageRestaurantActivity.this,
+                    Toast.makeText(EditRestaurantActivity.this,
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 }
@@ -277,18 +276,18 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
                     // Pop-up the result message through Toast
                     if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 "Update successful!",
                                 Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 responseJSON.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
 
                 }catch (Exception e){
-                    Toast.makeText(ManageRestaurantActivity.this,
+                    Toast.makeText(EditRestaurantActivity.this,
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 }
@@ -313,18 +312,18 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
                     // Pop-up the result message through Toast
                     if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 "Update successful!",
                                 Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 responseJSON.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
 
                 }catch (Exception e){
-                    Toast.makeText(ManageRestaurantActivity.this,
+                    Toast.makeText(EditRestaurantActivity.this,
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 }
@@ -349,18 +348,18 @@ public class ManageRestaurantActivity extends AppCompatActivity {
 
                     // Pop-up the result message through Toast
                     if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 "Update successful!",
                                 Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(ManageRestaurantActivity.this,
+                        Toast.makeText(EditRestaurantActivity.this,
                                 responseJSON.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
 
                 }catch (Exception e){
-                    Toast.makeText(ManageRestaurantActivity.this,
+                    Toast.makeText(EditRestaurantActivity.this,
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 }
