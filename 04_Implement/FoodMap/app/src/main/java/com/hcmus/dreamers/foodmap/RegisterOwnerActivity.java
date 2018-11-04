@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +24,7 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
     private EditText edtEmail;
     private EditText edtPhoneNumber;
     private Button btnRegister;
+    private Toolbar toolbar;
 
     private ProgressDialog progressDialog;
 
@@ -29,6 +32,11 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_owner);
+
+        // setup toolbar
+        toolbar = (Toolbar)findViewById(R.id.register_owner_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtName = (EditText) findViewById(R.id.edtName);
@@ -109,5 +117,16 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                RegisterOwnerActivity.this.finish();
+                break;
+        }
+        return true;
     }
 }

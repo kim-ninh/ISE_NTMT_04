@@ -8,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -46,6 +48,7 @@ public class LoginGuestActivity extends AppCompatActivity {
     Button btnLoginFb;
     Button btnLoginOwner;
     Button btnRegisterOwner;
+    Toolbar toolbar;
 
     ProgressDialog progressDialog;
 
@@ -72,6 +75,12 @@ public class LoginGuestActivity extends AppCompatActivity {
             }
         });
 
+        // setup toolbar
+        toolbar = (Toolbar)findViewById(R.id.login_guest_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //
         progressDialog = new ProgressDialog(LoginGuestActivity.this);
         progressDialog.setTitle("Check login");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -107,7 +116,6 @@ public class LoginGuestActivity extends AppCompatActivity {
         btnLoginFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
                 LoginManager.getInstance().logInWithReadPermissions(LoginGuestActivity.this, Arrays.asList("email", "public_profile"));
             }
         });
@@ -123,6 +131,7 @@ public class LoginGuestActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            progressDialog.show();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
 
@@ -131,7 +140,6 @@ public class LoginGuestActivity extends AppCompatActivity {
                             Guest.getInstance().setName(user.getDisplayName());
                             Guest.getInstance().setEmail(user.getEmail());
                             Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
-
                             FoodMapApiManager.addGuest(Guest.getInstance(), new TaskCompleteCallBack() {
                                 @Override
                                 public void OnTaskComplete(Object response) {
@@ -175,5 +183,16 @@ public class LoginGuestActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                LoginGuestActivity.this.finish();
+                break;
+        }
+        return true;
     }
 }
