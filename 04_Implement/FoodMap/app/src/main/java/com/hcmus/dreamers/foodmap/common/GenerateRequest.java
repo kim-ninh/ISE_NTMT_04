@@ -170,6 +170,47 @@ public class GenerateRequest {
         return request;
     }
 
+    public static okhttp3.Request addFavorite(final int id_rest, final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.ADDFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request deleteFavorite(final int id_rest, final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.DELETEFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getFavorite(final String guest_email){
+        String url = ConstantURL.BASEURL + ConstantURL.GETFAVORITE;
+        Map<String, String> params = new HashMap<>();
+        params.put("guest_email", guest_email);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
     public static okhttp3.Request deleteAccount(final String username, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.DELETEACCOUNT;
         Map<String, String> params = new HashMap<>();

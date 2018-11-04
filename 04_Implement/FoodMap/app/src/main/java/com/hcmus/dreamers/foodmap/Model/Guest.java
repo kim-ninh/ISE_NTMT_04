@@ -8,6 +8,15 @@ public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
     private static Guest instance;
 
     private Uri urlAvatar;
+
+    public List<Restaurant> getFavRestaurant() {
+        return favRestaurant;
+    }
+
+    public void setFavRestaurant(List<Restaurant> favRestaurant) {
+        this.favRestaurant = favRestaurant;
+    }
+
     private List<com.hcmus.dreamers.foodmap.Model.Restaurant> favRestaurant;
 
     private Guest() {

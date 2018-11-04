@@ -254,7 +254,7 @@ class database
 
 	public function UpdateDish($id_rest, $name, $value)
 	{
-		$strQuery = "UPDATE DISH SET ".$value." WHERE ID = ".$id_rest ." AND NAME = ". $name;
+		$strQuery = "UPDATE DISH SET ".$value." WHERE ID_REST = ".$id_rest .' AND NAME = "'. $name.'"';
 		return $this->query($strQuery);
 	}
 
