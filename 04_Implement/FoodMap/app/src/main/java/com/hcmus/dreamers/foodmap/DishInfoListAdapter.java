@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DishInfoListAdapter extends ArrayAdapter<Dish>
@@ -45,8 +46,11 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
         lblDishName.setText(dish.getName());
         lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-        //TODO Remember uncommnet section bellow when the image file path is ready
-        //icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+
+
+        //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
+        if (!dish.getUrlImage().isEmpty())
+            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
 
         return row;
     }

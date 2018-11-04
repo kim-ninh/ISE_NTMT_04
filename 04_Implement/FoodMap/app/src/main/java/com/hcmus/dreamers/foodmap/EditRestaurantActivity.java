@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
@@ -33,6 +35,10 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +47,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
     Bundle transferData = new Bundle();
-    List<Dish> dishes = new ArrayList<>();
+    List<Dish> dishes;
     Restaurant restaurant;
 
     EditText txtResName;
@@ -64,16 +70,54 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
         takeReferenceFromResource();
-        //restaurant = Owner.getInstance().getRestaurant(0);  TODO Remove this comment when the data is ready!
-        //dishes = restaurant.getDishes();                    TODO Remove this comment when the data is ready!
+        //restaurant = Owner.getInstance().getRestaurant(0);    //TODO Bỏ dòng comment khi đã xong phần SQLite
+        //dishes = restaurant.getDishes();                      //TODO Như trên
 
 
-        generateFakeDishList();                             //TODO Remove this line when the data is ready!
-        //putDataToViews();                                 //TODO Remove this comment when the data is ready!
+        //region test without data f*ck my life
+        try
+        {
+            restaurant = new Restaurant(4,
+                    "",
+                    "TEST",
+                    "Bình Tân, HCM",
+                    "09484783434",
+                    "sea food restaurant",
+                    "",
+                    new SimpleDateFormat("hh:mm").parse("07:00"),
+                    new SimpleDateFormat("hh:mm").parse("22:00"),
+                    new GeoPoint(0,0));
+
+            dishes = new ArrayList<>();   //Empty dish is passed
+            dishes.add(new Dish("Bánh tráng trộn",
+                    2500,
+                    "",
+                    new Catalog(1, "Ăn vặt")));
+
+        }catch (Exception e){
+            //..
+        }
+        //endregion debug
+
+
+
+        //restaurant should not be null
+        if (restaurant == null)
+        {
+            Toast.makeText(EditRestaurantActivity.this,
+                    "Restaurant is null",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+
+
+        //generateFakeDishList();
+        putDataToViews();
         DishInfoListAdapter adapter = new DishInfoListAdapter(
                 this,
                 R.layout.row_dish_info,
-                dishes
+                dishes       // <= must be not null!!!
         );
         dishListView.setAdapter(adapter);
 
@@ -111,7 +155,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
                 EditDishActivity.class);
 
         transferData.putString("dishJSON",gson.toJson(dish));
-        //transferData.putInt("restID", restaurant.getId());       TODO Remove this comment when the data is ready!
+        transferData.putInt("restID", restaurant.getId());
         transferData.putInt("dishRow", position);
 
         manageRest_manageDish.putExtras(transferData);
@@ -154,17 +198,24 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         lblDishName.setText(dish.getName());
         lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-        //TODO Remember uncommnet section bellow when the image file path is ready
-        //icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+
+
+        //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
+        if (!dish.getUrlImage().isEmpty())
+            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
     }
 
     private void putDataToViews() {
 
+        DateFormat hourFormat = new SimpleDateFormat("hh:mm");
+        String openingHour = hourFormat.format(restaurant.getTimeOpen());
+        String closingHour = hourFormat.format(restaurant.getTimeClose());
+
         txtPhoneNumber.setText(restaurant.getPhoneNumber());
         txtResName.setText(restaurant.getName());
         txtAddress.setText(restaurant.getAddress());
-        lblOpenHour.setText(restaurant.getTimeOpen().toString());
-        lblCloseHour.setText(restaurant.getTimeClose().toString());
+        lblOpenHour.setText(openingHour);
+        lblCloseHour.setText(closingHour);
     }
 
     private void takeReferenceFromResource() {
