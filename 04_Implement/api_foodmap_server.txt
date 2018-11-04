@@ -366,23 +366,34 @@
 	+response:
 		* status: 200
 		* message: Success		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
-			
+- addFavorite:
+	+ url: addFavorite.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- deleteFavortie:
+	+ url: deleteFavortie.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- getFavorite:
+	+ url: getFavorite.php
+	+ type: GET
+	+ data_post:
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+		* data:
+			[
+				id_rest,
+				guest_email
+			] // mảng
