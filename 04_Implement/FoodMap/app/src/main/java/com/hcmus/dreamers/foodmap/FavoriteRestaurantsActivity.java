@@ -82,7 +82,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             }
         });
 
-        FavorRestListAdapter adapter = new FavorRestListAdapter(this, R.layout.favor_rest_list, restaurants);
+        FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.favor_rest_list, restaurants);
         grdFavorRest.setAdapter(adapter);
 
         grdFavorRest.setOnItemClickListener(new AdapterView.OnItemClickListener() {

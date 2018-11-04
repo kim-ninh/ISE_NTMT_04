@@ -110,21 +110,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        TaskRequest task = new TaskRequest();
-//        task.setOnCompleteCallBack(new TaskCompleteCallBack() {
-//            @Override
-//            public void OnTaskComplete(Object response) {
-//                try {
-//                    LocationDirection locationDirection = ParseJSON.parseLocationDirection(response.toString());
-//                    Toast.makeText(MainActivity.this, "" + locationDirection.getListLocation().size(), Toast.LENGTH_LONG);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        task.execute(new DoingTask(GenerateRequest.directionMap(new GeoPoint(10.0900, 11.0098), new GeoPoint(10.8347, 11.8374))));
-
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
         // setup map
@@ -173,19 +158,6 @@ public class MainActivity extends AppCompatActivity {
         }
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
-
-        //debug
-       /*ImageView img = (ImageView)findViewById(R.id.imgSearch);
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FavoriteRestaurantsActivity.class);
-
-                startActivity(intent);
-            }
-        });*/
-
-       //end debug
     }
 
     // thêm một marker vào map
@@ -329,7 +301,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (id){
                     case R.id.btnFavorite:
                         Log.d(TAG, "onClick: btnFavorite");
-                        Toast.makeText(MainActivity.this, "onClick: btnFavorite", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, FavoriteRestaurantsActivity.class);
+                        startActivity(intent);
                         break;
                     case  R.id.btnFeedBack:
                         Log.d(TAG, "onClick: btnFeedBack");
@@ -395,7 +368,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
                         Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
-                        //Goto_NinhShortcut();
                         break;
                 }
                 return true;
@@ -421,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initMenuLoginOwner(){
-// change header
+        // change header
         navigationMenu = (NavigationView)findViewById(R.id.nav_view);
         navigationMenu.removeHeaderView(navigationMenu.getHeaderView(0));
         navigationMenu.inflateHeaderView(R.layout.nav_header);
@@ -431,6 +403,14 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.drawer_menu_owner, menu);
 
         View head = navigationMenu.getHeaderView(0);
+        head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ManageAccountActivity.class);
+                startActivity(intent);
+            }
+        });
+
         TextView txtName = (TextView)head.findViewById(R.id.txtName);
         TextView txtEmail = (TextView)head.findViewById(R.id.txtEmail);
         ImageView imgAvatar = (ImageView)head.findViewById(R.id.igvAvatar);
