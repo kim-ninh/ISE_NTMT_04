@@ -36,7 +36,7 @@
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
         <activity
-            android:name=".ManageDishActivity"
+            android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"
             android:parentActivityName=".EditRestaurantActivity" />
         <activity

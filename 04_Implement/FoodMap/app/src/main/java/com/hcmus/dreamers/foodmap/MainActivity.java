@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
     private void Goto_NinhShortcut() {
 //        Restaurant rest = new Restaurant();
 //        Gson gson = new Gson();
-//        Intent main_manageDish = new Intent(MainActivity.this,ManageDishActivity.class);
+//        Intent main_manageDish = new Intent(MainActivity.this,EditDishActivity.class);
 //        main_manageDish.putExtra("restJSON",gson.toJson(rest));
 //        startActivity(main_manageDish);
 

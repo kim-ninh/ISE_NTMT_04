@@ -30,7 +30,7 @@ import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
-public class ManageDishActivity extends AppCompatActivity {
+public class EditDishActivity extends AppCompatActivity {
 
 
     EditText txtDishName;
@@ -51,7 +51,7 @@ public class ManageDishActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_dish);
+        setContentView(R.layout.activity_edit_dish);
 
         takeReferenceFromResource();
         getTransferDataFromActivity();
@@ -121,17 +121,17 @@ public class ManageDishActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.action_delete:
-                Toast.makeText(ManageDishActivity.this, "action delete selected",
+                Toast.makeText(EditDishActivity.this, "action delete selected",
                         Toast.LENGTH_LONG).show();
                 return true;
 
             case R.id.action_done:
-                Toast.makeText(ManageDishActivity.this, "action done selected",
+                Toast.makeText(EditDishActivity.this, "action done selected",
                         Toast.LENGTH_LONG).show();
 
                 if (checkInputValid() == false)
                 {
-                    Toast.makeText(ManageDishActivity.this, "There's something wrong",
+                    Toast.makeText(EditDishActivity.this, "There's something wrong",
                             Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -180,18 +180,18 @@ public class ManageDishActivity extends AppCompatActivity {
 
                     // Pop-up the result message through Toast
                     if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(ManageDishActivity.this,
+                        Toast.makeText(EditDishActivity.this,
                                 "Update successful!",
                                 Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(ManageDishActivity.this,
+                        Toast.makeText(EditDishActivity.this,
                                 responseJSON.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
 
                 }catch (Exception e){
-                    Toast.makeText(ManageDishActivity.this,
+                    Toast.makeText(EditDishActivity.this,
                             e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 }

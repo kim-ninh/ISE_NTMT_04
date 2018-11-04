@@ -108,7 +108,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
         Gson gson = new Gson();
         Intent manageRest_manageDish = new Intent(
                 EditRestaurantActivity.this,
-                ManageDishActivity.class);
+                EditDishActivity.class);
 
         transferData.putString("dishJSON",gson.toJson(dish));
         //transferData.putInt("restID", restaurant.getId());       TODO Remove this comment when the data is ready!
