@@ -132,10 +132,27 @@ class database
 		}
 	}
 
-
 	public function AddRank($id_rest, $email, $star)
 	{
 		$strQuery = 'CALL SP_ADDRANK('.$id_rest.', "'.$email.'", '.$star.')';
+		return $this->query($strQuery);
+	}
+
+	public function AddFavorite($id_rest, $guest_email)
+	{
+		$strQuery = 'INSERT INTO FAVORITE (ID_REST, GUEST_EMAIL) VALUES ('.$id_rest.', "'.$guest_email.'")';
+		return $this->query($strQuery);
+	}
+
+	public function GetFavorite($guest_email)
+	{
+		$strQuery = 'SELECT * FROM FAVORITE WHERE GUEST_EMAIL="'.$guest_email.'"';
+		return $this->query($strQuery); 
+	}
+
+	public function DeleteFavorite($id_rest, $guest_email)
+	{
+		$strQuery = 'DELETE FROM FAVORITE WHERE ID_REST = '.$id_rest.' AND GUEST_EMAIL = "'.$guest_email.'"';
 		return $this->query($strQuery);
 	}
 
@@ -147,7 +164,7 @@ class database
 
 	public function DeleteDish($id_rest, $name)
 	{
-		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = '.$name;
+		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = "'.$name.'"';
 		return $this->query($strQuery);
 	}
 
@@ -237,7 +254,7 @@ class database
 
 	public function UpdateDish($id_rest, $name, $value)
 	{
-		$strQuery = "UPDATE DISH SET ".$value." WHERE ID = ".$id_rest ." AND NAME = ". $name;
+		$strQuery = "UPDATE DISH SET ".$value." WHERE ID_REST = ".$id_rest .' AND NAME = "'. $name.'"';
 		return $this->query($strQuery);
 	}
 

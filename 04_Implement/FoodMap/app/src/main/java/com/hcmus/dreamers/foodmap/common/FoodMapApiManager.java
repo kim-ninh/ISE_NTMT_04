@@ -12,6 +12,8 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.text.ParseException;
+
 public class FoodMapApiManager {
 
     public static final int SUCCESS = 0;
@@ -264,12 +266,12 @@ public class FoodMapApiManager {
 
                 if (resp != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
-
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
@@ -283,6 +285,35 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.deleteDish(id_rest, dishName, Owner.getInstance().getToken())));
     }
+    public static void addFavorite(String guest_email, int id_rest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.addFavorite(id_rest, guest_email)));
+    }
 
 
     public static void updateDish(int id_rest, final Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
@@ -295,12 +326,12 @@ public class FoodMapApiManager {
 
                 if (resp != null) {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
-
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
@@ -314,8 +345,73 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.updateDish(id_rest, dish, Owner.getInstance().getToken())));
     }
+    public static void deleteFavorite(String guest_email, int id_rest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
 
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteFavorite(id_rest, guest_email)));
+    }
+
+    public static void getFavorite(String guest_email, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            Guest.getInstance().setFavRestaurant(ParseJSON.parseFavorite(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.getFavorite(guest_email)));
+    }
 
     // lấy dữ liệu từ api và lưu xuống database
     public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){

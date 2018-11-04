@@ -30,4 +30,7 @@ public interface ConstantURL {
     public static final String KEY                         = "5b3ce3597851110001cf6248624c78400169414fb3c27bead71362ff";
     public static final String ADDRANK                     = "addRank.php";
     public static final String DELETERESTAURANT            = "deleteRestaurant.php";
+    public static final String ADDFAVORITE                 = "addFavorite.php";
+    public static final String DELETEFAVORITE              = "deleteFavorite.php";
+    public static final String GETFAVORITE                 = "getFavorite.php";
 }

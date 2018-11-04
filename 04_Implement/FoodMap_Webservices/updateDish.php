@@ -31,7 +31,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["name"]) && isset($_POST["token"]))
 	if ($check == true)
 	{
 		$valueCol[strlen($valueCol) - 1] = ' ';
-		if ($id != '' && $name != '')
+		if ($id_rest != '' && $name != '')
 		{
 			$conn = new database();
 			$conn->connect();
