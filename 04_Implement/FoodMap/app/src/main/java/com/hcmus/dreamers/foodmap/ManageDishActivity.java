@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Spinner;
@@ -56,7 +58,11 @@ public class ManageDishActivity extends AppCompatActivity {
         putDataToViews();
 
         gridView.setAdapter(new ImageAdapter(this));
-
+        spnrDishType.setAdapter(new ArrayAdapter<String>(
+                this,
+                R.layout.support_simple_spinner_dropdown_item,
+                Catalog.getDishTypes()
+        ));
 
         //Enable the Up button (Icon look like this: <- )
         setSupportActionBar(toolbar);
@@ -71,6 +77,17 @@ public class ManageDishActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+       spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               dish.setCatalog(new Catalog(0,Catalog.getDishTypes()[position]));
+           }
+
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+
+           }
+       });
     }
 
     private void putDataToViews() {
