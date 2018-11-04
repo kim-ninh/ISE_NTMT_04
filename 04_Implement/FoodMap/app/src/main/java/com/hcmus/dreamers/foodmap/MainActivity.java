@@ -416,6 +416,10 @@ public class MainActivity extends AppCompatActivity {
         Intent main_manageRest = new Intent(MainActivity.this,
                 ManageRestaurantActivity.class);
         startActivity(main_manageRest);
+
+//        Intent main_manageAccount = new Intent(MainActivity.this,
+//                ManageAccountActivity.class);
+//        startActivity(main_manageAccount);
     }
 
     void initMenuLoginOwner(){
