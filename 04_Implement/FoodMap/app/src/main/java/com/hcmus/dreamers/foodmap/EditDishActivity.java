@@ -86,7 +86,7 @@ public class EditDishActivity extends AppCompatActivity {
        spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
            @Override
            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               dish.setCatalog(new Catalog(0,Catalog.getDishTypes()[position]));
+               dish.setCatalog(new Catalog(position + 1,Catalog.getDishTypes()[position]));
            }
 
            @Override
@@ -106,6 +106,8 @@ public class EditDishActivity extends AppCompatActivity {
         // Nếu có đường dẫn hình của món ăn thì đặt thì gán vào ImageView
         if (!dish.getUrlImage().isEmpty())
             dishImage.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+
+        spnrDishType.setSelection(dish.getCatalog().getId() - 1);
     }
 
     private void getTransferDataFromActivity() {

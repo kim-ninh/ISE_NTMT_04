@@ -90,10 +90,10 @@ public class EditRestaurantActivity extends AppCompatActivity {
                     new GeoPoint(0,0));
 
             dishes = new ArrayList<>();   //Empty dish is passed
-            dishes.add(new Dish("Bánh tráng trộn",
-                    2500,
+            dishes.add(new Dish("Banh trang tron",
+                    5000,
                     "",
-                    new Catalog(1, "Ăn vặt")));
+                    new Catalog(1, "Com")));
 
         }catch (Exception e){
             //..
@@ -197,19 +197,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
         } //try
     }// onActivityResult
 
-    private void updateDishRowView(View dishRow, Dish dish) {
-        TextView lblDishName = (TextView) dishRow.findViewById(R.id.lblDishName);
-        TextView lblDisgPrice = (TextView) dishRow.findViewById(R.id.lblDishPrice);
-        ImageView icon = (ImageView) dishRow.findViewById(R.id.dish_thumb);
 
-        lblDishName.setText(dish.getName());
-        lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-
-
-        //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
-        if (!dish.getUrlImage().isEmpty())
-            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
-    }
 
     private void putDataToViews() {
 
