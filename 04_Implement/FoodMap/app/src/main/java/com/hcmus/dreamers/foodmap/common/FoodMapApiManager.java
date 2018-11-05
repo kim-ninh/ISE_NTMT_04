@@ -20,7 +20,7 @@ public class FoodMapApiManager {
     public static final int PARSE_FAIL = 1;
     public static final int FAIL_INFO = 2;
 
-    private boolean isLogin(){
+    public static boolean isLogin(){
         if (Owner.getInstance().getToken() == null)
             return false;
         return true;
@@ -412,6 +412,67 @@ public class FoodMapApiManager {
 
         taskRequest.execute(new DoingTask(GenerateRequest.getFavorite(guest_email)));
     }
+
+    public static void deleteRestaurant(int id_rest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteRestaurant(id_rest, Owner.getInstance().getToken())));
+    }
+
+    public static void updateRestaurant(final Restaurant rest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateRestaurant(rest, Owner.getInstance().getToken())));
+    }
+
 
     // lấy dữ liệu từ api và lưu xuống database
     public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){

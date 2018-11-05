@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        final Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
         mapController.setCenter(this.mLocationOverlay.getMyLocation());
         // thêm marker vào
@@ -139,6 +140,18 @@ public class MainActivity extends AppCompatActivity {
         }
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
+        
+        //debug
+        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
+        imgSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                intent.putExtra("RestID",123);
+                startActivity(intent);
+            }
+        });
+        */
     }
 
     // thêm một marker vào map
