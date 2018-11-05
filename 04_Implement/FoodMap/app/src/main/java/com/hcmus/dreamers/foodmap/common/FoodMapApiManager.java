@@ -474,8 +474,41 @@ public class FoodMapApiManager {
 
 
     // lấy dữ liệu từ api và lưu xuống database
-    public static void getRestaurant(TaskCompleteCallBack onTaskCompleteCallBack){
+    public static void getRestaurant(final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
 
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            FoodMapManager.setRestaurants(ParseJSON.parseRestaurant(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant()));
     }
 
     // dành cho owner
