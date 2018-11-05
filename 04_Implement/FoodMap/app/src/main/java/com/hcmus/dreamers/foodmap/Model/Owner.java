@@ -24,7 +24,7 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private String username;
     @SerializedName("password")
     private String password;
-    @SerializedName("phoneNumber")
+    @SerializedName("phone_number")
     private String phoneNumber;
     @SerializedName("token")
     private String token;

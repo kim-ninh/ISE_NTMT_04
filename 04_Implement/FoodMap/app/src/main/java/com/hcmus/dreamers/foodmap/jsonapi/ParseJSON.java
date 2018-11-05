@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
@@ -28,9 +29,38 @@ import java.util.List;
 
 public class ParseJSON {
     private static Gson gson = new Gson();
+
+    private static final String ROOT = "features";
+    private static final String INFO = "properties";
+    private static final String GEOMETRY = "geometry";
+    private static final String POINT = "coordinates";
+
+    public static List<DetailAddress> parseDetailAddress(final String response) throws JSONException{
+        List<DetailAddress> detailAddresses = new ArrayList<DetailAddress>();
+
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray(ROOT);
+
+
+        int lenght = array.length();
+        for (int i =0 ; i < lenght; i++){
+            JSONObject o = array.getJSONObject(i);
+            JSONObject info = o.getJSONObject(INFO);
+            JSONObject geometry  = o.getJSONObject(GEOMETRY);
+            JSONArray point = geometry.getJSONArray(POINT);
+
+            DetailAddress detailAddress = gson.fromJson(info.toString(), DetailAddress.class);
+            detailAddress.setPoint(new GeoPoint(point.getDouble(0), point.getDouble(1)));
+            detailAddresses.add(detailAddress);
+        }
+
+        return detailAddresses;
+    }
+
     public static ResponseJSON fromStringToResponeJSON(String data){
         return gson.fromJson(data, ResponseJSON.class);
     }
+
 
     public static ResponseJSON parseFromAllResponse(String response) throws JSONException {// use to get ResponseJSON from all response
         JSONObject object = new JSONObject(response);
