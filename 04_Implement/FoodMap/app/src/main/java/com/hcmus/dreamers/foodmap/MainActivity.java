@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 new LocationChange(mMap, mLocationOverlay, mapController));
         
         //debug
-        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
+       /* ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("RestID",123);
                 startActivity(intent);
             }
-        });
-        */
+        });*/
+
     }
 
     // thêm một marker vào map
