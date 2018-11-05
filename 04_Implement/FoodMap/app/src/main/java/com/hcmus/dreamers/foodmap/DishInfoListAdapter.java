@@ -50,7 +50,7 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
         //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
         if (!dish.getUrlImage().isEmpty())
-            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+            icon.setImageURI(Uri.parse(dish.getUrlImage()));
 
         return row;
     }
