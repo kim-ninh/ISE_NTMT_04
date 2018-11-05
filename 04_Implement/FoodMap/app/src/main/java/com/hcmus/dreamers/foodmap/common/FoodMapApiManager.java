@@ -20,7 +20,7 @@ public class FoodMapApiManager {
     public static final int PARSE_FAIL = 1;
     public static final int FAIL_INFO = 2;
 
-    private boolean isLogin(){
+    public static boolean isLogin(){
         if (Owner.getInstance().getToken() == null)
             return false;
         return true;

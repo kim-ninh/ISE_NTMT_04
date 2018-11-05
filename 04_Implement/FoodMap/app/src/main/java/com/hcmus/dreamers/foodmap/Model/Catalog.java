@@ -9,12 +9,10 @@ public class Catalog {
     @SerializedName("name")
     private String name;
 
-    private static String[] dishTypes = {"Vỉa hè",
-            "Thức ăn nhanh",
-            "Giải khát",
-            "Đồ nướng",
-            "Ẩm thực đường phố",
-            "Bình dân"};
+    private static String[] dishTypes = {"Cơm",
+            "Phở",
+            "Chè",
+            "Vỉa hè",};
 
     public Catalog() {
     }

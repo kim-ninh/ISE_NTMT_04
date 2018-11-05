@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_rate"
+                android:src="@drawable/ic_heart"
                 android:layout_gravity="center_horizontal"/>
 
             <TextView
@@ -91,7 +91,7 @@
 
         <!--1.4-->
         <LinearLayout
-            android:id="@+id/lnrSave"
+            android:id="@+id/lnrRate"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -101,14 +101,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_save"
+                android:src="@drawable/ic_rate"
                 android:layout_gravity="center_horizontal"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Save"
+                android:text="Rate"
                 android:layout_gravity="center_horizontal"
                 android:textSize="12dp"/>
 
@@ -278,7 +278,7 @@
 
                 <!--2.3.5-->
                 <LinearLayout
-                    android:id="@+id/lnrRate"
+                    android:id="@+id/lnrNRate"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:orientation="vertical"

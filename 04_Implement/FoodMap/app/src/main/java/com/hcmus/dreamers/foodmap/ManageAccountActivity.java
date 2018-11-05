@@ -1,7 +1,6 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +22,7 @@ public class ManageAccountActivity extends AppCompatActivity {
     TextView lblChangeAvatar;
     EditText txtUserName;
     EditText txtRealName;
-    EditText txtPhoneNumber;
+    EditText txtPhoneNumber1;
     EditText txtEmail;
     Button buttonChangePass;
     EditText txtCurrentPass;
@@ -40,7 +39,7 @@ public class ManageAccountActivity extends AppCompatActivity {
 
         takeReferenceFromResource();
         owner = Owner.getInstance();
-        //putDataToViews();                  //TODO uncomment this when the data is ready
+        putDataToViews();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,8 +72,8 @@ public class ManageAccountActivity extends AppCompatActivity {
         //ic_avatar.setImageURI(owner.getImagePath());          //TODO consider add image path?
         txtUserName.setText(owner.getUsername());
         txtRealName.setText(owner.getName());
-        txtPhoneNumber.setText(owner.getPhoneNumber());
-        txtEmail.setText(owner.getPhoneNumber());
+        txtPhoneNumber1.setText(owner.getPhoneNumber());
+        txtEmail.setText(owner.getEmail());
     }
 
     private void takeReferenceFromResource() {
@@ -82,7 +81,7 @@ public class ManageAccountActivity extends AppCompatActivity {
         lblChangeAvatar = (TextView) findViewById(R.id.lblChangeAvatar);
         txtUserName = (EditText) findViewById(R.id.txtUserName);
         txtRealName = (EditText) findViewById(R.id.txtRealName);
-        txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
+        txtPhoneNumber1 = (EditText) findViewById(R.id.txtPhoneNumber1);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         buttonChangePass = (Button) findViewById(R.id.buttonChangePass);
         txtCurrentPass = (EditText) findViewById(R.id.txtCurrentPass);

@@ -28,6 +28,7 @@ import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -50,6 +51,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
     List<Dish> dishes;
     Restaurant restaurant;
     DishInfoListAdapter adapter;
+    int row;
 
     EditText txtResName;
     EditText txtAddress;
@@ -68,7 +70,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_restaurant);
-
+        //must not remove
+        //getTransferDataFromActivity();
 
         takeReferenceFromResource();
         //restaurant = Owner.getInstance().getRestaurant(0);    //TODO Bỏ dòng comment khi đã xong phần SQLite
@@ -87,13 +90,13 @@ public class EditRestaurantActivity extends AppCompatActivity {
                     "",
                     new SimpleDateFormat("hh:mm").parse("07:00"),
                     new SimpleDateFormat("hh:mm").parse("22:00"),
-                    new GeoPoint(0,0));
+                    new GeoPoint(0.0,0.0));
 
             dishes = new ArrayList<>();   //Empty dish is passed
-            dishes.add(new Dish("Bánh tráng trộn",
-                    2500,
+            dishes.add(new Dish("Banh trang tron",
+                    5000,
                     "",
-                    new Catalog(1, "Ăn vặt")));
+                    new Catalog(1, "Com")));
 
         }catch (Exception e){
             //..
@@ -182,7 +185,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
                         dishRowID = data.getIntExtra("dishRow", -1);
                         dish = gson.fromJson(dishJSON, Dish.class);
                         dishes.set(dishRowID, dish);
-                        adapter.notifyDataSetChanged();
                         Toast.makeText(EditRestaurantActivity.this, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
                     }else{
                         dishes.remove(delete);
@@ -197,19 +199,18 @@ public class EditRestaurantActivity extends AppCompatActivity {
         } //try
     }// onActivityResult
 
-    private void updateDishRowView(View dishRow, Dish dish) {
-        TextView lblDishName = (TextView) dishRow.findViewById(R.id.lblDishName);
-        TextView lblDisgPrice = (TextView) dishRow.findViewById(R.id.lblDishPrice);
-        ImageView icon = (ImageView) dishRow.findViewById(R.id.dish_thumb);
-
-        lblDishName.setText(dish.getName());
-        lblDisgPrice.setText(Integer.toString(dish.getPrice()));
 
 
-        //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
-        if (!dish.getUrlImage().isEmpty())
-            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
-    }
+    // must not remove
+//    private void getTransferDataFromActivity() {
+//        // Get the restaurant ID and dish Obj
+//        Gson gson = new Gson();
+//        Intent manageRest = getIntent();
+//        transferData = manageRest.getExtras();
+//        String dishJSON = transferData.getString("restJSON");
+//        restaurant = gson.fromJson(dishJSON, Restaurant.class);
+//        row = transferData.getInt("restRow", -1);
+//    }
 
     private void putDataToViews() {
 
@@ -251,18 +252,59 @@ public class EditRestaurantActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.action_delete:
-                Toast.makeText(EditRestaurantActivity.this, "action delete selected",
-                        Toast.LENGTH_LONG).show();
+//                FoodMapApiManager.deleteRestaurant(restaurant.getId(), new TaskCompleteCallBack() {
+//                    @Override
+//                    public void OnTaskComplete(Object response) {
+//                        if((int)response == FoodMapApiManager.SUCCESS){
+//                            Intent intent = new Intent();
+//                            intent.putExtra("delete", row);
+//                            setResult(RESULT_OK, intent);
+//                            finish();
+//                        }else if((int)response == ConstantCODE.NOTINTERNET){
+//                            Toast.makeText(EditRestaurantActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+//                        } else {
+//                            Toast.makeText(EditRestaurantActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
                 return true;
 
             case R.id.action_done:
-                Toast.makeText(EditRestaurantActivity.this, "action done selected",
-                        Toast.LENGTH_LONG).show();
+//                if(checkValid()){
+//                    FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
+//                        @Override
+//                        public void OnTaskComplete(Object response) {
+//                            if((int)response == FoodMapApiManager.SUCCESS) {
+//                                Gson gson = new Gson();
+//                                Intent intent = new Intent();
+//                                intent.putExtra("restJSON", gson.toJson(restaurant));
+//                                intent.putExtra("restRow", row);
+//                                setResult(RESULT_OK, intent);
+//                                finish();
+//                            }else if((int)response == ConstantCODE.NOTINTERNET){
+//                                Toast.makeText(EditRestaurantActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+//                            } else {
+//                                Toast.makeText(EditRestaurantActivity.this, "Xóa nhà hàng thất bại!", Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    });
+//                }else{
+//                    Toast.makeText(EditRestaurantActivity.this, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
+//                }
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean checkValid(){
+        if(txtResName.length() > 0 && txtAddress.length() > 0 && txtPhoneNumber.length() > 0){
+            restaurant.setName(txtResName.getText().toString());
+            restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
+            restaurant.setAddress(txtAddress.getText().toString());
+            return true;
+        }
+        return false;
     }
 
     @Override

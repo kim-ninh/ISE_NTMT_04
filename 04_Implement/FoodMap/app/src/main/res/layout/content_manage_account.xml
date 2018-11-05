@@ -138,7 +138,7 @@
                     android:text="Số điện thoại" />
 
                 <EditText
-                    android:id="@+id/txtPhoneNumber"
+                    android:id="@+id/txtPhoneNumber1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="phone"
+                    android:inputType="textEmailAddress"
                     android:background="@drawable/custom_border"
                     android:text="admin69@gmail.com"
                     android:textSize="14sp" />
