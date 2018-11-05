@@ -72,7 +72,7 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
                 edtRePassword.setFocusable(true);
                 edtRePassword.setText("");
             }
-            else if (!checkEmail(email)){
+            else if (!RegisterOwnerActivity.checkEmail(email)){
                 Toast.makeText(RegisterOwnerActivity.this, "Email không hợp lệ", Toast.LENGTH_LONG).show();
                 edtEmail.setText("");
                 edtEmail.setFocusable(true);

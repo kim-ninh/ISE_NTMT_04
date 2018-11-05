@@ -234,7 +234,7 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/txtNSave"
+                        android:id="@+id/txtNFavorite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="47"
@@ -245,7 +245,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Saves"
+                        android:text="Favorites"
                         android:textStyle="bold"
                         android:layout_gravity="center_horizontal"/>
 

@@ -330,7 +330,6 @@ public class FoodMapApiManager {
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
-                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){

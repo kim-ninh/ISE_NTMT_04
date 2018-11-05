@@ -23,6 +23,8 @@ public class Restaurant {
     private List<Dish> dishes;
     private List<Comment> comments;
     private String address;
+    //so luong guest da yeu thich
+    private int nFavorites;
     // bảng lưu thông tin người đánh giá
     // keyvalue: <email, star>
     private HashMap<String, Integer> ranks;
@@ -30,6 +32,7 @@ public class Restaurant {
     public Restaurant() {
         dishes = new ArrayList<Dish>();
         comments = new ArrayList<Comment>();
+        ranks = new HashMap<String, Integer>();
     }
 	
 	    public Restaurant(int id_rest,
@@ -154,12 +157,19 @@ public class Restaurant {
 
     public void setId_user(String id_user) { this.id_user = id_user; }
 
+    public int getnFavorites() {
+        return nFavorites;
+    }
+
+    public void setnFavorites(int nFavorites) {
+        this.nFavorites = nFavorites;
+    }
+
     // -1 là chưa đánh giá
     public int findRank(String email){
         if (ranks.containsValue(email))
             return ranks.get(email);
         return -1;
     }
-
 
 }

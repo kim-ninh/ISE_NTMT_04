@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
+import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -37,16 +38,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.Inflater;
 
 public class RestaurantInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "RestAcitvity";
     TextView txtRestName;
+
+    TextView txtNCheckIn;
+    TextView txtNComment;
+    TextView txtNFavorite;
+    TextView txtNShare;
+    TextView txtNRate;
+
     TextView txtStatus;
     TextView txtOpenTime;
+
     TextView txtLocation;
     TextView txtDescription;
+
     ImageView imgDescription;
     ListView lstDish;
     LinearLayout lnrFavorite;
@@ -66,6 +79,13 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         txtRestName = (TextView) findViewById(R.id.txtRestName);
+
+        txtNCheckIn = (TextView) findViewById(R.id.txtNCheckIn);
+        txtNComment = (TextView) findViewById(R.id.txtNComment);
+        txtNFavorite = (TextView) findViewById(R.id.txtNFavorite);
+        txtNShare = (TextView) findViewById(R.id.txtNShare);
+        txtNRate = (TextView) findViewById(R.id.txtNRate);
+
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         txtOpenTime = (TextView) findViewById(R.id.txtOpenTime);
         txtLocation = (TextView) findViewById(R.id.txtLocation);
@@ -88,7 +108,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         else
         {
             //get data
-            Toast.makeText(this,"ok", Toast.LENGTH_LONG).show();
             //restaurant = FoodMapManager.findRestaurant(RestID);
 
             //debug
@@ -100,25 +119,26 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 Log.d("Time",e.toString());
                 e.printStackTrace();
             }
+            restaurant.setnFavorites(10);
+            restaurant.setDescription("do an vat abc");
             restaurant.setUrlImage("https://i.pinimg.com/236x/82/fa/8a/82fa8a8d0abac9e28614df1f5c45efeb.jpg");
-            restaurant.setName("anbcaso");
+            restaurant.setName("sao bang lanh gia");
             restaurant.setPhoneNumber("0377389063");
             restaurant.setAddress("227 Nguyen Van Cu");
+            //endbug
+
+            setLayoutInfo();
+
+            //set phone call event
+            PhoneStateListener phoneStateListener = new PhoneStateListener();
+            TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+
+            lnrContact.setOnClickListener(this);
+            lnrRate.setOnClickListener(this);
+            lnrFavorite.setOnClickListener(this);
         }
-
-
-        setLayoutInfo();
-        //endbug
-
-        //set phone call event
-        PhoneStateListener phoneStateListener = new PhoneStateListener();
-        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
-
-        lnrContact.setOnClickListener(this);
-        lnrRate.setOnClickListener(this);
-        lnrFavorite.setOnClickListener(this);
 
     }
 
@@ -134,11 +154,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setLayoutInfo() {
         //set Description Image
         DownloadImageTask taskDownload = new DownloadImageTask(imgDescription, getApplicationContext());
@@ -147,7 +163,41 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         //set Restaurant name
         txtRestName.setText(restaurant.getName());
 
-        //Set a number of comments, check in, saves, shares, rate
+        //Set a number of  check-in
+
+
+        // Set a number of comments
+        try {
+            txtNComment.setText(Integer.toString(restaurant.getComments().size()));
+        }catch (Exception e)
+        {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        // Set a number of favorites
+        txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
+
+        //Set a number of shares
+
+
+        //Set a number of rates
+        try {
+            double average = 0;
+
+            for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
+                average += kvp.getValue();
+            }
+
+            if(average != 0)
+            {
+                average /= restaurant.getRanks().size();
+            }
+
+            txtNRate.setText(String.format("%.1f",average));
+        }catch (Exception e)
+        {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
 
         //set Time and Status
@@ -177,7 +227,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtLocation.setText(restaurant.getAddress());
 
         //Set Restaurant description
-        //txtDescription.setText((restaurant.getDescription()));
+        txtDescription.setText((restaurant.getDescription()));
 
         //Set Price range of restaurant
 
@@ -199,16 +249,13 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 //check login
                 if(true)
                 {
-                    if(guest.getFavRestaurant().contains(restaurant))
+                    //kiem tra da ton tai trong ds yeu thich chua
+                    if(! guest.getFavRestaurant().contains(restaurant))
                     {
-                        guest.getFavRestaurant().remove(restaurant);
-                        Toast.makeText(this, "unfavorite", Toast.LENGTH_LONG).show();
-                    }
-                    else {
                         guest.getFavRestaurant().add(restaurant);
-                        Toast.makeText(this, "favorite", Toast.LENGTH_LONG).show();
+                        restaurant.setnFavorites(restaurant.getnFavorites() + 1);
                     }
-
+                    Toast.makeText(this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
