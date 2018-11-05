@@ -28,24 +28,39 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.JsonParser;
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
+import com.hcmus.dreamers.foodmap.map.PlaceAutoCompleteApdapter;
 
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -57,10 +72,15 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    
+
+    private AutoCompleteTextView atclSearch;
+    private List<DetailAddress> detailAddresses;
+    private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
+
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
@@ -93,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
-        // setup map
+        // setup view
         mapInit();
         navmenuToolbarInit();
+        // init AutocompleteTextView
+        searchAutoCompleteSupportInit();
 
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
@@ -118,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        moveCamera(this.mLocationOverlay.getMyLocation());
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
@@ -161,30 +183,10 @@ public class MainActivity extends AppCompatActivity {
         mMap.invalidate();
     }
 
-    private void mapInit()
-    {
-        // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
-        if (Build.VERSION.SDK_INT >= 16)
-            mMap.setHasTransientState(true);
-
-        mapController = mMap.getController();
-        mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
-        mMap.setTileSource(TileSourceFactory.MAPNIK);
-
-        //list marker
-        markers = new ArrayList<OverlayItem>();
-
-        // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
-        // thêm marker vào
-        mMap.getOverlays().add(this.mLocationOverlay);
+    private void moveCamera(GeoPoint point){
+        mapController.setCenter(point);
     }
+
 
     // kiểm tra permission
     @TargetApi(Build.VERSION_CODES.M)
@@ -241,11 +243,35 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-
         }
         else {
             super.onBackPressed();
         }
+    }
+
+    private void mapInit()
+    {
+        // cài đặt map
+        mMap.setBuiltInZoomControls(true);
+        mMap.setMultiTouchControls(true);
+        if (Build.VERSION.SDK_INT >= 16)
+            mMap.setHasTransientState(true);
+
+        mapController = mMap.getController();
+        mapController.setZoom(17.0);
+        mMap = (MapView) findViewById(R.id.map);
+        mMap.setTileSource(TileSourceFactory.MAPNIK);
+
+        //list marker
+        markers = new ArrayList<OverlayItem>();
+
+        // cài đặt marker vị trí
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
+        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        mLocationOverlay.setPersonIcon(iconMyLocation);
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        // thêm marker vào
+        mMap.getOverlays().add(this.mLocationOverlay);
     }
 
     void initMenuLoginGuest(){
@@ -442,4 +468,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    //
+    void searchAutoCompleteSupportInit(){
+        atclSearch = (AutoCompleteTextView)findViewById(R.id.atclSearch);
+        atclSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String address = s.toString();
+                if (address.length() >= 3)
+                    refeshListAddressSearch(address);
+            }
+        });
+
+        detailAddresses = new ArrayList<DetailAddress>();
+        placeAutoCompleteApdapter = new PlaceAutoCompleteApdapter(MainActivity.this, R.layout.item_detailaddress_list, detailAddresses);
+        atclSearch.setAdapter(placeAutoCompleteApdapter);
+        atclSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = detailAddresses.get(position).getName();
+                String address = detailAddresses.get(position).toString();
+                GeoPoint point = detailAddresses.get(position).getPoint();
+
+                atclSearch.setText(address);
+                addMarker(name, address, point);
+                moveCamera(point);
+                Toast.makeText(MainActivity.this, detailAddresses.get(position).toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    void refeshListAddressSearch(String address){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String rep = response.toString();
+                if (rep != null)
+                {
+                    try {
+                        detailAddresses.clear();
+                        detailAddresses.addAll(ParseJSON.parseDetailAddress(rep));
+                        placeAutoCompleteApdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
+    }
+
+
 }
