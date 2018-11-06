@@ -2,9 +2,11 @@ package com.hcmus.dreamers.foodmap.common;
 
 import android.content.Context;
 
+import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.DBManager;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class FoodMapManager {
@@ -43,4 +45,18 @@ public class FoodMapManager {
         }
         dbManager.close();
     }
+
+    public static List<Comment> getComment(Context context, int id_rest){
+        List<Comment> comments;
+        DBManager dbManager = new DBManager(context);
+        try {
+            comments = dbManager.getComments(id_rest);
+        } catch (ParseException e) {
+            dbManager.close();
+            return null;
+        }
+        dbManager.close();
+        return comments;
+    }
+
 }
