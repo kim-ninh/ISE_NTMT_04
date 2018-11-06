@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap.Model;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
@@ -21,6 +22,7 @@ public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
 
     private Guest() {
         super();
+        favRestaurant = new ArrayList<Restaurant>();
     }
 
     private Guest(String name, String email) {
@@ -31,6 +33,10 @@ public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
         if (instance == null)
             instance = new Guest();
         return instance;
+    }
+
+    public static void setInstance(Guest value){
+        instance = value;
     }
 
     public Uri getUrlAvatar() {

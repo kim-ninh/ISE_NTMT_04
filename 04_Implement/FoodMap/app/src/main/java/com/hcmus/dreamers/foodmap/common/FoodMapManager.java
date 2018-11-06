@@ -1,6 +1,9 @@
 package com.hcmus.dreamers.foodmap.common;
 
+import android.content.Context;
+
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.database.DBManager;
 
 import java.util.List;
 
@@ -20,15 +23,24 @@ public class FoodMapManager {
         return null;
     }
 
-    public static void addRestaurant(Restaurant restaurant){
+    public static void addRestaurant(Context context, Restaurant restaurant){
+        DBManager dbManager = new DBManager(context);
         restaurants.add(restaurant);
+        dbManager.addRestaurant(restaurant);
+        dbManager.close();
     }
 
     public static List<Restaurant> getRestaurants(){
         return restaurants;
     }
 
-    public static void setRestaurants(List<Restaurant> restaurants) {
+    public static void setRestaurants(Context context, List<Restaurant> restaurants) {
         FoodMapManager.restaurants = restaurants;
+
+        DBManager dbManager = new DBManager(context);
+        for (Restaurant rest: FoodMapManager.restaurants) {
+            dbManager.addRestaurant(rest);
+        }
+        dbManager.close();
     }
 }

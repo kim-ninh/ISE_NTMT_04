@@ -250,7 +250,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 if(true)
                 {
                     //kiem tra da ton tai trong ds yeu thich chua
-                    if(! guest.getFavRestaurant().contains(restaurant))
+                    if(!guest.getFavRestaurant().contains(restaurant))
                     {
                         guest.getFavRestaurant().add(restaurant);
                         restaurant.setnFavorites(restaurant.getnFavorites() + 1);

@@ -35,6 +35,8 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
@@ -238,13 +240,10 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        Owner owner = Owner.getInstance();
-        if (isLoggedIn){
+        if (FoodMapApiManager.isGuestLogin()){
             initMenuLoginGuest();
         }
-        else if (owner.getToken() != null){
+        else if (FoodMapApiManager.isLogin()){
             initMenuLoginOwner();
         }
         else{
@@ -331,12 +330,24 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                int code = (int)response;
+                                if (code == FoodMapApiManager.SUCCESS){
+                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                         break;
                     case R.id.btnLogout:
                         Log.d(TAG, "onClick: btnLogout");
                         Toast.makeText(MainActivity.this, "onClick: btnLogout", Toast.LENGTH_SHORT).show();
                         LoginManager.getInstance().logOut();
+                        Guest.setInstance(null);
                         initMenuNotLogin();
                         break;
                     case R.id.btnAbout:
@@ -383,7 +394,18 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                int code = (int)response;
+                                if (code == FoodMapApiManager.SUCCESS){
+                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                         break;
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
@@ -465,7 +487,18 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                int code = (int)response;
+                                if (code == FoodMapApiManager.SUCCESS){
+                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                         break;
                     case R.id.btnLogout:
                         Log.d(TAG, "onClick: btnLogout");

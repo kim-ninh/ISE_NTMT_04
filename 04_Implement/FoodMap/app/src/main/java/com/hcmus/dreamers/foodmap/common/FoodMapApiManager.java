@@ -1,5 +1,9 @@
 package com.hcmus.dreamers.foodmap.common;
 
+import android.content.Context;
+
+import com.facebook.AccessToken;
+import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -24,6 +28,12 @@ public class FoodMapApiManager {
         if (Owner.getInstance().getToken() == null)
             return false;
         return true;
+    }
+
+    public static boolean isGuestLogin(){
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        return isLoggedIn;
     }
 
     public static void Login(String username, String password, final TaskCompleteCallBack taskCompleteCallBack)
@@ -254,8 +264,6 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addGuest(guest)));
     }
 
-
-
     public static void deleteDish(int id_rest, final String dishName, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
@@ -285,6 +293,7 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.deleteDish(id_rest, dishName, Owner.getInstance().getToken())));
     }
+
     public static void addFavorite(String guest_email, int id_rest, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -314,7 +323,6 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.addFavorite(id_rest, guest_email)));
     }
-
 
     public static void updateDish(int id_rest, final Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
@@ -472,9 +480,8 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.updateRestaurant(rest, Owner.getInstance().getToken())));
     }
 
-
     // lấy dữ liệu từ api và lưu xuống database
-    public static void getRestaurant(final TaskCompleteCallBack taskCompleteCallBack){
+    public static void getRestaurant(final Context context, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
             @Override
@@ -486,7 +493,7 @@ public class FoodMapApiManager {
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         try {
-                            FoodMapManager.setRestaurants(ParseJSON.parseRestaurant(Sresponse));
+                            FoodMapManager.setRestaurants(context, ParseJSON.parseRestaurant(Sresponse));
                             taskCompleteCallBack.OnTaskComplete(SUCCESS);
                         } catch (JSONException e) {
                             taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);

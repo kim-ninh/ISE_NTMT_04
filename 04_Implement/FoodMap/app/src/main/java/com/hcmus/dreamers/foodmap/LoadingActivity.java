@@ -15,7 +15,7 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_layout);
-        FoodMapApiManager.getRestaurant(new TaskCompleteCallBack() {
+        FoodMapApiManager.getRestaurant(LoadingActivity.this, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
                 int code = (int) response;

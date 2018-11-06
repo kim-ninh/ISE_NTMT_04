@@ -50,8 +50,6 @@ public class LoginGuestActivity extends AppCompatActivity {
     Button btnRegisterOwner;
     Toolbar toolbar;
 
-    ProgressDialog progressDialog;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +78,7 @@ public class LoginGuestActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //
-        progressDialog = new ProgressDialog(LoginGuestActivity.this);
-        progressDialog.setTitle("Check login");
-        progressDialog.setCanceledOnTouchOutside(false);
+
         // init
         mAuth = FirebaseAuth.getInstance();
         // btnFaceBook Login
@@ -125,13 +120,17 @@ public class LoginGuestActivity extends AppCompatActivity {
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
+        final ProgressDialog progressDialog = new ProgressDialog(LoginGuestActivity.this);
+        progressDialog.setTitle("Checking...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            progressDialog.show();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
 

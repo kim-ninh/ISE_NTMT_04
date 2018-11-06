@@ -1,10 +1,9 @@
 <?php
-include "../private/database.php";
 include "../private/checkToken.php";
 
 $response = array();
 
-if (isset($_POST["id_rest"]) && isset($_POST["comment"]) && (isset($_POST["guest_email"]) || isset($_POST["owner_email"])) && isset($_POST["token"]))
+if (isset($_POST["id_rest"]) && isset($_POST["comment"]) && (isset($_POST["guest_email"]) || (isset($_POST["owner_email"]) && isset($_POST["token"]))))
 {
 	$strQuery = "";
 
@@ -12,30 +11,52 @@ if (isset($_POST["id_rest"]) && isset($_POST["comment"]) && (isset($_POST["guest
 	$date_time = $date_time->format('Y-m-d H:i:s');
 	$id_rest = $_POST["id_rest"];
 	$comment = $_POST["comment"];
-	$token = $_POST["token"];
+	
+	$isOwner = false;
+	$email = "";
+	$check = false;
 
-	// kiểm tra token
-	$check = checkToken($token);
-
-	if ($check == true)
+	if (isset($_POST["guest_email"]))
 	{
-		$isOwner = false;
-		$email = "";
+		$email = $_POST["guest_email"];
+	}
+	else if (isset($_POST["owner_email"]))
+	{
+		$email = $_POST["owner_email"];
+		$token = $_POST["token"];
+		// kiểm tra token
+		$check = checkToken($token);
+		$isOwner = true;
+	}
 
-		if (isset($_POST["guest_email"]))
+	$conn = new database();
+	$conn->connect();
+
+	if ($isOwner)
+	{
+		if (!$check)
 		{
-			$email = $_POST["guest_email"];
+			$response["status"] = 444;
+			$response["message"] = "Token Invalid";
 		}
-		else if (isset($_POST["owner_email"]))
+		else
 		{
-			$email = $_POST["owner_email"];
-			$isOwner = true;
+			//add dữ liệu
+			if ($conn->AddComment($date_time, $id_rest, $email, $comment, $isOwner) != -1)
+			{
+				$response["status"] = 200;
+				$response["message"] = "Success";
+			}
+			else
+			{
+				$response["status"] = 404;
+				$response["message"] = "Exec fail";
+			}
 		}
-
-		// add dữ liệu
-		$conn = new database();
-		$conn->connect();
-
+	}
+	else 
+	{
+		//add dữ liệu
 		if ($conn->AddComment($date_time, $id_rest, $email, $comment, $isOwner) != -1)
 		{
 			$response["status"] = 200;
@@ -46,14 +67,8 @@ if (isset($_POST["id_rest"]) && isset($_POST["comment"]) && (isset($_POST["guest
 			$response["status"] = 404;
 			$response["message"] = "Exec fail";
 		}
-
-		$conn->disconnect();
 	}
-	else
-	{
-		$response["status"] = 444;
-		$response["message"] = "Token Invalid";
-	}
+	$conn->disconnect();
 }
 else
 {
