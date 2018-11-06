@@ -90,9 +90,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     LinearLayout lnrRate;
     LinearLayout lnrShare;
     LinearLayout lnrContact;
-    Restaurant restaurant = new Restaurant();
-
-    int RestID;
+    Restaurant restaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +125,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
         //get Restaurant
         Intent intent = this.getIntent();
-        int RestID = intent.getIntExtra("RestID", -1);
-        if(RestID == -1)
+        restaurant = (Restaurant) intent.getSerializableExtra("rest");
+        if(restaurant == null)
         {
             Log.i(TAG,"can't get restaurant data");
             Toast.makeText(this,"can't get restaurant data", Toast.LENGTH_LONG).show();
@@ -136,9 +134,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
         else
         {
-            //get data
-            //restaurant = FoodMapManager.findRestaurant(RestID);
-
             //debug
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
             try {
@@ -293,7 +288,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.lnrComment:
                 Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
-                intent.putExtra("id_rest", RestID);
+                intent.putExtra("id_rest", restaurant.getId());
                 startActivity(intent);
                 break;
             case R.id.lnrFavourite:
