@@ -5,12 +5,13 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Restaurant {
+public class Restaurant implements Serializable {
     private int id;
     private String id_user;
     private String name;
@@ -35,7 +36,7 @@ public class Restaurant {
         ranks = new HashMap<String, Integer>();
     }
 	
-	    public Restaurant(int id_rest,
+    public Restaurant(int id_rest,
                       String id_user,
                       String name,
                       String address,

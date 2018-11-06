@@ -25,7 +25,7 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name=".MainActivity">
+            android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +36,7 @@
         <activity android:name=".RestaurantInfoActivity" />
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
-        <activity android:name=".LoadingActivity"/>
+        <activity android:name=".MainActivity"/>
 
         <activity
             android:name=".EditDishActivity"
