@@ -24,11 +24,9 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
-import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.JsonParser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -36,9 +34,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
-import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
@@ -47,7 +43,6 @@ import com.hcmus.dreamers.foodmap.event.MarkerClick;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,13 +50,12 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
-import com.hcmus.dreamers.foodmap.map.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
@@ -580,6 +574,5 @@ public class MainActivity extends AppCompatActivity {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
     }
-
 
 }

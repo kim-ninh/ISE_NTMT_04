@@ -9,6 +9,10 @@ public class Dish {
 
     //
     public Dish() {
+        this.name = "";
+        this.price = 0;
+        this.urlImage = "";
+        this.catalog = new Catalog(1,"Cơm");
     }
 
     public Dish(String name, int price, String urlImage, Catalog catalog) {

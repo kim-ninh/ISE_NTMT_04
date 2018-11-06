@@ -101,11 +101,13 @@ public class GenerateRequest {
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("comment", comment.getComment());
-        if(!comment.getEmailGuest().equals(""))
+        if(comment.getEmailGuest()!= null && !comment.getEmailGuest().equals(""))
             params.put("guest_email", comment.getEmailGuest());
-        else
+        else{
             params.put("owner_email", comment.getEmailOwner());
-        params.put("token", token);
+            params.put("token", token);
+        }
+
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
