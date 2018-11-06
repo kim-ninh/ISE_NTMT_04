@@ -50,7 +50,7 @@ public class ParseJSON {
             JSONArray point = geometry.getJSONArray(POINT);
 
             DetailAddress detailAddress = gson.fromJson(info.toString(), DetailAddress.class);
-            detailAddress.setPoint(new GeoPoint(point.getDouble(0), point.getDouble(1)));
+            detailAddress.setPoint(new GeoPoint(point.getDouble(1), point.getDouble(0)));
             detailAddresses.add(detailAddress);
         }
 
