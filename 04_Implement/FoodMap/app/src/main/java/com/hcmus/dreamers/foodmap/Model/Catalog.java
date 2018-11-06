@@ -3,7 +3,9 @@ package com.hcmus.dreamers.foodmap.Model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Catalog {
+import java.io.Serializable;
+
+public class Catalog implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")

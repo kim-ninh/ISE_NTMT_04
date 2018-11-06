@@ -1,7 +1,9 @@
 package com.hcmus.dreamers.foodmap.Model;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 
-public class Dish {
+import java.io.Serializable;
+
+public class Dish implements Serializable {
     private String name;
     private int price;
     private String urlImage;

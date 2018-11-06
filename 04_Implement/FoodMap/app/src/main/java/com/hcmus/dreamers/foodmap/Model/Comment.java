@@ -2,9 +2,10 @@ package com.hcmus.dreamers.foodmap.Model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Serializable {
     private Date dateTime;
     private String comment;
     private String emailGuest;
