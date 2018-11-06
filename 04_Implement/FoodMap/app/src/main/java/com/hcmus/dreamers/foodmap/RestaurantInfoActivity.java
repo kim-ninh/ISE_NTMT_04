@@ -85,6 +85,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     TextView txtDescription;
     ImageView imgDescription;
     ListView lstDish;
+    LinearLayout lnrComment;
     LinearLayout lnrFavorite;
     LinearLayout lnrRate;
     LinearLayout lnrShare;
@@ -115,6 +116,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtDescription = (TextView) findViewById(R.id.txtDescription);
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
+        lnrComment = (LinearLayout) findViewById(R.id.lnrComment);
         lnrFavorite = (LinearLayout)findViewById(R.id.lnrFavourite);
         lnrRate = (LinearLayout)findViewById(R.id.lnrRate);
         lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
@@ -170,6 +172,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             lnrRate.setOnClickListener(this);
             lnrShare.setOnClickListener(this);
             lnrFavorite.setOnClickListener(this);
+            lnrComment.setOnClickListener(this);
         }
 
     }
