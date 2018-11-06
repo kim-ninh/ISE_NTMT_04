@@ -288,7 +288,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.lnrComment:
                 Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
-                intent.putExtra("id_rest", restaurant.getId());
+                intent.putExtra("rest", restaurant);
                 startActivity(intent);
                 break;
             case R.id.lnrFavourite:

@@ -14,6 +14,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.CommentListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
@@ -99,10 +100,10 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     void loadDataRecyclerView(){
         Intent intent = getIntent();
         if (intent != null){
-            int id_rest = intent.getIntExtra("id_rest",-1);
-            if (id_rest != -1){
-                this.id_rest = id_rest;
-                comments = FoodMapManager.getComment(CommentActivity.this,id_rest);
+            Restaurant restaurant = (Restaurant) intent.getSerializableExtra("rest");
+            if (restaurant != null){
+                this.id_rest = restaurant.getId();
+                comments = restaurant.getComments();
             }
         }
     }

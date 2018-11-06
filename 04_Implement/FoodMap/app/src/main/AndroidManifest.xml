@@ -42,7 +42,7 @@
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
         <activity android:name=".MainActivity"/>
-
+        <activity android:name=".CommentActivity"/>
         <activity
             android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"
