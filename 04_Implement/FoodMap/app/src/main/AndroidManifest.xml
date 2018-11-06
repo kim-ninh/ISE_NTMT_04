@@ -32,6 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider336556870495272"
+            android:name= "com.facebook.FacebookContentProvider"
+            android:exported="true"/>
 
         <activity android:name=".RestaurantInfoActivity" />
         <activity android:name=".LoginOwnerActivity" />
