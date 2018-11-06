@@ -1,12 +1,14 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -43,6 +46,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -132,8 +136,12 @@ public class EditRestaurantActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        handleClickEvent();
+    }
 
-        // HANDLE Click event
+    private void handleClickEvent() {
+
+        // Nút Thêm món ăn mới
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddDish);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,11 +154,63 @@ public class EditRestaurantActivity extends AppCompatActivity {
         });
 
 
+        // Chọn 1 món ăn từ danh sách
         dishListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dish dish = dishes.get(position);
                 transferData2NextActivity(dish ,position);
+            }
+        });
+
+
+        // Cập nhật giờ mở cửa
+        lblOpenHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog mTimePicker;
+                Calendar mCurrentTime = Calendar.getInstance();
+                int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mCurrentTime.get(Calendar.MINUTE);
+
+                mTimePicker = new TimePickerDialog(
+                        EditRestaurantActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                            }
+                        },
+                        hour, minute,
+                        true);
+
+                mTimePicker.show();
+            }
+        });
+
+
+        // Cập nhật giờ đóng của
+        lblCloseHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TimePickerDialog mTimePicker;
+                Calendar mCurrentTime = Calendar.getInstance();
+                int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mCurrentTime.get(Calendar.MINUTE);
+
+                mTimePicker = new TimePickerDialog(
+                        EditRestaurantActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                            }
+                        },
+                        hour, minute,
+                        true);
+
+                mTimePicker.show();
             }
         });
     }
@@ -303,9 +363,25 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
     private boolean checkValid(){
         if(txtResName.length() > 0 && txtAddress.length() > 0 && txtPhoneNumber.length() > 0){
+            // Get Date object
+            SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+            Date openHour = new Date();
+            Date closeHour = new Date();
+
+            try{
+                openHour = timeFormatter.parse(lblOpenHour.getText().toString());
+                closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
+            }catch (Exception e){
+                //This line should never run
+            }
+
+
             restaurant.setName(txtResName.getText().toString());
             restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
             restaurant.setAddress(txtAddress.getText().toString());
+            restaurant.setTimeOpen(openHour);
+            restaurant.setTimeClose(closeHour);
+
             return true;
         }
         return false;
