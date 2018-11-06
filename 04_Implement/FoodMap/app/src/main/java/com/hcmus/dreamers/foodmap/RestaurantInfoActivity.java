@@ -6,8 +6,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,18 +19,30 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -34,9 +50,16 @@ import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import org.osmdroid.util.GeoPoint;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,24 +70,24 @@ import java.util.zip.Inflater;
 public class RestaurantInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "RestAcitvity";
-    TextView txtRestName;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
 
+    TextView txtRestName;
     TextView txtNCheckIn;
     TextView txtNComment;
     TextView txtNFavorite;
     TextView txtNShare;
     TextView txtNRate;
-
     TextView txtStatus;
     TextView txtOpenTime;
-
     TextView txtLocation;
     TextView txtDescription;
-
     ImageView imgDescription;
     ListView lstDish;
     LinearLayout lnrFavorite;
     LinearLayout lnrRate;
+    LinearLayout lnrShare;
     LinearLayout lnrContact;
     Restaurant restaurant = new Restaurant();
     Guest guest = Guest.getInstance();
@@ -72,6 +95,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_restaurant_info);
 
         //set header toolbar in the layout
@@ -79,24 +103,24 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //init View
         txtRestName = (TextView) findViewById(R.id.txtRestName);
-
         txtNCheckIn = (TextView) findViewById(R.id.txtNCheckIn);
         txtNComment = (TextView) findViewById(R.id.txtNComment);
         txtNFavorite = (TextView) findViewById(R.id.txtNFavorite);
         txtNShare = (TextView) findViewById(R.id.txtNShare);
         txtNRate = (TextView) findViewById(R.id.txtNRate);
-
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         txtOpenTime = (TextView) findViewById(R.id.txtOpenTime);
         txtLocation = (TextView) findViewById(R.id.txtLocation);
         txtDescription = (TextView) findViewById(R.id.txtDescription);
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
-
         lnrFavorite = (LinearLayout)findViewById(R.id.lnrFavourite);
         lnrRate = (LinearLayout)findViewById(R.id.lnrRate);
+        lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
         lnrContact = (LinearLayout) findViewById(R.id.lnrContact);
+
 
         //get Restaurant
         Intent intent = this.getIntent();
@@ -106,6 +130,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             Log.i(TAG,"can't get restaurant data");
             Toast.makeText(this,"can't get restaurant data", Toast.LENGTH_LONG).show();
         }
+
         else
         {
             //get data
@@ -147,6 +172,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
             lnrContact.setOnClickListener(this);
             lnrRate.setOnClickListener(this);
+            lnrShare.setOnClickListener(this);
             lnrFavorite.setOnClickListener(this);
         }
 
@@ -246,6 +272,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
        try {
             DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.row_dish_info, restaurant.getDishes());
             lstDish.setAdapter(dishInfoList);
+            //make the list view don't have scroll
+            justifyListViewHeightBasedOnChildren(lstDish);
+
         }catch (Exception e)
         {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -262,7 +291,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.lnrFavourite:
                 //check login
-                if(true)
+                if(FoodMapApiManager.isGuestLogin())
                 {
                     //kiem tra da ton tai trong ds yeu thich chua
                     if(!guest.getFavRestaurant().contains(restaurant))
@@ -279,11 +308,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.lnrRate:
                 //check login
-                if(true) {
+                if(FoodMapApiManager.isGuestLogin()) {
                     View ratingLayout = getLayoutInflater().inflate(R.layout.dialog_rating, null);
                     final Dialog dialog = new Dialog(RestaurantInfoActivity.this);
                     dialog.setContentView(R.layout.dialog_rating);
-                    dialog.setCancelable(true);
+                    dialog.setCanceledOnTouchOutside(true);
                     dialog.show();
 
                     final RatingBar rtbRate = (RatingBar) ratingLayout.findViewById(R.id.rtbRate);
@@ -292,6 +321,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                         @Override
                         public void onClick(View v) {
                             restaurant.getRanks().put(guest.getEmail(), rtbRate.getNumStars());
+                            dialog.cancel();
                             dialog.dismiss();
                         }
                     });
@@ -302,6 +332,64 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
                 break;
             case R.id.lnrShare:
+                if(FoodMapApiManager.isGuestLogin()) {
+                    //Init Facebook
+                    callbackManager = CallbackManager.Factory.create();
+                    shareDialog = new ShareDialog(this);
+
+                    //Make the target
+                    Target target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            SharePhoto sharePhoto = new SharePhoto.Builder()
+                                    .setBitmap(bitmap)
+                                    .build();
+
+                            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                                SharePhotoContent content = new SharePhotoContent.Builder()
+                                        .addPhoto(sharePhoto)
+                                        .build();
+                                shareDialog.show(content);
+                            }
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    };
+
+                    shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                        @Override
+                        public void onSuccess(Sharer.Result result) {
+                            Toast.makeText(RestaurantInfoActivity.this, "success", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            Toast.makeText(RestaurantInfoActivity.this, "cancel", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onError(FacebookException error) {
+                            Toast.makeText(RestaurantInfoActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    //load image on facebook
+                    Picasso.with(getApplicationContext())
+                            .load(restaurant.getUrlImage())
+                            .into(target);
+                }
+                else
+                {
+                    Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.lnrContact:
                 Toast.makeText(this, restaurant.getPhoneNumber(), Toast.LENGTH_LONG).show();
@@ -315,6 +403,27 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             case R.id.lnrMenu:
                 break;
         }
+    }
+
+    public void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
     }
 }
 

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#90a4a1a1"
+        android:background="#50a4a1a1"
         android:paddingTop="3dp"
         android:paddingBottom="3dp">
 
@@ -146,7 +146,7 @@
     <!--2-->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <!--2-->
         <LinearLayout
@@ -484,7 +484,8 @@
             <ListView
                 android:id="@+id/lstDish"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_border">
 
             </ListView> <!--2.8-->
 
