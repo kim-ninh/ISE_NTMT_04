@@ -67,7 +67,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     LinearLayout lnrRate;
     LinearLayout lnrContact;
     Restaurant restaurant = new Restaurant();
-    Guest guest = Guest.getInstance();
+
+    int RestID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -259,15 +260,18 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             case R.id.lnrCheckIn:
                 break;
             case R.id.lnrComment:
+                Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
+                intent.putExtra("id_rest", RestID);
+                startActivity(intent);
                 break;
             case R.id.lnrFavourite:
                 //check login
                 if(true)
                 {
                     //kiem tra da ton tai trong ds yeu thich chua
-                    if(!guest.getFavRestaurant().contains(restaurant))
+                    if(!Guest.getInstance().getFavRestaurant().contains(restaurant))
                     {
-                        guest.getFavRestaurant().add(restaurant);
+                        Guest.getInstance().getFavRestaurant().add(restaurant);
                         restaurant.setnFavorites(restaurant.getnFavorites() + 1);
                     }
                     Toast.makeText(this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
@@ -291,7 +295,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     btnRateSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            restaurant.getRanks().put(guest.getEmail(), rtbRate.getNumStars());
+                            restaurant.getRanks().put(Guest.getInstance().getEmail(), rtbRate.getNumStars());
                             dialog.dismiss();
                         }
                     });
