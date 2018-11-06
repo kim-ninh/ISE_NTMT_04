@@ -22,7 +22,6 @@ public class LoadingActivity extends AppCompatActivity {
                 if (code == FoodMapApiManager.SUCCESS){
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     startActivity(intent);
-                    finish();
                 }
                 else if (code == FoodMapApiManager.FAIL_INFO){
                     Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
@@ -33,6 +32,8 @@ public class LoadingActivity extends AppCompatActivity {
                 else if (code == ConstantCODE.NOTINTERNET){
                     Toast.makeText(LoadingActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
                 }
+
+                finish();
             }
         });
     }
