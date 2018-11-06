@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -125,6 +126,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             restaurant.setName("sao bang lanh gia");
             restaurant.setPhoneNumber("0377389063");
             restaurant.setAddress("227 Nguyen Van Cu");
+
+            Dish dish;
+            for(int i=0; i<10; i++)
+            {
+                dish = new Dish();
+                dish.setName("supper chicken " + (i + 1));
+                dish.setPrice(i*100 + 100);
+                restaurant.getDishes().add(dish);
+            }
             //endbug
 
             setLayoutInfo();
@@ -233,8 +243,13 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
 
         //set Menu
-        /*DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.row_dish_info, restaurant.getDishes());
-        lstDish.setAdapter(dishInfoList);*/
+       try {
+            DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.row_dish_info, restaurant.getDishes());
+            lstDish.setAdapter(dishInfoList);
+        }catch (Exception e)
+        {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
