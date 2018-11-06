@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,7 +118,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
 
-        //generateFakeDishList();
+        generateFakeDishList();
         putDataToViews();
         adapter = new DishInfoListAdapter(
                 this,
@@ -124,7 +126,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
                 dishes
         );
         dishListView.setAdapter(adapter);
-
+        justifyListViewHeightBasedOnChildren(dishListView);
 
         //Enable the Up button
         setSupportActionBar(toolbar);
@@ -138,6 +140,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                //justifyListViewHeightBasedOnChildren(dishListView);       //TODO nhớ gọi hàm này sau khi đã thêm 1 món ăn
             }
         });
 
@@ -201,7 +205,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
 
-    // must not remove
+    //TODO must not remove
 //    private void getTransferDataFromActivity() {
 //        // Get the restaurant ID and dish Obj
 //        Gson gson = new Gson();
@@ -237,14 +241,14 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
     private void generateFakeDishList() {
         dishes = new ArrayList<>();
-        dishes.add(new Dish("Bánh tráng trộn",100000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",5000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",80000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",90000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",0,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",70000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",10000,"",null));
-        dishes.add(new Dish("Bánh tráng trộn",20000,"",null));
+        dishes.add(new Dish("Bánh tráng trộn",100000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",5000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",80000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",90000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",0,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",70000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",10000,"",new Catalog(1, "Cơm")));
+        dishes.add(new Dish("Bánh tráng trộn",20000,"",new Catalog(1, "Cơm")));
     }
 
     @Override
@@ -432,5 +436,34 @@ public class EditRestaurantActivity extends AppCompatActivity {
         // Invoke task
         addComment.execute(new DoingTask(GenerateRequest
                 .comment(id_rest, comment, Owner.getInstance().getToken())));
+    }
+
+    //region
+    //
+    // This method is get the adapter of the listview and calculate it size when all items are show
+    // Then we will have some thing like *ListView without Scrolling*
+    //
+    // Source: https://stackoverflow.com/questions/4338185/how-to-get-a-non-scrollable-listview
+    //endregion
+    // TODO REMEMBER to call this method every time the ListView adapter has changed (updated/deleted)
+    public void justifyListViewHeightBasedOnChildren (ListView listView) {
+
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
     }
 }
