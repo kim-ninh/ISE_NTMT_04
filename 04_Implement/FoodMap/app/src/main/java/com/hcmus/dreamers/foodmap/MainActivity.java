@@ -24,30 +24,26 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
-import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.JsonParser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
-import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
-import com.hcmus.dreamers.foodmap.event.MarkerClick;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,13 +51,12 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
-import com.hcmus.dreamers.foodmap.map.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
@@ -69,11 +64,13 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,13 +136,17 @@ public class MainActivity extends AppCompatActivity {
         //list marker
         markers = new ArrayList<OverlayItem>();
 
+        // thêm restaurant
+        addMarkerRestaurant();
+
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
         final Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
-        moveCamera(this.mLocationOverlay.getMyLocation());
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
+        moveCamera(this.mLocationOverlay.getMyLocation());
+
 
         // check permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -188,8 +189,24 @@ public class MainActivity extends AppCompatActivity {
         mapController.setZoom(17.0);
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new MarkerClick(getApplicationContext()));
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
+                Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
+                Restaurant restaurant = FoodMapManager.findRestaurant(point);
+                intent.putExtra("rest", (Serializable) restaurant);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+                return false;
+            }
+        });
         mOverlay.setFocusItemsOnTap(true);
+
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
@@ -581,5 +598,13 @@ public class MainActivity extends AppCompatActivity {
         taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
     }
 
+    void addMarkerRestaurant(){
+        List<Restaurant> restaurants = FoodMapManager.getRestaurants();
+        if (restaurants != null) {
+            for (Restaurant rest : restaurants) {
+                ItemizedOverlayWithFocus<OverlayItem> marker = addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
+            }
+        }
+    }
 
 }
