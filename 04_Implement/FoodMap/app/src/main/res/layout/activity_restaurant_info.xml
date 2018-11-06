@@ -14,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:elevation="4dp" />
 
     <include layout="@layout/restaurant_information_layout" />
