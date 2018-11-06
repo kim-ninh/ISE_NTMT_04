@@ -26,6 +26,8 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private String password;
     @SerializedName("phone_number")
     private String phoneNumber;
+    @SerializedName("url_image")
+    private String urlImage;
     @SerializedName("token")
     private String token;
 
@@ -169,5 +171,13 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
         });
 
         taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance)));
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }

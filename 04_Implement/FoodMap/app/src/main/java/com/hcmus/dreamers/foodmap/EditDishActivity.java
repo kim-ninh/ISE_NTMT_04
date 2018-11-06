@@ -1,7 +1,10 @@
 package com.hcmus.dreamers.foodmap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +14,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,24 +38,31 @@ import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditDishActivity extends AppCompatActivity {
 
 
-    EditText txtDishName;
+    TextView txtDishName;
     EditText txtDishCost;
     Spinner spnrDishType;
     GridView gridView;
     FloatingActionButton fab;
     Toolbar toolbar;
+    ImageAdapter adapter;
 
     Intent manageRest_manageDish;
     Bundle transferData = new Bundle();
 
     int rest_id;
     int row;
+    int gridRow = -1;
     Dish dish;
+    List<Uri> imagesUri = new ArrayList<>();
 
+    // arbitrary interprocess communication ID (just a nickname!)
+    private final int IPC_ID = (int) (10001 * Math.random());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +74,8 @@ public class EditDishActivity extends AppCompatActivity {
         getTransferDataFromActivity();
         putDataToViews();
 
-        gridView.setAdapter(new ImageAdapter(this));
+        adapter = new ImageAdapter(this,imagesUri);
+        gridView.setAdapter(adapter);
         spnrDishType.setAdapter(new ArrayAdapter<String>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
@@ -74,26 +86,61 @@ public class EditDishActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        handleClickEvent();
+    }
 
-        // HANDLE ALL CLICK EVENT
+    private void handleClickEvent() {
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+                // Open Galery to pick image
+                Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                gridRow = -1;
+                startActivityForResult(editDish_pickImage, IPC_ID);
+            }
+        });
+
+
+        spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                dish.setCatalog(new Catalog(position + 1,Catalog.getDishTypes()[position]));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // Chọn hình khác để đổi
+                Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                gridRow = position;
+                startActivityForResult(editDish_pickImage, IPC_ID);
+
+            }
+        });
+
+
+        txtDishName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Snackbar.make(v, "Nếu bạn muốn đổi tên món, hãy xóa và thêm lại món mới", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
-       spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-           @Override
-           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               dish.setCatalog(new Catalog(position + 1,Catalog.getDishTypes()[position]));
-           }
-
-           @Override
-           public void onNothingSelected(AdapterView<?> parent) {
-
-           }
-       });
     }
 
     private void putDataToViews() {
@@ -105,7 +152,7 @@ public class EditDishActivity extends AppCompatActivity {
 
         // Nếu có đường dẫn hình của món ăn thì đặt thì gán vào ImageView
         if (!dish.getUrlImage().isEmpty())
-            dishImage.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+            dishImage.setImageURI(Uri.parse(dish.getUrlImage()));
 
         spnrDishType.setSelection(dish.getCatalog().getId() - 1);
     }
@@ -123,7 +170,7 @@ public class EditDishActivity extends AppCompatActivity {
     }
 
     private void takeReferenceFromResource() {
-        txtDishName = (EditText) findViewById(R.id.txtDishName);
+        txtDishName = (TextView) findViewById(R.id.txtDishName);
         txtDishCost = (EditText) findViewById(R.id.txtDishCost);
         spnrDishType = (Spinner) findViewById(R.id.dishType);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -168,7 +215,7 @@ public class EditDishActivity extends AppCompatActivity {
                             }else if((int)response == ConstantCODE.NOTINTERNET){
                                 Toast.makeText(EditDishActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(EditDishActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(EditDishActivity.this, "Cập nhật món ăn thất bại!", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -197,5 +244,43 @@ public class EditDishActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_item_menu,menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try{
+
+           if (requestCode == IPC_ID){
+               if (resultCode == Activity.RESULT_OK){
+
+                   // Chuỗi URI trả về có dạng content://<path>
+                   String imageURI = data.getDataString();
+
+                   if (gridRow != -1)
+                   {
+                       //Thay đổi 1 hình có sẵn
+                       imagesUri.remove(gridRow);
+                       imagesUri.add(gridRow, Uri.parse(imageURI));
+                   }else
+                   {
+                       // Thêm mới 1 hình
+                       imagesUri.add(Uri.parse(imageURI));
+                   }
+                   adapter.notifyDataSetChanged();
+
+                   // Lấy hình đầu tiên làm hình đại diện cho món
+                  if (gridRow == 0 || imagesUri.size() == 1)
+                  {
+                      dish.setUrlImage(imagesUri.get(0).toString());
+                  }
+               }
+           }
+
+        }catch (Exception e){
+            Toast.makeText(EditDishActivity.this,
+                    e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

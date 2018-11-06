@@ -2,12 +2,13 @@
 include "../private/mail.php";
 include "../private/database.php";
 class Owner{
-		function Owner($username, $password, $name, $phone_number, $email, $token){
+		function Owner($username, $password, $name, $phone_number, $email, $url_image, $token){
 			$this->username = $username;
 			$this->password = $password;
 			$this->name = $name;
 			$this->phone_number = $phone_number;
 			$this->email = $email;
+			$this->url_image = $url_image;
 			$this->token = $token;
 		}
 	}
@@ -38,7 +39,7 @@ if (isset($_POST["email"]))
 			foreach ($check as $row) 
 			{
 				$token = $conn->GetToken($row["USERNAME"]);
-				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $token);
+				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"],$row["URL_IMAGE"], $token);
 				$response["data"] = $owner;
 				break;
 			}

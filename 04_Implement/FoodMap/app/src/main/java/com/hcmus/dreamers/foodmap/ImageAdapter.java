@@ -1,26 +1,31 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import java.util.List;
+
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    public ImageAdapter(Context context) {
+    private List<Uri> imagesUri;
+    public ImageAdapter(Context context, List<Uri> imagesUri) {
         mContext = context;
+        this.imagesUri = imagesUri;
     }
 
     @Override
     public int getCount() {
-        return mDishThumbIds.length;
+        return imagesUri.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return imagesUri.get(position);
     }
 
     @Override
@@ -43,17 +48,7 @@ public class ImageAdapter extends BaseAdapter {
             dishImage = (ImageView) convertView;
         }
 
-        dishImage.setImageResource(mDishThumbIds[position]);
+        dishImage.setImageURI(imagesUri.get(position));
         return dishImage;
     }
-
-    private Integer[] mDishThumbIds ={
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron,
-            R.drawable.thumbnail_banh_trang_tron
-    };
 }

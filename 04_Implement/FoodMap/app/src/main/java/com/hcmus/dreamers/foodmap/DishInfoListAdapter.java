@@ -45,7 +45,6 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
         lblDishName.setText(dish.getName());
         lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-        
 
         return row;
     }
