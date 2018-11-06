@@ -2,7 +2,6 @@ package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,11 +45,7 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
         lblDishName.setText(dish.getName());
         lblDisgPrice.setText(Integer.toString(dish.getPrice()));
-
-
-        //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
-        if (!dish.getUrlImage().isEmpty())
-            icon.setImageURI(Uri.fromFile(new File(dish.getUrlImage())));
+        
 
         return row;
     }

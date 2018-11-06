@@ -164,13 +164,18 @@ public class MainActivity extends AppCompatActivity {
                 new LocationChange(mMap, mLocationOverlay, mapController));
         
         //debug
-       /* ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
+       /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                intent.putExtra("RestID",123);
-                startActivity(intent);
+                try {
+                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                    intent.putExtra("RestID", 123);
+                    startActivity(intent);
+                }catch (Exception e)
+                {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });*/
 
