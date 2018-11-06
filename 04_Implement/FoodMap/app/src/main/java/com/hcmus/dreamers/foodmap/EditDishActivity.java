@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,7 +44,7 @@ import java.util.List;
 public class EditDishActivity extends AppCompatActivity {
 
 
-    EditText txtDishName;
+    TextView txtDishName;
     EditText txtDishCost;
     Spinner spnrDishType;
     GridView gridView;
@@ -56,7 +57,7 @@ public class EditDishActivity extends AppCompatActivity {
 
     int rest_id;
     int row;
-    int gridRow;
+    int gridRow = -1;
     Dish dish;
     List<Uri> imagesUri = new ArrayList<>();
 
@@ -89,6 +90,7 @@ public class EditDishActivity extends AppCompatActivity {
     }
 
     private void handleClickEvent() {
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,10 +99,12 @@ public class EditDishActivity extends AppCompatActivity {
                 Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                editDish_pickImage.putExtra("gridRow", -1);
+                gridRow = -1;
                 startActivityForResult(editDish_pickImage, IPC_ID);
             }
         });
+
+
         spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -113,6 +117,7 @@ public class EditDishActivity extends AppCompatActivity {
             }
         });
 
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -121,18 +126,21 @@ public class EditDishActivity extends AppCompatActivity {
                 Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                editDish_pickImage.putExtra("gridRow", position);
+                gridRow = position;
                 startActivityForResult(editDish_pickImage, IPC_ID);
 
             }
         });
-    }
 
-    private void OpenGaleryPicker() {
-        Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        startActivityForResult(editDish_pickImage, IPC_ID);
+        txtDishName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Snackbar.make(v, "Nếu bạn muốn đổi tên món, hãy xóa và thêm lại món mới", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     private void putDataToViews() {
@@ -162,7 +170,7 @@ public class EditDishActivity extends AppCompatActivity {
     }
 
     private void takeReferenceFromResource() {
-        txtDishName = (EditText) findViewById(R.id.txtDishName);
+        txtDishName = (TextView) findViewById(R.id.txtDishName);
         txtDishCost = (EditText) findViewById(R.id.txtDishCost);
         spnrDishType = (Spinner) findViewById(R.id.dishType);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -207,7 +215,7 @@ public class EditDishActivity extends AppCompatActivity {
                             }else if((int)response == ConstantCODE.NOTINTERNET){
                                 Toast.makeText(EditDishActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(EditDishActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(EditDishActivity.this, "Cập nhật món ăn thất bại!", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -248,7 +256,6 @@ public class EditDishActivity extends AppCompatActivity {
 
                    // Chuỗi URI trả về có dạng content://<path>
                    String imageURI = data.getDataString();
-                   gridRow = data.getIntExtra("gridRow",-1);
 
                    if (gridRow != -1)
                    {
