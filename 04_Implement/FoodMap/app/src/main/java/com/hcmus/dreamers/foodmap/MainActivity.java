@@ -440,10 +440,10 @@ public class MainActivity extends AppCompatActivity {
 
         txtEmail.setText(owner.getEmail());
 
-        if (owner.getRestaurant(0) != null && owner.getRestaurant(0).getUrlImage() != null)
+        if (owner.getUrlImage() != null)
         {
             DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
-            taskDownload.loadImageFromUrl(owner.getRestaurant(0).getUrlImage());
+            taskDownload.loadImageFromUrl(owner.getUrlImage());
         }
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

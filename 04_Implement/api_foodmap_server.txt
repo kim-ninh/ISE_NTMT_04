@@ -20,6 +20,7 @@
 			** name
 			** phone_number
 			** email
+			** url_image
 			** token
 			
 - createAccount:
@@ -268,6 +269,7 @@
 			** name
 			** phone_number
 			** email
+			** url_image
 			** token
 			
 - getCatalog:
