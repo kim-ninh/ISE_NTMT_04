@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,6 +123,42 @@ public class EditDishActivity extends AppCompatActivity {
                 gridRow = position;
                 startActivityForResult(editDish_pickImage, IPC_ID);
 
+            }
+        });
+
+
+        // Source: https://www.javatpoint.com/android-popup-menu-example
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long id) {
+
+                // Xóa hình, đặt làm hình đại diện (Dùng popup menu hiển thị)
+
+
+                // Create the instance of Popup Menu
+                PopupMenu popupMenu = new PopupMenu(EditDishActivity.this, view);
+                // Inflating the popup using xml file
+                popupMenu.getMenuInflater().inflate(R.menu.popup_menu_edit_dish_layout, popupMenu.getMenu());
+                // registering popup with OnMenuItemClickListener
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if (item.getItemId() == R.id.delete_dishImg)
+                        {
+                            imagesUri.remove(position);
+                            adapter.notifyDataSetChanged();
+                        }
+                        else if(item.getItemId() == R.id.set_default_thumbnail)
+                        {
+                            dish.setUrlImage(imagesUri.get(position).toString());
+                        }
+
+                        return true;
+                    }
+                });
+                popupMenu.show();
+                return true;
             }
         });
 
