@@ -136,7 +136,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         else
         {
             //debug
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+            /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
             try {
                 restaurant.setTimeOpen(simpleDateFormat.parse("08:00"));
                 restaurant.setTimeClose(simpleDateFormat.parse("22:00"));
@@ -158,7 +158,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 dish.setName("supper chicken " + (i + 1));
                 dish.setPrice(i*100 + 100);
                 restaurant.getDishes().add(dish);
-            }
+            }*/
             //endbug
 
             setLayoutInfo();
