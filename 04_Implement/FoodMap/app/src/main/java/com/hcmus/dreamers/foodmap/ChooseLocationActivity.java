@@ -121,7 +121,34 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             ChooseLocationActivity.this.finish();
         }
         else if (id == R.id.igv_mylocation) {
+            mapController.setZoom(17.0);
+            moveCamera(mLocationOverlay.getMyLocation());
+        }
+    }
 
+    // kiểm tra permission
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void checkPermission(){
+        isPermissionOK = true;
+        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(permissions,PERMISSION_CODEREQUEST);
+            isPermissionOK = false;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        isPermissionOK = true;
+        for (int i = 0; i <grantResults.length;i++)
+        {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
+            {
+                isPermissionOK = false;
+                break;
+            }
         }
     }
 
@@ -171,30 +198,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 new LocationChange(mMap, mLocationOverlay, mapController));
     }
 
-    // kiểm tra permission
-    @TargetApi(Build.VERSION_CODES.M)
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    void checkPermission(){
-        isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissions,PERMISSION_CODEREQUEST);
-            isPermissionOK = false;
-        }
+    private void moveCamera(GeoPoint point){
+        mapController.setCenter(point);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        isPermissionOK = true;
-        for (int i = 0; i <grantResults.length;i++)
-        {
-            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
-            {
-                isPermissionOK = false;
-                break;
-            }
-        }
-    }
-
 }

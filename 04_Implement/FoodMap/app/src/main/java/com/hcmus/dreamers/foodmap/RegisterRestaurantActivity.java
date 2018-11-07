@@ -126,7 +126,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
             startActivityForResult(editDish_pickImage, IPC_ID);
         }
         else if (id == R.id.btnRegister){
-
+            Toast.makeText(RegisterRestaurantActivity.this, "btnRegister", Toast.LENGTH_LONG).show();
         }
         else if (id == R.id.btnLocation){
 
