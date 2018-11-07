@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.R;
 
 import java.util.List;
@@ -50,7 +51,19 @@ public class ImageAdapter extends BaseAdapter {
             dishImage = (ImageView) convertView;
         }
 
-        dishImage.setImageURI(imagesUri.get(position));
+        String imageUri = imagesUri.get(position).toString();
+
+        // Kiểm tra xem đường dẫn là trên server hay dưới local
+        if (imageUri.matches("^(http|https)://.*"))
+        {
+            DownloadImageTask taskDownload = new DownloadImageTask(dishImage, mContext);
+            taskDownload.loadImageFromUrl(imageUri);
+        }
+        else
+        {
+            dishImage.setImageURI(imagesUri.get(position));
+        }
+
         return dishImage;
     }
 }
