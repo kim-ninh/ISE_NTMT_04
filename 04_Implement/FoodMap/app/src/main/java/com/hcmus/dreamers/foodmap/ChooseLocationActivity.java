@@ -154,10 +154,14 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     @RequiresApi(api = Build.VERSION_CODES.M)
     void checkPermission(){
         isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissions,PERMISSION_CODEREQUEST);
-            isPermissionOK = false;
+        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        for (String permission: permissions){
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                requestPermissions(permissions,PERMISSION_CODEREQUEST);
+                isPermissionOK = false;
+                break;
+            }
         }
     }
 
@@ -174,7 +178,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
 
     private void mapInit()
     {

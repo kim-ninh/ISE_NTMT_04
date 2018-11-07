@@ -62,7 +62,6 @@ import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -136,8 +135,10 @@ public class MainActivity extends AppCompatActivity {
         igvMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mapController.setZoom(17.0);
-                moveCamera(mLocationOverlay.getMyLocation());
+                if (mLocationOverlay != null){
+                    mapController.setZoom(17.0);
+                    moveCamera(mLocationOverlay.getMyLocation());
+                }
             }
         });
 
@@ -174,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-        mapInit();
     }
 
     @Override
@@ -191,9 +191,11 @@ public class MainActivity extends AppCompatActivity {
     {
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
-        Configuration.getInstance().setUserAgentValue(getPackageName());
+
 
         // cài đặt map
         mMap.setBuiltInZoomControls(true);
