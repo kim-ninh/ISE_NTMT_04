@@ -54,6 +54,7 @@ public class LoginGuestActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_guest);
+
         btnLoginFb = (Button)findViewById(R.id.btnFacebookLogin);
         btnLoginOwner = (Button)findViewById(R.id.btnOwnerLogin);
         btnLoginOwner.setOnClickListener(new View.OnClickListener() {

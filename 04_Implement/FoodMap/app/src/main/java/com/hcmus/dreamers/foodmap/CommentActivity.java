@@ -1,10 +1,12 @@
+
 package com.hcmus.dreamers.foodmap;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,7 +19,6 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.CommentListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.util.ArrayList;
@@ -28,20 +29,27 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView lstComment;
     EditText edtComment;
     ImageView igvComment;
+    Toolbar toolbar;
     int id_rest;
 
     List<Comment> comments;
     CommentListAdapter commentListAdapter;
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        comments = new ArrayList<Comment>();
+        toolbar = (Toolbar)findViewById(R.id.comment_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        loadDataRecyclerView();
         commentListAdapter = new CommentListAdapter(CommentActivity.this,R.layout.item_comment_list,comments);
         //commentListAdapter.setOnClickListener(this);
-        loadDataRecyclerView();
+
 
         lstComment = (RecyclerView)findViewById(R.id.lstComment);
         lstComment.setAdapter(commentListAdapter);
@@ -98,6 +106,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     void loadDataRecyclerView(){
+        comments = new ArrayList<Comment>();
         Intent intent = getIntent();
         if (intent != null){
             Restaurant restaurant = (Restaurant) intent.getSerializableExtra("rest");
@@ -106,5 +115,14 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 comments = restaurant.getComments();
             }
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            CommentActivity.this.finish();
+        }
+        return true;
     }
 }

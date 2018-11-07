@@ -165,28 +165,12 @@ public class MainActivity extends AppCompatActivity {
         }
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
-        
-        //debug
-      /* ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
-        imgSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                    intent.putExtra("RestID", 123);
-                    startActivity(intent);
-                }catch (Exception e)
-                {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });*/
 
     }
 
     // thêm một marker vào map
     private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-        mapController.setZoom(17.0);
+        markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
@@ -440,22 +424,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void Goto_NinhShortcut() {
-//        Restaurant rest = new Restaurant();
-//        Gson gson = new Gson();
-//        Intent main_manageDish = new Intent(MainActivity.this,EditDishActivity.class);
-//        main_manageDish.putExtra("restJSON",gson.toJson(rest));
-//        startActivity(main_manageDish);
-
-        Intent main_manageRest = new Intent(MainActivity.this,
-                EditRestaurantActivity.class);
-        startActivity(main_manageRest);
-
-//        Intent main_manageAccount = new Intent(MainActivity.this,
-//                ManageAccountActivity.class);
-//        startActivity(main_manageAccount);
-    }
-
     void initMenuLoginOwner(){
         // change header
         navigationMenu = (NavigationView)findViewById(R.id.nav_view);
@@ -602,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
         List<Restaurant> restaurants = FoodMapManager.getRestaurants();
         if (restaurants != null) {
             for (Restaurant rest : restaurants) {
-                ItemizedOverlayWithFocus<OverlayItem> marker = addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
+                addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
         }
     }

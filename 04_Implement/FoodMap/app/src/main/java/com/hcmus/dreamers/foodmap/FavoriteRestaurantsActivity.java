@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 
 import java.util.List;
 

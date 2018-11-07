@@ -1,14 +1,11 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -19,11 +16,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,28 +38,20 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
-import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import org.osmdroid.util.GeoPoint;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 public class RestaurantInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -189,7 +175,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }
     }
 
-    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setLayoutInfo() {
         //set Description Image
         DownloadImageTask taskDownload = new DownloadImageTask(imgDescription, getApplicationContext());
@@ -236,7 +221,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
 
         //set Time and Status
-        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
         txtOpenTime.setText(simpleDateFormat.format(restaurant.getTimeOpen()) + " - " + simpleDateFormat.format(restaurant.getTimeClose()));
 
