@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -56,6 +59,8 @@ import java.util.Map;
 public class RestaurantInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "RestAcitvity";
+    private static final int CM_ID = 1009;
+
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -273,7 +278,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             case R.id.lnrComment:
                 Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
                 intent.putExtra("rest", restaurant);
-                startActivity(intent);
+                startActivityForResult(intent, CM_ID);
                 break;
             case R.id.lnrFavourite:
                 //check login
@@ -410,6 +415,21 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
         listView.setLayoutParams(par);
         listView.requestLayout();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CM_ID){
+            if (resultCode == Activity.RESULT_OK){
+                boolean isRefesh = data.getBooleanExtra("isRefesh", false);
+                if (isRefesh){
+                    int id_rest = restaurant.getId();
+                    restaurant = FoodMapManager.findRestaurant(id_rest);
+                    if (restaurant == null)
+                        RestaurantInfoActivity.this.finish();
+                }
+            }
+        }
     }
 }
 

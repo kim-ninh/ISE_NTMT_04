@@ -73,4 +73,17 @@ public class FoodMapManager {
         return comments;
     }
 
+    public static void addComment(Context context, int id_rest, Comment comment){
+
+        int n = restaurants.size();
+        for (int i = 0; i< n; i++)
+        {
+            if (restaurants.get(i).getId() == id_rest)
+            {
+                restaurants.get(i).getComments().add(comment);
+                return;
+            }
+        }
+    }
+
 }

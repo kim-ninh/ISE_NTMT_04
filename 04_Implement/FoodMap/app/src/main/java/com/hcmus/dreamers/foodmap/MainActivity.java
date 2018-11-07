@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
 
     // thêm một marker vào map
     private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-        markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {

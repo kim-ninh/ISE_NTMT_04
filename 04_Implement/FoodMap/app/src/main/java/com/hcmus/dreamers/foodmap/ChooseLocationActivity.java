@@ -17,32 +17,50 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.Model.DetailAddress;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChooseLocationActivity extends AppCompatActivity implements View.OnClickListener {
 
     String address;
-    GeoPoint geoPoint;
+    GeoPoint point;
     private static final int PERMISSION_CODEREQUEST = 9001;
 
-    AutoCompleteTextView atclPlaceSearch;
+    AutoCompleteTextView atclSearch;
     ImageView igvDone;
     ImageView igvMyLocation;
 
@@ -54,6 +72,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     private IMapController mapController;
     private boolean isPermissionOK;
     private ArrayList<OverlayItem> markers;
+
+    private List<DetailAddress> detailAddresses;
+    private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +91,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         igvMyLocation = (ImageView)findViewById(R.id.igv_mylocation);
         igvMyLocation.setOnClickListener(this);
 
-        atclPlaceSearch = (AutoCompleteTextView)findViewById(R.id.atclSearch);
+        searchAutoCompleteSupportInit();
 
         toolbar = (Toolbar)findViewById(R.id.choose_loaction_toolbar);
         setSupportActionBar(toolbar);
@@ -83,7 +104,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         Intent intent = getIntent();
         address = intent.getStringExtra("address");
         if (address != null){
-            atclPlaceSearch.setText(address);
+            atclSearch.setText(address);
         }
     }
 
@@ -112,9 +133,11 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         int id = v.getId();
 
         if (id == R.id.igv_done){
+            address = atclSearch.getText().toString();
+
             Intent intent = new Intent();
-            intent.putExtra("lat", geoPoint.getLatitude());
-            intent.putExtra("lon", geoPoint.getLongitude());
+            intent.putExtra("lat", point.getLatitude());
+            intent.putExtra("lon", point.getLongitude());
             intent.putExtra("address", address);
             setResult(Activity.RESULT_OK, intent);
 
@@ -186,6 +209,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
+        point = new GeoPoint(mLocationOverlay.getMyLocation().getLatitude(), mLocationOverlay.getMyLocation().getLongitude());
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -198,7 +222,100 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 new LocationChange(mMap, mLocationOverlay, mapController));
     }
 
+    // thêm một marker vào map
+    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
+        markers.clear();
+        markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
+        // thêm sự kiện marker click
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
+                return false;
+            }
+
+            @Override
+            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
+                Restaurant restaurant = FoodMapManager.findRestaurant(point);
+
+                if (restaurant != null){
+                    Intent intent = new Intent(ChooseLocationActivity.this, RestaurantInfoActivity.class);
+                    intent.putExtra("rest", (Serializable) restaurant);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+        mOverlay.setFocusItemsOnTap(true);
+
+        // thêm marker vào map và chỉ một marker được tồn tại
+        mMap.getOverlays().clear();
+        mMap.getOverlays().add(mOverlay);
+        mMap.invalidate();
+        return mOverlay;
+    }
     private void moveCamera(GeoPoint point){
         mapController.setCenter(point);
+    }
+
+    //
+    void searchAutoCompleteSupportInit(){
+        atclSearch = (AutoCompleteTextView)findViewById(R.id.atclSearch);
+        atclSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String address = s.toString();
+                if (address.length() >= 3)
+                    refeshListAddressSearch(address);
+            }
+        });
+
+        detailAddresses = new ArrayList<DetailAddress>();
+        placeAutoCompleteApdapter = new PlaceAutoCompleteApdapter(ChooseLocationActivity.this, R.layout.item_detailaddress_list, detailAddresses);
+        atclSearch.setAdapter(placeAutoCompleteApdapter);
+        atclSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = detailAddresses.get(position).getName();
+                String address = detailAddresses.get(position).toString();
+                point = detailAddresses.get(position).getPoint();
+
+                atclSearch.setText(address);
+                addMarker(name, address, point);
+                moveCamera(point);
+                Toast.makeText(ChooseLocationActivity.this, detailAddresses.get(position).toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    void refeshListAddressSearch(String address){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String rep = response.toString();
+                if (rep != null)
+                {
+                    try {
+                        detailAddresses.clear();
+                        detailAddresses.addAll(ParseJSON.parseDetailAddress(rep));
+                        placeAutoCompleteApdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
     }
 }
