@@ -158,7 +158,7 @@
                 android:id="@+id/imgDescription"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:background="#c02d2d"/>
+                android:background="#c02d2d" />
 
             <!--2.2-->
             <TextView
@@ -167,8 +167,8 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="Restaurant name"
-                android:textSize="20sp"
-                android:textColor="#f50f0f" />
+                android:textColor="#f50f0f"
+                android:textSize="20sp" />
 
             <!--2.3-->
             <LinearLayout
@@ -180,24 +180,24 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/txtNCheckIn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="47"
                         android:layout_gravity="center_horizontal"
+                        android:text="47"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:text="Check-in"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout> <!--2.3.1-->
 
@@ -205,24 +205,24 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/txtNComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="47"
                         android:layout_gravity="center_horizontal"
+                        android:text="47"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:text="Comments"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout> <!--2.3.2-->
 
@@ -230,24 +230,24 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/txtNFavorite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="47"
                         android:layout_gravity="center_horizontal"
+                        android:text="47"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:text="Favorites"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout> <!--2.3.3-->
 
@@ -255,24 +255,24 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/txtNShare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="47"
                         android:layout_gravity="center"
+                        android:text="47"
                         android:textAlignment="center"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:text="Shares"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout> <!--2.3.4-->
 
@@ -281,8 +281,8 @@
                     android:id="@+id/lnrNRate"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/circle">
+                    android:background="@drawable/circle"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/txtNRate"
@@ -290,14 +290,16 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="6.2"
-                        android:textStyle="bold"
                         android:textColor="#ffffffff"
-                        android:textSize="17sp"/>
+                        android:textSize="15dp"
+                        android:textStyle="bold"/>
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/ic_star"/>
+                        android:src="@drawable/ic_star"
+                        android:layout_weight="3"/>
                 </LinearLayout><!--2.3.5-->
 
             </LinearLayout><!--2.3-->
@@ -321,44 +323,29 @@
                         android:layout_height="wrap_content"
                         android:text="OPENING"
                         android:textColor="#10f91c"
-                        android:textSize="16dp"/>
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal"/>
 
                     <TextView
                         android:id="@+id/txtOpenTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="06:30 - 22:30"/>
+                        android:text="06:30 - 22:30" />
 
                 </LinearLayout><!--2.4.1-->
 
                 <!--2.4.2-->
-                <LinearLayout
-                    android:id="@+id/lnrContact"
-                    android:layout_width="120dp"
-                    android:layout_height="35dp"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_vertical"
-                    android:background="#8f8989"
-                    android:layout_marginLeft="150dp"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_contact_phone"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="Contact"
-                        android:textSize="15dp"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
-
+                <Button
+                    android:id="@+id/btnContact"
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="130dp"
+                    android:drawableLeft="@drawable/ic_contact_phone"
+                    android:gravity="end"
+                    android:text="Contact"
+                    android:textAlignment="textEnd"
+                    android:textSize="15dp" />
 
             </LinearLayout><!--2.4-->
 
@@ -372,22 +359,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="5dp">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/ic_location"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_location" />
 
                     <TextView
                         android:id="@+id/txtLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="restaurant address"
-                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="restaurant address"
                         android:textStyle="bold" />
 
                 </LinearLayout><!--2.5.1-->
@@ -396,22 +383,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="5dp">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:background="@drawable/ic_food"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/ic_food" />
 
                     <TextView
                         android:id="@+id/txtDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="restaurant description"
-                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="restaurant description"
                         android:textStyle="bold" />
 
                 </LinearLayout><!--2.5.1-->
@@ -420,22 +407,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="5dp">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/ic_dollar"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_dollar" />
 
                     <TextView
                         android:id="@+id/txtPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="100$ - 2000$"
-                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="100$ - 2000$"
                         android:textStyle="bold" />
 
                 </LinearLayout><!--2.5.1-->
@@ -452,35 +439,25 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_menu"
-                    android:layout_marginLeft="5dp"/>
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/ic_menu" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Menu"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"/>
+                    android:layout_marginLeft="10dp"
+                    android:text="Menu" />
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_next"
-                    android:layout_marginLeft="270dp"/>
+                    android:layout_marginLeft="270dp"
+                    android:src="@drawable/ic_next" />
 
             </LinearLayout><!--2.6-->
 
-           <!--2.7-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Most selected"
-                android:paddingLeft="7dp"
-                android:textStyle="bold"
-                android:textSize="15dp"
-                android:textColor="@color/colorPrimaryDark"/>
-
-            <!--2.8-->
+            <!--2.7-->
             <ListView
                 android:id="@+id/lstDish"
                 android:layout_width="match_parent"

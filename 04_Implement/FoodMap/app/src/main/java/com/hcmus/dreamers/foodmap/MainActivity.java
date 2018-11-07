@@ -166,6 +166,14 @@ public class MainActivity extends AppCompatActivity {
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
+        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
+        imgSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RestaurantInfoActivity.class));
+            }
+        });*/
+
     }
 
     // thêm một marker vào map
