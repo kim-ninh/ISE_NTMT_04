@@ -67,9 +67,10 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(CommentActivity.this,"Bạn phải đăng nhập trước", Toast.LENGTH_LONG).show();
             }
             else{
-                if (edtComment.getText().equals("")){
+                String content = edtComment.getText().toString();
+                if (content.equals("")){
                     final Comment comment = new Comment();
-                    comment.setComment(edtComment.getText().toString());
+                    comment.setComment(content);
                     String token = null;
 
                     if (FoodMapApiManager.isGuestLogin()){
