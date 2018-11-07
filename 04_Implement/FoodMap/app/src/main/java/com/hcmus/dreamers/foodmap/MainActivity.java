@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -61,6 +62,7 @@ import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -70,6 +72,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     private AutoCompleteTextView atclSearch;
     private List<DetailAddress> detailAddresses;
     private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
+
+    private ImageView igvMyLocation;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
@@ -111,16 +116,84 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
+        // check permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+
         // setup view
         mapInit();
+        //
         navmenuToolbarInit();
         // init AutocompleteTextView
         searchAutoCompleteSupportInit();
 
-        mMap = (MapView) findViewById(R.id.map);
-        isPermissionOK = false;
+        // button my location
+        igvMyLocation = (ImageView) findViewById(R.id.igv_mylocation);
+        igvMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapController.setZoom(17.0);
+                moveCamera(mLocationOverlay.getMyLocation());
+            }
+        });
+
+        // thêm restaurant
+        addMarkerRestaurant();
+    }
+
+    // kiểm tra permission
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void checkPermission(){
+        isPermissionOK = true;
+        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        for (String permission: permissions){
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                requestPermissions(permissions,PERMISSION_CODEREQUEST);
+                isPermissionOK = false;
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        isPermissionOK = true;
+        for (int i = 0; i <grantResults.length;i++)
+        {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
+            {
+                isPermissionOK = false;
+                break;
+            }
+        }
+        mapInit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private void mapInit()
+    {
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
 
         // cài đặt map
         mMap.setBuiltInZoomControls(true);
@@ -136,29 +209,19 @@ public class MainActivity extends AppCompatActivity {
         //list marker
         markers = new ArrayList<OverlayItem>();
 
-        // thêm restaurant
-        addMarkerRestaurant();
-
-        // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        final Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        // thêm marker vào
-        mMap.getOverlays().add(this.mLocationOverlay);
-        moveCamera(this.mLocationOverlay.getMyLocation());
-
-
-        // check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-
         // cài đặt event location change
         if (!isPermissionOK)
             return;
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //
+
+        // cài đặt marker vị trí
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
+        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        mLocationOverlay.setPersonIcon(iconMyLocation);
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        // thêm marker vào
+        mMap.getOverlays().add(this.mLocationOverlay);
+
+
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -166,34 +229,28 @@ public class MainActivity extends AppCompatActivity {
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
-        /*ImageView imgSearch = (ImageView)findViewById(R.id.imgSearch);
-        imgSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, RestaurantInfoActivity.class));
-            }
-        });*/
-
     }
 
     // thêm một marker vào map
     private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-        markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
-                Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
-                Restaurant restaurant = FoodMapManager.findRestaurant(point);
-                intent.putExtra("rest", (Serializable) restaurant);
-                startActivity(intent);
                 return false;
             }
 
             @Override
             public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
+                Restaurant restaurant = FoodMapManager.findRestaurant(point);
+
+                if (restaurant != null){
+                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                    intent.putExtra("rest", (Serializable) restaurant);
+                    startActivity(intent);
+                }
                 return false;
             }
         });
@@ -205,44 +262,9 @@ public class MainActivity extends AppCompatActivity {
         return mOverlay;
     }
 
-    // xóa marker ra khỏi map
-    private void deleteMarker(ItemizedOverlayWithFocus<OverlayItem> marker)
-    {
-        mMap.getOverlays().add(marker);
-        mMap.invalidate();
-    }
-
     private void moveCamera(GeoPoint point){
         mapController.setCenter(point);
     }
-
-
-    // kiểm tra permission
-    @TargetApi(Build.VERSION_CODES.M)
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    void checkPermission(){
-        isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissions,PERMISSION_CODEREQUEST);
-            isPermissionOK = false;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        isPermissionOK = true;
-        for (int i = 0; i <grantResults.length;i++)
-        {
-            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
-            {
-                isPermissionOK = false;
-                break;
-            }
-        }
-    }
-
 
     // navigation menu and toolbar init
     void navmenuToolbarInit(){
@@ -263,41 +285,6 @@ public class MainActivity extends AppCompatActivity {
         else{
             initMenuNotLogin();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }
-
-    private void mapInit()
-    {
-        // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
-        if (Build.VERSION.SDK_INT >= 16)
-            mMap.setHasTransientState(true);
-
-        mapController = mMap.getController();
-        mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
-        mMap.setTileSource(TileSourceFactory.MAPNIK);
-
-        //list marker
-        markers = new ArrayList<OverlayItem>();
-
-        // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
-        // thêm marker vào
-        mMap.getOverlays().add(this.mLocationOverlay);
     }
 
     void initMenuLoginGuest(){
@@ -582,5 +569,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

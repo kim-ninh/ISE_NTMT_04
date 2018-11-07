@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.R;
 
 import java.util.List;
@@ -43,14 +44,26 @@ public class ImageAdapter extends BaseAdapter {
             int grid_size = mContext.getResources().getDimensionPixelSize(R.dimen.gridview_size);
             dishImage.setLayoutParams(new ViewGroup.LayoutParams(grid_size,grid_size));
             dishImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
+            dishImage.setPadding(5,5,5,5);
         }
         else
         {
             dishImage = (ImageView) convertView;
         }
 
-        dishImage.setImageURI(imagesUri.get(position));
+        String imageUri = imagesUri.get(position).toString();
+
+        // Kiểm tra xem đường dẫn là trên server hay dưới local
+        if (imageUri.matches("^(http|https)://.*"))
+        {
+            DownloadImageTask taskDownload = new DownloadImageTask(dishImage, mContext);
+            taskDownload.loadImageFromUrl(imageUri);
+        }
+        else
+        {
+            dishImage.setImageURI(imagesUri.get(position));
+        }
+
         return dishImage;
     }
 }

@@ -24,7 +24,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="20">
+        android:layout_weight="1">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/lstComment"
                 android:layout_width="match_parent"
@@ -34,14 +34,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp">
 
         <EditText
             android:id="@+id/edtComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="10"
             android:maxLines="1"/>
 
@@ -50,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:id="@+id/igvComment"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:src="@drawable/ic_manager" />
     </LinearLayout>
 </LinearLayout>

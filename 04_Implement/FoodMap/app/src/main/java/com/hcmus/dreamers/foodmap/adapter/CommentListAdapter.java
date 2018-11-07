@@ -33,7 +33,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     @NonNull
     @Override
     public ViewHolderComment onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        ViewHolderComment viewHolderComment = new ViewHolderComment(LayoutInflater.from(context).inflate(resource, null));
+        ViewHolderComment viewHolderComment = new ViewHolderComment(LayoutInflater.from(context).inflate(resource, viewGroup, false));
         return  viewHolderComment;
     }
 
