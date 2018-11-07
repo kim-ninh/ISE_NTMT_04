@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -61,6 +62,7 @@ import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -70,6 +72,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
         //
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
+        // check permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+
         // setup view
         mapInit();
         //
@@ -142,11 +150,16 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     void checkPermission(){
         isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissions,PERMISSION_CODEREQUEST);
-            isPermissionOK = false;
+        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        for (String permission: permissions){
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                requestPermissions(permissions,PERMISSION_CODEREQUEST);
+                isPermissionOK = false;
+                break;
+            }
         }
+
     }
 
     @Override
@@ -161,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+        mapInit();
     }
 
     @Override
@@ -175,6 +189,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void mapInit()
     {
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
         // cài đặt map
         mMap.setBuiltInZoomControls(true);
         mMap.setMultiTouchControls(true);
@@ -189,11 +209,6 @@ public class MainActivity extends AppCompatActivity {
         //list marker
         markers = new ArrayList<OverlayItem>();
 
-        // check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-
         // cài đặt event location change
         if (!isPermissionOK)
             return;
@@ -207,15 +222,14 @@ public class MainActivity extends AppCompatActivity {
         mMap.getOverlays().add(this.mLocationOverlay);
 
 
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
+
+
     }
 
     // thêm một marker vào map
@@ -556,5 +570,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
