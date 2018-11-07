@@ -17,8 +17,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-
-import java.util.List;
+import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 
 public class FavoriteRestaurantsActivity extends AppCompatActivity implements TextWatcher {
 
