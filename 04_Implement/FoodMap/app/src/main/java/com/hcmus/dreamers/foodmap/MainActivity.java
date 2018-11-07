@@ -118,56 +118,10 @@ public class MainActivity extends AppCompatActivity {
         isPermissionOK = false;
         // setup view
         mapInit();
+        //
         navmenuToolbarInit();
         // init AutocompleteTextView
         searchAutoCompleteSupportInit();
-
-        mMap = (MapView) findViewById(R.id.map);
-        isPermissionOK = false;
-
-        // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
-        if (Build.VERSION.SDK_INT >= 16)
-            mMap.setHasTransientState(true);
-
-        mapController = mMap.getController();
-        mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
-        mMap.setTileSource(TileSourceFactory.MAPNIK);
-
-        //list marker
-        markers = new ArrayList<OverlayItem>();
-
-        // thêm restaurant
-        addMarkerRestaurant();
-
-        // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        final Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        // thêm marker vào
-        mMap.getOverlays().add(this.mLocationOverlay);
-        moveCamera(this.mLocationOverlay.getMyLocation());
-
-
-        // check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-
-        // cài đặt event location change
-        if (!isPermissionOK)
-            return;
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //
-        mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
-                new LocationChange(mMap, mLocationOverlay, mapController));
 
         // button my location
         igvMyLocation = (ImageView) findViewById(R.id.igv_mylocation);
@@ -178,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 moveCamera(mLocationOverlay.getMyLocation());
             }
         });
+
+        // thêm restaurant
+        addMarkerRestaurant();
     }
 
     // thêm một marker vào map
@@ -239,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -266,6 +223,15 @@ public class MainActivity extends AppCompatActivity {
         //list marker
         markers = new ArrayList<OverlayItem>();
 
+        // check permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+
+        // cài đặt event location change
+        if (!isPermissionOK)
+            return;
+
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
@@ -273,6 +239,17 @@ public class MainActivity extends AppCompatActivity {
         mapController.setCenter(this.mLocationOverlay.getMyLocation());
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
+
+
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
+        mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
+                new LocationChange(mMap, mLocationOverlay, mapController));
     }
 
     // navigation menu and toolbar init
