@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+
+import com.hcmus.dreamers.foodmap.R;
 
 import java.util.List;
 

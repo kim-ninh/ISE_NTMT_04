@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.R;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Dish;
+import com.hcmus.dreamers.foodmap.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +52,10 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
         //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
         if (!dish.getUrlImage().isEmpty())
-            icon.setImageURI(Uri.parse(dish.getUrlImage()));
+        {
+            DownloadImageTask taskDownload = new DownloadImageTask(icon, getContext());
+            taskDownload.loadImageFromUrl(dish.getUrlImage());
+        }
 
         return row;
     }
