@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private List<DetailAddress> detailAddresses;
     private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
 
+    private ImageView igvMyLocation;
+
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
         // setup view
@@ -166,6 +169,15 @@ public class MainActivity extends AppCompatActivity {
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
+        // button my location
+        igvMyLocation = (ImageView) findViewById(R.id.igv_mylocation);
+        igvMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapController.setZoom(17.0);
+                moveCamera(mLocationOverlay.getMyLocation());
+            }
+        });
     }
 
     // thêm một marker vào map
@@ -195,13 +207,6 @@ public class MainActivity extends AppCompatActivity {
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
         return mOverlay;
-    }
-
-    // xóa marker ra khỏi map
-    private void deleteMarker(ItemizedOverlayWithFocus<OverlayItem> marker)
-    {
-        mMap.getOverlays().add(marker);
-        mMap.invalidate();
     }
 
     private void moveCamera(GeoPoint point){
@@ -234,29 +239,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
-    // navigation menu and toolbar init
-    void navmenuToolbarInit(){
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
-        setSupportActionBar(toolbar);
-
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.nav_open,R.string.nav_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (FoodMapApiManager.isGuestLogin()){
-            initMenuLoginGuest();
-        }
-        else if (FoodMapApiManager.isLogin()){
-            initMenuLoginOwner();
-        }
-        else{
-            initMenuNotLogin();
-        }
-    }
-
+    
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -290,6 +273,27 @@ public class MainActivity extends AppCompatActivity {
         mapController.setCenter(this.mLocationOverlay.getMyLocation());
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
+    }
+
+    // navigation menu and toolbar init
+    void navmenuToolbarInit(){
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar, R.string.nav_open,R.string.nav_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        if (FoodMapApiManager.isGuestLogin()){
+            initMenuLoginGuest();
+        }
+        else if (FoodMapApiManager.isLogin()){
+            initMenuLoginOwner();
+        }
+        else{
+            initMenuNotLogin();
+        }
     }
 
     void initMenuLoginGuest(){
