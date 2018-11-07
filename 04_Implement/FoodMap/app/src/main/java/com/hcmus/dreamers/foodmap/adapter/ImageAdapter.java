@@ -43,7 +43,7 @@ public class ImageAdapter extends BaseAdapter {
             int grid_size = mContext.getResources().getDimensionPixelSize(R.dimen.gridview_size);
             dishImage.setLayoutParams(new ViewGroup.LayoutParams(grid_size,grid_size));
             dishImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
+            dishImage.setPadding(5,5,5,5);
         }
         else
         {
