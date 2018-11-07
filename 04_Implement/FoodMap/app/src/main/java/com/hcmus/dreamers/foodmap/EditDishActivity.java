@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,19 +24,13 @@ import android.view.View;
 
 
 import com.google.gson.Gson;
-import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Dish;
-import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.adapter.ImageAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.GenerateRequest;
-import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
-import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,14 +139,6 @@ public class EditDishActivity extends AppCompatActivity {
     private void putDataToViews() {
         txtDishName.setText(dish.getName());
         txtDishCost.setText(Integer.toString(dish.getPrice()));
-
-        // Mặc định sẽ lấy hình đầu tiên làm hình đại diện của món
-        ImageView dishImage =(ImageView) gridView.getChildAt(0);
-
-        // Nếu có đường dẫn hình của món ăn thì đặt thì gán vào ImageView
-        if (!dish.getUrlImage().isEmpty())
-            dishImage.setImageURI(Uri.parse(dish.getUrlImage()));
-
         spnrDishType.setSelection(dish.getCatalog().getId() - 1);
     }
 
@@ -167,6 +152,18 @@ public class EditDishActivity extends AppCompatActivity {
         String dishJSON = transferData.getString("dishJSON");
         dish = gson.fromJson(dishJSON, Dish.class);
         row = transferData.getInt("dishRow");
+
+        // Check null pointer and shut down activity
+        if (dish == null)
+        {
+            Toast.makeText(this,
+                    "Dish object is null. Are you forgot to create it?",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        if (!dish.getUrlImage().isEmpty())
+            imagesUri.add(Uri.parse(dish.getUrlImage()));
     }
 
     private void takeReferenceFromResource() {

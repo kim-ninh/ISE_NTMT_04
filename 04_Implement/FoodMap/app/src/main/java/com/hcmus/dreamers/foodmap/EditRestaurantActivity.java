@@ -3,12 +3,10 @@ package com.hcmus.dreamers.foodmap;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -17,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +30,7 @@ import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -41,10 +38,8 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.osmdroid.util.GeoPoint;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -101,7 +96,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
             dishes = new ArrayList<>();   //Empty dish is passed
             dishes.add(new Dish("Banh trang tron",
                     5000,
-                    "",
+                    "https://dummyimage.com/141x226.png/dddddd/000000", //http://dummyimage.com/141x226.png/dddddd/000000
                     new Catalog(1, "Com")));
 
         }catch (Exception e){
@@ -122,7 +117,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
 
-        generateFakeDishList();
+        //generateFakeDishList();
         putDataToViews();
         adapter = new DishInfoListAdapter(
                 this,
