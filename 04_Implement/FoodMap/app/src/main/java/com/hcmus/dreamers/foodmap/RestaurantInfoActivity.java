@@ -35,7 +35,11 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.share.Share;
 import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
@@ -80,7 +84,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     LinearLayout lnrFavorite;
     LinearLayout lnrRate;
     LinearLayout lnrShare;
-    LinearLayout lnrContact;
+    Button btnContact;
     Restaurant restaurant;
 
     @Override
@@ -111,7 +115,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         lnrFavorite = (LinearLayout)findViewById(R.id.lnrFavourite);
         lnrRate = (LinearLayout)findViewById(R.id.lnrRate);
         lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
-        lnrContact = (LinearLayout) findViewById(R.id.lnrContact);
+        btnContact = (Button) findViewById(R.id.btnContact);
 
 
         //get Restaurant
@@ -126,7 +130,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         else
         {
             //debug
-            /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+
+            /*restaurant = new Restaurant();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
             try {
                 restaurant.setTimeOpen(simpleDateFormat.parse("08:00"));
                 restaurant.setTimeClose(simpleDateFormat.parse("22:00"));
@@ -159,7 +165,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 
-            lnrContact.setOnClickListener(this);
+            btnContact.setOnClickListener(this);
             lnrRate.setOnClickListener(this);
             lnrShare.setOnClickListener(this);
             lnrFavorite.setOnClickListener(this);
@@ -324,6 +330,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.lnrShare:
                 if(FoodMapApiManager.isGuestLogin()) {
+
                     //Init Facebook
                     callbackManager = CallbackManager.Factory.create();
                     shareDialog = new ShareDialog(this);
@@ -337,10 +344,21 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                     .build();
 
                             if (ShareDialog.canShow(SharePhotoContent.class)) {
-                                SharePhotoContent content = new SharePhotoContent.Builder()
+                                /*SharePhotoContent shareContent = new SharePhotoContent.Builder()
                                         .addPhoto(sharePhoto)
+                                        .setShareHashtag(new ShareHashtag.Builder()
+                                                .setHashtag("#whatever")
+                                                .build())
+                                        .build();*/
+
+                                ShareContent shareContent = new ShareMediaContent.Builder()
+                                        .addMedium(sharePhoto)
+                                        .setShareHashtag(new ShareHashtag.Builder()
+                                                .setHashtag("#whatever")
+                                                .build())
                                         .build();
-                                shareDialog.show(content);
+                                shareDialog.show(shareContent);
+
                             }
                         }
 
@@ -382,7 +400,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
                 }
                 break;
-            case R.id.lnrContact:
+            case R.id.btnContact:
                 Toast.makeText(this, restaurant.getPhoneNumber(), Toast.LENGTH_LONG).show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + restaurant.getPhoneNumber()));

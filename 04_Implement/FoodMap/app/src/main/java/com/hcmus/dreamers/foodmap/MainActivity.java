@@ -231,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
-
     }
 
     // thêm một marker vào map
