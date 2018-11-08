@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
         mMap = (MapView) findViewById(R.id.map);
         isPermissionOK = false;
         // check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            checkPermission();
+//        }
 
         // setup view
         mapInit();
@@ -146,36 +146,36 @@ public class MainActivity extends AppCompatActivity {
         addMarkerRestaurant();
     }
 
-    // kiểm tra permission
-    @TargetApi(Build.VERSION_CODES.M)
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    void checkPermission(){
-        isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//    // kiểm tra permission
+//    @TargetApi(Build.VERSION_CODES.M)
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    void checkPermission(){
+//        isPermissionOK = true;
+//        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//
+//        for (String permission: permissions){
+//            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
+//                requestPermissions(permissions,PERMISSION_CODEREQUEST);
+//                isPermissionOK = false;
+//                break;
+//            }
+//        }
+//
+//    }
 
-        for (String permission: permissions){
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
-                requestPermissions(permissions,PERMISSION_CODEREQUEST);
-                isPermissionOK = false;
-                break;
-            }
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        isPermissionOK = true;
-        for (int i = 0; i <grantResults.length;i++)
-        {
-            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
-            {
-                isPermissionOK = false;
-                break;
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        isPermissionOK = true;
+//        for (int i = 0; i <grantResults.length;i++)
+//        {
+//            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
+//            {
+//                isPermissionOK = false;
+//                break;
+//            }
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
@@ -212,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
         markers = new ArrayList<OverlayItem>();
 
         // cài đặt event location change
-        if (!isPermissionOK)
-            return;
+        //if (!isPermissionOK)
+        //    return;
 
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
