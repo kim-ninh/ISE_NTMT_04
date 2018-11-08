@@ -33,31 +33,8 @@ public class LoadingActivity extends AppCompatActivity {
             public void OnTaskComplete(Object response) {
                 int code = (int) response;
                 if (code == FoodMapApiManager.SUCCESS){
-
                     // Kiểm tra đã cấp các quyền truy cập.
-                    if (ActivityCompat.checkSelfPermission(LoadingActivity.this,
-                                                            Manifest.permission.CALL_PHONE)
-                            == PackageManager.PERMISSION_GRANTED &&
-
-                            ActivityCompat.checkSelfPermission(LoadingActivity.this,
-                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    == PackageManager.PERMISSION_GRANTED &&
-
-                            ActivityCompat.checkSelfPermission(LoadingActivity.this,
-                                                            Manifest.permission.ACCESS_FINE_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED &&
-
-                            ActivityCompat.checkSelfPermission(LoadingActivity.this,
-                                                            Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED) {
-
-                        // Nếu tất cả đều đã được cấp, mở bản đồ
-                        openMap();
-                    } else {
-
-                        // Có ít nhất 1 quyền chưa được cấp: yêu cầu được cấp
-                        requestMapPermission();
-                    }
+                    checkPermission();
                 }
                 else if (code == FoodMapApiManager.FAIL_INFO){
                     Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
@@ -74,13 +51,28 @@ public class LoadingActivity extends AppCompatActivity {
         });
     }
 
-    private void requestMapPermission() {
+    private void checkPermission() {
         String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CALL_PHONE};
 
-        ActivityCompat.requestPermissions(this, permissions, PERMISSION_CODEREQUEST);
+        boolean isPermissionOK = true;
+
+        for (String permission : permissions){
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                isPermissionOK = false;
+                break;
+            }
+        }
+
+        // send request and open map
+        if (isPermissionOK) {
+            openMap();
+        }
+        else{
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_CODEREQUEST);
+        }
     }
 
     @Override
@@ -107,14 +99,11 @@ public class LoadingActivity extends AppCompatActivity {
                 openMap();
             } else {
                 // Nếu tồn tại 1 quyền truy cập chưa được cấp, hiện thông báo, yêu cầu cấp lại?
-
                 Toast.makeText(LoadingActivity.this,
                         R.string.map_permission_denied,
                         Toast.LENGTH_LONG)
                         .show();
-
-
-
+                LoadingActivity.this.finish();
             }
         }
     }
@@ -124,6 +113,8 @@ public class LoadingActivity extends AppCompatActivity {
         // Chuyển tới bản đồ chính
         Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
         startActivity(intent);
+
+        LoadingActivity.this.finish();
     }
 
 
