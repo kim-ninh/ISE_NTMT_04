@@ -34,4 +34,5 @@ public interface ConstantURL {
     public static final String DELETEFAVORITE              = "deleteFavorite.php";
     public static final String GETFAVORITE                 = "getFavorite.php";
     public static final String PHOTONAPI                   = "http://photon.komoot.de/api/";
+    public static final String PHOTONAPIREVERSE            = "http://photon.komoot.de/reverse";
 }

@@ -519,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
+        taskRequest.execute(new DoingTask(GenerateRequest.getAddressFromString(address)));
     }
 
     void addMarkerRestaurant(){

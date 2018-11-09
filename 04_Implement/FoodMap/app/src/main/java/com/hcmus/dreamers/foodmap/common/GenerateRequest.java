@@ -519,12 +519,26 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getAddressForSearch(String address){
+    public static okhttp3.Request getAddressFromString(String address){
         String baseUrl = ConstantURL.PHOTONAPI;
         Map<String, String> params = new HashMap<>();
         params.put("q", address);
         params.put("lang", "en");
         params.put("limit", "10");
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("Accept", "application/json; charset=utf-8") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getAddressFromPoint(GeoPoint point){
+        String baseUrl = ConstantURL.PHOTONAPIREVERSE;
+        Map<String, String> params = new HashMap<>();
+        params.put("lat", String.valueOf(point.getLatitude()));
+        params.put("lon", String.valueOf(point.getLongitude()));
         String url = Utils.buildUrl(baseUrl, params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
