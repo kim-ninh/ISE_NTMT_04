@@ -45,6 +45,7 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     private Owner(String name, String email, String phoneNumber) {
         super(name, email);
         this.phoneNumber = phoneNumber;
+        listRestaurant = new ArrayList<Restaurant>();
     }
 
     public List<Restaurant> getlistRestaurant() {

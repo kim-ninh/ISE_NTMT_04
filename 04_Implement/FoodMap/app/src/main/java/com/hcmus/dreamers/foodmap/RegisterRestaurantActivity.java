@@ -20,9 +20,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import org.osmdroid.util.GeoPoint;
@@ -50,6 +50,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
     private Toolbar toolbar;
 
     private Restaurant restaurant;
+    String imageURI; // lình hình ảnh
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +58,14 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         setContentView(R.layout.activity_restaurant_register);
 
         restaurant = new Restaurant();
+        Date date = new Date();
+        date.setHours(7);
+        date.setMinutes(0);
+        restaurant.setTimeOpen(date);
+        date.setHours(18);
+        restaurant.setTimeClose(date);
+
+        imageURI = "";
 
         edtName = (EditText)findViewById(R.id.edt_name_restaurant);
         edtAddress = (EditText)findViewById(R.id.edt_address_restaurant);
@@ -135,7 +144,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
             String address = edtAddress.getText().toString();
             String desciption = edtDesciption.getText().toString();
 
-            if (restaurant.getLocation() == null || name.equals("") || address.equals("") || desciption.equals("")){
+            if (restaurant.getLocation() == null || name.equals("") || address.equals("") || desciption.equals("") || imageURI.equals("")){
                 Toast.makeText(RegisterRestaurantActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
             }
             else{
@@ -148,22 +157,59 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                 progressDialog.setMessage("Add restaurant");
                 progressDialog.show();
 
+                // tạo quán ăn
                 FoodMapApiManager.createRestaurant(restaurant, new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
-                        int code = (int)response;
-                        progressDialog.dismiss();
+                        final int code = (int)response;
+                        if (code > 0){
+                            restaurant.setId(code);
+                            // upload ảnh
+                            FoodMapApiManager.uploadImage(code, "avatarRes", imageURI, new TaskCompleteCallBack() {
+                                @Override
+                                public void OnTaskComplete(Object response) {
+                                    String url = (String)response;
+                                    if (url != null){
+                                        restaurant.setUrlImage(url);
 
-                        if (code == FoodMapApiManager.SUCCESS){
-                            Intent intent = new Intent();
-                            intent.putExtra("isAdd", true);
-                            setResult(Activity.RESULT_OK, intent);
-                            RegisterRestaurantActivity.this.finish();
+                                        // cập nhật lại thông tin ảnh
+                                        FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
+                                            @Override
+                                            public void OnTaskComplete(Object response) {
+                                                progressDialog.dismiss();
+
+                                                if ((int) response == FoodMapApiManager.SUCCESS){
+                                                    // thêm quán ăn vào danh sách quán ăn
+                                                    Owner.getInstance().getListRestaurant().add(restaurant);
+
+                                                    // thoát
+                                                    Intent intent = new Intent();
+                                                    intent.putExtra("isAdd", true);
+                                                    setResult(Activity.RESULT_OK, intent);
+                                                    RegisterRestaurantActivity.this.finish();
+                                                }
+                                                else if (code == ConstantCODE.NOTINTERNET){
+                                                    Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                                                }
+                                                else {
+                                                    Toast.makeText(RegisterRestaurantActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        progressDialog.dismiss();
+                                        Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         }
                         else if (code == ConstantCODE.NOTINTERNET){
+                            progressDialog.dismiss();
                             Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
                         }
                         else {
+                            progressDialog.dismiss();
                             Toast.makeText(RegisterRestaurantActivity.this, "Error", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -190,7 +236,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         if (requestCode == IPC_ID){
             if (resultCode == Activity.RESULT_OK){
                 // Chuỗi URI trả về có dạng content://<path>
-                String imageURI = data.getDataString();
+                imageURI = data.getDataString();
                 igvUpload.setImageURI(Uri.parse(imageURI));
             }
         }

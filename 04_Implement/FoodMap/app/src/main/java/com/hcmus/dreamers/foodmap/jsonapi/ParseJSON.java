@@ -205,6 +205,12 @@ public class ParseJSON {
         return url;
     }
 
+    public static int parseIdRestaurant(String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        int id_rest = object.getInt("id");
+        return id_rest;
+    }
+
     public static List<Catalog> parseCatalog(String response) throws JSONException {
         List<Catalog>  listCatalogs = new ArrayList<>();
         JSONObject object = new JSONObject(response);

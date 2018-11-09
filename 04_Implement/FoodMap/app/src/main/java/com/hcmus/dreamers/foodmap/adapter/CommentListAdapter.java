@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.R;
+import com.hcmus.dreamers.foodmap.event.ClickListener;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     public void onBindViewHolder(@NonNull ViewHolderComment viewHolderComment, int i) {
         String email = commentList.get(i).getEmailGuest();
 
-        if (email == null){
+        if (email.equals("")){
             email = commentList.get(i).getEmailOwner();
         }
 
@@ -77,19 +78,15 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
         @Override
         public void onClick(View v) {
-            onClickListener.onItemClick(getAdapterPosition(), v);
+            if (onClickListener != null)
+                onClickListener.onItemClick(getAdapterPosition(), v);
         }
 
         @Override
         public boolean onLongClick(View v) {
-            onClickListener.onItemLongClick(getAdapterPosition(), v);
+            if (onClickListener != null)
+                onClickListener.onItemLongClick(getAdapterPosition(), v);
             return false;
         }
     }
-
-    public interface ClickListener{
-        void onItemClick(int position, View v);
-        void onItemLongClick(int position, View v);
-    }
-
 }

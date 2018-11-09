@@ -79,6 +79,7 @@
 	+ response:
 		* status: 200
 		* message: Success
+		* id: id nhà hàng vừa được tạo
 		
 - deleteDish:
 	+ url: deleteDish.php

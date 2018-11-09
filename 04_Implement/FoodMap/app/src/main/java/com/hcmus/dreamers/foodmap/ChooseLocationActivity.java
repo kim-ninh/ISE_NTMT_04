@@ -23,6 +23,7 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,8 +35,10 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
@@ -54,6 +57,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -290,24 +294,19 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     }
 
     void refeshListAddressSearch(String address){
-        TaskRequest taskRequest = new TaskRequest();
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+        FoodMapApiManager.getDetailAddressFromString(address, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
-                String rep = response.toString();
-                if (rep != null)
-                {
-                    try {
-                        detailAddresses.clear();
-                        detailAddresses.addAll(ParseJSON.parseDetailAddress(rep));
-                        placeAutoCompleteApdapter.notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                if (response != null){
+                    detailAddresses.clear();
+                    detailAddresses.addAll((ArrayList<DetailAddress>) response);
+                    placeAutoCompleteApdapter.notifyDataSetChanged();
+                }
+                else if ((int)response != ConstantCODE.NOTINTERNET){
+                    Toast.makeText(ChooseLocationActivity.this,"Kiểm tra kết nối internet của bạn", Toast.LENGTH_LONG).show();
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.getAddressFromString(address)));
     }
 
 }
