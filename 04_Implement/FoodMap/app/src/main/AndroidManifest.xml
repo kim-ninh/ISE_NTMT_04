@@ -30,7 +30,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".RegisterRestaurantActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,7 +42,7 @@
         <activity android:name=".LoginGuestActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".CommentActivity" />
-        <activity android:name=".RegisterRestaurantActivity" />
+        <activity android:name=".LoadingActivity" />
         <activity
             android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"

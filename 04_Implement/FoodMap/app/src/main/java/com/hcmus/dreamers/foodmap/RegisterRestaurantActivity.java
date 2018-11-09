@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +19,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -126,7 +131,44 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
             startActivityForResult(editDish_pickImage, IPC_ID);
         }
         else if (id == R.id.btnRegister){
-            Toast.makeText(RegisterRestaurantActivity.this, "btnRegister", Toast.LENGTH_LONG).show();
+            String name = edtName.getText().toString();
+            String address = edtAddress.getText().toString();
+            String desciption = edtDesciption.getText().toString();
+
+            if (restaurant.getLocation() == null || name.equals("") || address.equals("") || desciption.equals("")){
+                Toast.makeText(RegisterRestaurantActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
+            }
+            else{
+                restaurant.setName(name);
+                restaurant.setAddress(address);
+                restaurant.setDescription(desciption);
+
+                final ProgressDialog progressDialog = new ProgressDialog(RegisterRestaurantActivity.this);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Add restaurant");
+                progressDialog.show();
+
+                FoodMapApiManager.createRestaurant(restaurant, new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        int code = (int)response;
+                        progressDialog.dismiss();
+
+                        if (code == FoodMapApiManager.SUCCESS){
+                            Intent intent = new Intent();
+                            intent.putExtra("isAdd", true);
+                            setResult(Activity.RESULT_OK, intent);
+                            RegisterRestaurantActivity.this.finish();
+                        }
+                        else if (code == ConstantCODE.NOTINTERNET){
+                            Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Toast.makeText(RegisterRestaurantActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
         }
         else if (id == R.id.btnLocation){
 
@@ -140,7 +182,6 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                 intent.putExtra("address", address);
                 startActivityForResult(intent, CLA_ID);
             }
-
         }
     }
 
