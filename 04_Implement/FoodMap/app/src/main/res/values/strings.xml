@@ -8,4 +8,5 @@
     <string name="title_activity_manage_dish">Quản lý món</string>
     <string name="title_activity_manage_restaurant">Quản lý quán</string>
     <string name="title_activity_manage_account">Quản lý tài khoản</string>
+    <string name="map_permission_denied">Bạn cần phải đồng ý cấp quyền truy cập.</string>
 </resources>

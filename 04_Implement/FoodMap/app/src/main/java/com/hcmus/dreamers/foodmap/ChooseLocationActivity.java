@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -41,11 +42,13 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -57,8 +60,7 @@ import java.util.List;
 public class ChooseLocationActivity extends AppCompatActivity implements View.OnClickListener {
 
     String address;
-    GeoPoint point;
-    private static final int PERMISSION_CODEREQUEST = 9001;
+    GeoPoint restPoint;
 
     AutoCompleteTextView atclSearch;
     ImageView igvDone;
@@ -70,8 +72,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
-    private boolean isPermissionOK;
     private ArrayList<OverlayItem> markers;
+    MapEventsOverlay OverlayEvents;// on map click event
 
     private List<DetailAddress> detailAddresses;
     private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
@@ -82,7 +84,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_choose_location);
 
         mMap = (MapView)findViewById(R.id.map);
-        isPermissionOK = false;
         mapInit();
 
         igvDone = (ImageView) findViewById(R.id.igv_done);
@@ -136,41 +137,18 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             address = atclSearch.getText().toString();
 
             Intent intent = new Intent();
-            intent.putExtra("lat", point.getLatitude());
-            intent.putExtra("lon", point.getLongitude());
+            intent.putExtra("lat", restPoint.getLatitude());
+            intent.putExtra("lon", restPoint.getLongitude());
             intent.putExtra("address", address);
             setResult(Activity.RESULT_OK, intent);
 
             ChooseLocationActivity.this.finish();
         }
         else if (id == R.id.igv_mylocation) {
-            mapController.setZoom(17.0);
-            moveCamera(mLocationOverlay.getMyLocation());
-        }
-    }
-
-    // kiểm tra permission
-    @TargetApi(Build.VERSION_CODES.M)
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    void checkPermission(){
-        isPermissionOK = true;
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(permissions,PERMISSION_CODEREQUEST);
-            isPermissionOK = false;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        isPermissionOK = true;
-        for (int i = 0; i <grantResults.length;i++)
-        {
-            if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
-            {
-                isPermissionOK = false;
-                break;
+            if (mLocationOverlay.getMyLocation() != null){
+                mapController.setZoom(17.0);
+                moveCamera(mLocationOverlay.getMyLocation());
+                restPoint = mLocationOverlay.getMyLocation();
             }
         }
     }
@@ -192,15 +170,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         //list marker
         markers = new ArrayList<OverlayItem>();
 
-        // check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-
-        // cài đặt event location change
-        if (!isPermissionOK)
-            return;
-
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ChooseLocationActivity.this),mMap);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
@@ -209,7 +178,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
-        point = new GeoPoint(mLocationOverlay.getMyLocation().getLatitude(), mLocationOverlay.getMyLocation().getLongitude());
+        if (mLocationOverlay.getMyLocation() != null)
+            restPoint = new GeoPoint(mLocationOverlay.getMyLocation().getLatitude(), mLocationOverlay.getMyLocation().getLongitude());
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -220,6 +190,26 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         }
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
+
+        //
+        MapEventsReceiver mReceive = new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                restPoint = p;
+                addMarker("You choose", "Địa chỉ bạn đã chọn", restPoint);
+                moveCamera(restPoint);
+                return false;
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                return false;
+            }
+        };
+
+        OverlayEvents = new MapEventsOverlay(getBaseContext(), mReceive);
+        mMap.getOverlays().add(OverlayEvents);
+
     }
 
     // thêm một marker vào map
@@ -251,6 +241,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         // thêm marker vào map và chỉ một marker được tồn tại
         mMap.getOverlays().clear();
         mMap.getOverlays().add(mOverlay);
+        mMap.getOverlays().add(mLocationOverlay);
+        mMap.getOverlays().add(OverlayEvents);
         mMap.invalidate();
         return mOverlay;
     }
@@ -288,12 +280,11 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = detailAddresses.get(position).getName();
                 String address = detailAddresses.get(position).toString();
-                point = detailAddresses.get(position).getPoint();
+                restPoint = detailAddresses.get(position).getPoint();
 
                 atclSearch.setText(address);
-                addMarker(name, address, point);
-                moveCamera(point);
-                Toast.makeText(ChooseLocationActivity.this, detailAddresses.get(position).toString(), Toast.LENGTH_LONG).show();
+                addMarker(name, address, restPoint);
+                moveCamera(restPoint);
             }
         });
     }
@@ -316,6 +307,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.getAddressForSearch(address)));
+        taskRequest.execute(new DoingTask(GenerateRequest.getAddressFromString(address)));
     }
+
 }
