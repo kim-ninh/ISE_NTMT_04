@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ import com.facebook.share.Share;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
@@ -307,6 +309,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 //check login
                 if(FoodMapApiManager.isGuestLogin()) {
                     View ratingLayout = getLayoutInflater().inflate(R.layout.dialog_rating, null);
+                    //final AlertDialog dialog = new AlertDialog(RestaurantInfoActivity.this);
                     final Dialog dialog = new Dialog(RestaurantInfoActivity.this);
                     dialog.setContentView(R.layout.dialog_rating);
                     dialog.setCanceledOnTouchOutside(true);
@@ -335,44 +338,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     callbackManager = CallbackManager.Factory.create();
                     shareDialog = new ShareDialog(this);
 
-                    //Make the target
-                    Target target = new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            SharePhoto sharePhoto = new SharePhoto.Builder()
-                                    .setBitmap(bitmap)
-                                    .build();
-
-                            if (ShareDialog.canShow(SharePhotoContent.class)) {
-                                /*SharePhotoContent shareContent = new SharePhotoContent.Builder()
-                                        .addPhoto(sharePhoto)
-                                        .setShareHashtag(new ShareHashtag.Builder()
-                                                .setHashtag("#whatever")
-                                                .build())
-                                        .build();*/
-
-                                ShareContent shareContent = new ShareMediaContent.Builder()
-                                        .addMedium(sharePhoto)
-                                        .setShareHashtag(new ShareHashtag.Builder()
-                                                .setHashtag("#whatever")
-                                                .build())
-                                        .build();
-                                shareDialog.show(shareContent);
-
-                            }
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                        }
-                    };
-
                     shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                         @Override
                         public void onSuccess(Sharer.Result result) {
@@ -390,10 +355,64 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                         }
                     });
 
+                    ShareMediaContent shareContent = new ShareMediaContent.Builder()
+                            .setShareHashtag(new ShareHashtag.Builder()
+                                    .setHashtag("#whatever")
+                                    .build())
+                            .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                            .build();
+
+                    if (ShareDialog.canShow(SharePhotoContent.class)) {
+                        shareDialog.show(RestaurantInfoActivity.this, shareContent);
+
+                    }
+
+                    //Make the target
+                    Target target = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            SharePhoto sharePhoto = new SharePhoto.Builder()
+                                    .setBitmap(bitmap)
+                                    .build();
+
+                            /*SharePhotoContent shareContent = new SharePhotoContent.Builder()
+                                    .addPhoto(sharePhoto)
+                                    .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                                    .setShareHashtag(new ShareHashtag.Builder()
+                                            .setHashtag("#whatever")
+                                            .build())
+                                    .build();*/
+                            ShareMediaContent shareContent = new ShareMediaContent.Builder()
+                                    .addMedium(sharePhoto)
+                                    .setShareHashtag(new ShareHashtag.Builder()
+                                            .setHashtag("#whatever")
+                                            .build())
+                                    .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                                    .build();
+
+                            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                                shareDialog.show(RestaurantInfoActivity.this, shareContent);
+
+                            }
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    };
+
+
+
                     //load image on facebook
-                    Picasso.with(getApplicationContext())
+                    /*Picasso.with(getApplicationContext())
                             .load(restaurant.getUrlImage())
-                            .into(target);
+                            .into(target);*/
                 }
                 else
                 {
