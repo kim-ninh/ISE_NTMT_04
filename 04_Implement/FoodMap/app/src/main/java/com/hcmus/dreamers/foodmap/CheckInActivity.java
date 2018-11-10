@@ -24,6 +24,7 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.ImageCheckInListAdapter;
 
 import java.util.ArrayList;
@@ -32,10 +33,11 @@ import java.util.List;
 public class CheckInActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int MAX_SELECTED_IMAGE = 3;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
-    GridView grdCheckInImage;
+    GridViewItem grdCheckInImage;
     ImageView imgCamera;
     ImageView imgFacebook;
 
@@ -52,7 +54,7 @@ public class CheckInActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        grdCheckInImage = (GridView)findViewById(R.id.grdCheckInImage);
+        grdCheckInImage = (GridViewItem) findViewById(R.id.grdCheckInImage);
         imgCamera = (ImageView) findViewById(R.id.imgCamera);
         imgFacebook = (ImageView) findViewById(R.id.imgFacebook);
 
@@ -66,13 +68,18 @@ public class CheckInActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView) view.findViewById(R.id.imgCheckIn);
 
                 if(!selectedList.contains(bitmapList.get(position))){
-                    selectedList.add(bitmapList.get(position));
-                    imageView.setBackgroundColor(Color.BLUE);
+                    if(selectedList.size() != MAX_SELECTED_IMAGE) {
+                        selectedList.add(bitmapList.get(position));
+                        imageView.setImageResource(R.drawable.ic_tick_frame);
+                    }
+                    else{
+                        Toast.makeText(CheckInActivity.this, "Maximum number of photos selected", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else
                 {
                     selectedList.remove(bitmapList.get(position));
-                    imageView.setBackgroundColor(Color.WHITE);
+                    imageView.setImageResource(0);
                 }
 
             }
@@ -81,13 +88,8 @@ public class CheckInActivity extends AppCompatActivity {
         imgCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bitmapList.size() <= 6) {
                     dispatchTakePictureIntent();
                     grdCheckInImage.setAdapter(adapter);
-                }
-                else {
-                    Toast.makeText(CheckInActivity.this, "Maximum selected image is 6", Toast.LENGTH_LONG).show();
-                }
             }
         });
 

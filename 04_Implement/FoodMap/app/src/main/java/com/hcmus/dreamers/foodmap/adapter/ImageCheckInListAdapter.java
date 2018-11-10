@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -30,11 +31,12 @@ public class ImageCheckInListAdapter extends ArrayAdapter<Bitmap> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        View cell = LayoutInflater.from(context).inflate(resource, null);
+        View cell = LayoutInflater.from(context).inflate(R.layout.adapter_image_check_in_list, null);
 
         ImageView imgCheckIn = (ImageView) cell.findViewById(R.id.imgCheckIn);
 
-        imgCheckIn.setImageBitmap(bitmapList.get(position));
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmapList.get(position));
+        imgCheckIn.setBackgroundDrawable(bitmapDrawable);
 
         return cell;
     }

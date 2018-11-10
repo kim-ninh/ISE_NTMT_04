@@ -5,12 +5,11 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:padding="5dp"
         android:id="@+id/imgCheckIn"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:src="@drawable/icon_foodmap"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"/>
 
 </FrameLayout>
