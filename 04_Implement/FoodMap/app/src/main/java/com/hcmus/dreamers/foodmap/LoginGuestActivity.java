@@ -156,7 +156,7 @@ public class LoginGuestActivity extends AppCompatActivity {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginGuestActivity.this);
-        progressDialog.setTitle("Checking...");
+        progressDialog.setMessage("Checking...");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 

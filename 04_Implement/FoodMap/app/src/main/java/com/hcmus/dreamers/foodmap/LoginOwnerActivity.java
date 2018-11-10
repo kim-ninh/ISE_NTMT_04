@@ -49,7 +49,7 @@ public class LoginOwnerActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(LoginOwnerActivity.this);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("Check login");
+        progressDialog.setMessage("Check login");
 
         edtUsername = (EditText)findViewById(R.id.edtUsername);
         edtPassword = (EditText)findViewById(R.id.edtPassword);

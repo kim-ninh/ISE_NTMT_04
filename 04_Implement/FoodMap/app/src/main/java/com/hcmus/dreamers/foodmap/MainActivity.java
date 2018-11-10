@@ -36,6 +36,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
@@ -192,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
 
     // thêm một marker vào map
     private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
+
+        markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
@@ -419,9 +422,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (id){
                     case R.id.btnManager:
                         Log.d(TAG, "onClick: btnManager");
-                        //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
                         Intent main_manageRest = new Intent(MainActivity.this,
-                                EditRestaurantActivity.class);
+                                RestaurantManageActivity.class);
                         startActivity(main_manageRest);
                         break;
                     case  R.id.btnFeedBack:
@@ -494,30 +496,24 @@ public class MainActivity extends AppCompatActivity {
                 atclSearch.setText(address);
                 addMarker(name, address, point);
                 moveCamera(point);
-                Toast.makeText(MainActivity.this, detailAddresses.get(position).toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     void refeshListAddressSearch(String address){
-        TaskRequest taskRequest = new TaskRequest();
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+        FoodMapApiManager.getDetailAddressFromString(address, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
-                String rep = response.toString();
-                if (rep != null)
-                {
-                    try {
-                        detailAddresses.clear();
-                        detailAddresses.addAll(ParseJSON.parseDetailAddress(rep));
-                        placeAutoCompleteApdapter.notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                if (response != null){
+                    detailAddresses.clear();
+                    detailAddresses.addAll((ArrayList<DetailAddress>) response);
+                    placeAutoCompleteApdapter.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.getAddressFromString(address)));
     }
 
     void addMarkerRestaurant(){

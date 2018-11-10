@@ -28,11 +28,12 @@ if (isset($_POST["owner_username"]) && isset($_POST["name"]) && isset($_POST["ad
 
 		$conn = new database();
 		$conn->connect();
-
-		if ($conn->CreateRestaurant($valueRes, $lat, $lon) !== -1)
+		$id = $conn->CreateRestaurant($valueRes, $lat, $lon);
+		if ($id !== -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";
+			$response["id"] = $id;
 		}
 		else
 		{

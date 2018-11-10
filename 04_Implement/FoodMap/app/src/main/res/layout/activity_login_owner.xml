@@ -35,11 +35,11 @@
         android:inputType="textPersonName"
         android:background="@drawable/backgroun_edittext"
         android:hint="Username"
-        android:text="phuoc"
+        android:text="phuocpr1123"
         android:padding="10dp"
         android:textSize="20sp"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"/>
+        android:layout_marginRight="25dp" />
 
     <EditText
         android:id="@+id/edtPassword"
@@ -52,7 +52,7 @@
         android:background="@drawable/backgroun_edittext"
         android:ems="10"
         android:hint="Password"
-        android:text="neutachiatay"
+        android:text="123456789"
         android:inputType="textPassword"
         android:padding="10dp"
         android:textSize="20sp" />

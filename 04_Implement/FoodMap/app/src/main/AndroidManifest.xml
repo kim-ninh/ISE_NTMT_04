@@ -54,7 +54,7 @@
         <activity
             android:name=".EditRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".RestaurantManageActivity" />
         <activity android:name=".RegisterOwnerActivity" />
         <activity android:name=".FavoriteRestaurantsActivity" />
         <activity
@@ -63,6 +63,7 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".CheckInActivity"></activity>
+        <activity android:name=".RestaurantManageActivity"></activity>
     </application>
 
 </manifest>

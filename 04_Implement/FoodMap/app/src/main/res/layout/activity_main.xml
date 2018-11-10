@@ -43,7 +43,8 @@
                 android:id="@+id/atclSearch"
                 android:maxLines="1"
                 android:hint="Search"
-                android:gravity="left"/>
+                android:gravity="left"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <FrameLayout
