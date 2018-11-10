@@ -2,8 +2,6 @@ package com.hcmus.dreamers.foodmap.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,8 +15,6 @@ import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.R;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DishInfoListAdapter extends ArrayAdapter<Dish>
@@ -38,7 +34,7 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View row = inflater.inflate(R.layout.row_dish_info, null);
+        View row = inflater.inflate(R.layout.adapter_dish_info_list, null);
 
         TextView lblDishName = (TextView) row.findViewById(R.id.lblDishName);
         TextView lblDisgPrice = (TextView) row.findViewById(R.id.lblDishPrice);

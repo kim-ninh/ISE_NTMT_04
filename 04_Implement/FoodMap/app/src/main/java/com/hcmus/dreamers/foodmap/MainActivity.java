@@ -1,7 +1,6 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +13,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -208,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
                 if (restaurant != null){
-                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+                    Intent intent = new Intent(MainActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
                 }

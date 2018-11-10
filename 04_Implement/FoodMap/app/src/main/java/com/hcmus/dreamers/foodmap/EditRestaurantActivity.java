@@ -121,7 +121,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
         putDataToViews();
         adapter = new DishInfoListAdapter(
                 this,
-                R.layout.row_dish_info,
+                R.layout.adapter_dish_info_list,
                 dishes
         );
         dishListView.setAdapter(adapter);

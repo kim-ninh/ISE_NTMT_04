@@ -1,19 +1,15 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,9 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -229,7 +223,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
                 if (restaurant != null){
-                    Intent intent = new Intent(ChooseLocationActivity.this, RestaurantInfoActivity.class);
+                    Intent intent = new Intent(ChooseLocationActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
                 }
