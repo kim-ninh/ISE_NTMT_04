@@ -138,7 +138,7 @@ public class GenerateRequest {
     public static okhttp3.Request createRestaurant(final Restaurant restaurant,final String token){
         String url = ConstantURL.BASEURL + ConstantURL.CREATERESTAURANT;
         Map<String, String> params = new HashMap<>();
-        params.put("owner_username", restaurant.getId_user());
+        params.put("owner_username", restaurant.getOwnerUsername());
         params.put("name", restaurant.getName());
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());

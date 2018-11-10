@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Restaurant implements Serializable {
     private int id;
-    private String id_user;
+    private String ownerUsername;
     private String name;
     private String phoneNumber;
     private String description;
@@ -37,7 +37,7 @@ public class Restaurant implements Serializable {
     }
 	
     public Restaurant(int id_rest,
-                      String id_user,
+                      String ownerUsername,
                       String name,
                       String address,
                       String phoneNumber,
@@ -47,7 +47,7 @@ public class Restaurant implements Serializable {
                       Date timeClose,
                       GeoPoint location) {
         this.id = id_rest;
-        this.id_user = id_user;
+        this.ownerUsername = ownerUsername;
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -154,9 +154,9 @@ public class Restaurant implements Serializable {
         this.address = address;
     }
 
-    public String getId_user() { return id_user; }
+    public String getOwnerUsername() { return ownerUsername; }
 
-    public void setId_user(String id_user) { this.id_user = id_user; }
+    public void setOwnerUsername(String ownerUsername) { this.ownerUsername = ownerUsername; }
 
     public int getnFavorites() {
         return nFavorites;
