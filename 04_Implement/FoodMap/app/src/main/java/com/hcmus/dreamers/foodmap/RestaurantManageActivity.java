@@ -19,6 +19,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.RestaurantListAdapter;
 import com.hcmus.dreamers.foodmap.event.ClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantManageActivity extends AppCompatActivity implements View.OnClickListener, ClickListener {
@@ -65,7 +66,8 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rcvRestaurant.setLayoutManager(mLayoutManager);
 
-        restaurantList = Owner.getInstance().getListRestaurant();
+        restaurantList = new ArrayList<>();
+        restaurantList.addAll(Owner.getInstance().getListRestaurant());
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);
