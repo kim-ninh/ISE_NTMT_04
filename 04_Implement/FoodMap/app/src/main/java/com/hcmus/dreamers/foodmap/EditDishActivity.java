@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -29,9 +30,11 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.adapter.ImageAdapter;
+import com.hcmus.dreamers.foodmap.common.Base64Converter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +59,7 @@ public class EditDishActivity extends AppCompatActivity {
     List<Uri> imagesUri = new ArrayList<>();
 
     // arbitrary interprocess communication ID (just a nickname!)
-    private final int IPC_ID = (int) (10001 * Math.random());
+    private final int IPC_PICK_IMAGE_ID = (int) (10001 * Math.random());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,7 @@ public class EditDishActivity extends AppCompatActivity {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 gridRow = -1;
-                startActivityForResult(editDish_pickImage, IPC_ID);
+                startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
             }
         });
 
@@ -121,7 +124,7 @@ public class EditDishActivity extends AppCompatActivity {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 gridRow = position;
-                startActivityForResult(editDish_pickImage, IPC_ID);
+                startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
 
             }
         });
@@ -285,31 +288,60 @@ public class EditDishActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         try{
 
-           if (requestCode == IPC_ID){
+           if (requestCode == IPC_PICK_IMAGE_ID){
                if (resultCode == Activity.RESULT_OK){
 
                    // Chuỗi URI trả về có dạng content://<path>
-                   String imageURI = data.getDataString();
+                   Uri imageUri = Uri.parse(data.getDataString());
+                   File imageFile = new File(imageUri.getPath());
+                   String encodedData = "";
 
-                   if (gridRow != -1)
+
+                   // Mã hóa hình theo Base64
+                   try
                    {
-                       //Thay đổi 1 hình có sẵn
-                       imagesUri.remove(gridRow);
-                       imagesUri.add(gridRow, Uri.parse(imageURI));
-                   }else
+                       encodedData = Base64Converter.encodeToBase64(EditDishActivity.this,
+                               imageUri);
+                   }catch (Exception e)
                    {
-                       // Thêm mới 1 hình
-                       imagesUri.add(Uri.parse(imageURI));
+                        Log.d("ConvertBase64",e.getMessage());
                    }
-                   adapter.notifyDataSetChanged();
 
-                   // Lấy hình đầu tiên làm hình đại diện cho món
-                  if (gridRow == 0 || imagesUri.size() == 1)
-                  {
-                      dish.setUrlImage(imagesUri.get(0).toString());
-                  }
-               }
-           }
+
+                   // Upload hình lên server
+                    FoodMapApiManager.uploadImage(rest_id, imageFile.getName(), encodedData, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+
+                            // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
+                            String strResponse = (String) response;
+                            if (strResponse.matches("^(http|https)://.*"))
+                            {
+
+                                // Cập nhật dataset List<Uri> => Cập nhật grid view
+                                if (gridRow != -1)
+                                {
+                                    //Thay đổi 1 hình có sẵn
+                                    imagesUri.remove(gridRow);
+                                    imagesUri.add(gridRow, Uri.parse(strResponse));
+                                }else {
+                                    // Thêm mới 1 hình
+                                    imagesUri.add(Uri.parse(strResponse));
+                                }
+
+                                adapter.notifyDataSetChanged();
+                            }else{
+
+                                // Đã có lỗi trong quá trình upload, in thông báo
+                                Toast.makeText(EditDishActivity.this,
+                                        strResponse,
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }// OnTaskComplete
+                    });
+               }// Activity.RESULT_OK
+           }// IPC_PICK_IMAGE_ID
 
         }catch (Exception e){
             Toast.makeText(EditDishActivity.this,

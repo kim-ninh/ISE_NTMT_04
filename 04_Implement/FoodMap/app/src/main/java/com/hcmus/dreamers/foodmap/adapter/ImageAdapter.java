@@ -53,15 +53,11 @@ public class ImageAdapter extends BaseAdapter {
 
         String imageUri = imagesUri.get(position).toString();
 
-        // Kiểm tra xem đường dẫn là trên server hay dưới local
+        // Đường dẫn luôn là public
         if (imageUri.matches("^(http|https)://.*"))
         {
             DownloadImageTask taskDownload = new DownloadImageTask(dishImage, mContext);
             taskDownload.loadImageFromUrl(imageUri);
-        }
-        else
-        {
-            dishImage.setImageURI(imagesUri.get(position));
         }
 
         return dishImage;
