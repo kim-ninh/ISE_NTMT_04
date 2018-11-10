@@ -20,7 +20,7 @@ public class FoodMapManager {
         List<Restaurant> restaurantList = new ArrayList<>();
         int length = restaurants.size();
         for (int i = 0; i <length; i++){
-            if (restaurants.get(i).getId_user().equals(username)){
+            if (restaurants.get(i).getOwnerUsername().equals(username)){
                 restaurantList.add(restaurants.get(i));
             }
         }

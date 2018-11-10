@@ -79,29 +79,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
         dishes = restaurant.getDishes();
 
 
-        //region test without data f*ck my life
-        try
-        {
-            restaurant = new Restaurant(4,
-                    "",
-                    "TEST",
-                    "Bình Tân, HCM",
-                    "09484783434",
-                    "sea food restaurant",
-                    "",
-                    new SimpleDateFormat("hh:mm").parse("07:00"),
-                    new SimpleDateFormat("hh:mm").parse("22:00"),
-                    new GeoPoint(0.0,0.0));
-
-            dishes = new ArrayList<>();   //Empty dish is passed
-            dishes.add(new Dish("Banh trang tron",
-                    5000,
-                    "https://dummyimage.com/141x226.png/dddddd/000000", //http://dummyimage.com/141x226.png/dddddd/000000
-                    new Catalog(1, "Com")));
-
-        }catch (Exception e){
-            //..
-        }
 
         //restaurant should not be null
         if (restaurant == null)

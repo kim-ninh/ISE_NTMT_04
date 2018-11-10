@@ -60,7 +60,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         setContentView(R.layout.activity_restaurant_register);
 
         restaurant = new Restaurant();
-        restaurant.setId_user(Owner.getInstance().getUsername());
+        restaurant.setOwnerUsername(Owner.getInstance().getUsername());
         Date timeOpen = new Date();
         timeOpen.setHours(7);
         timeOpen.setMinutes(0);
