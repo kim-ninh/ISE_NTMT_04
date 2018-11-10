@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +19,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -33,6 +39,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
     private EditText edtName;
     private EditText edtAddress;
     private EditText edtDesciption;
+    private EditText edtPhoneNumber;
 
     private Button btnRegister;
     private Button btnLocation;
@@ -45,6 +52,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
     private Toolbar toolbar;
 
     private Restaurant restaurant;
+    String imageURI; // lình hình ảnh
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,10 +60,22 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         setContentView(R.layout.activity_restaurant_register);
 
         restaurant = new Restaurant();
+        restaurant.setId_user(Owner.getInstance().getUsername());
+        Date timeOpen = new Date();
+        timeOpen.setHours(7);
+        timeOpen.setMinutes(0);
+        restaurant.setTimeOpen(timeOpen);
+        Date timeClose = new Date();
+        timeClose.setHours(18);
+        timeClose.setMinutes(0);
+        restaurant.setTimeClose(timeClose);
+
+        imageURI = "";
 
         edtName = (EditText)findViewById(R.id.edt_name_restaurant);
         edtAddress = (EditText)findViewById(R.id.edt_address_restaurant);
         edtDesciption = (EditText)findViewById(R.id.edt_description_restaurant);
+        edtPhoneNumber = (EditText)findViewById(R.id.edt_phone_number);
 
         btnLocation = (Button)findViewById(R.id.btnLocation);
         btnLocation.setOnClickListener(this);
@@ -126,7 +146,88 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
             startActivityForResult(editDish_pickImage, IPC_ID);
         }
         else if (id == R.id.btnRegister){
-            Toast.makeText(RegisterRestaurantActivity.this, "btnRegister", Toast.LENGTH_LONG).show();
+            String name = edtName.getText().toString();
+            String address = edtAddress.getText().toString();
+            String desciption = edtDesciption.getText().toString();
+            String phoneNumber = edtPhoneNumber.getText().toString();
+
+            if (restaurant.getLocation() == null || name.equals("") || address.equals("")
+                    || desciption.equals("") || imageURI.equals("") || phoneNumber.equals("")){
+                Toast.makeText(RegisterRestaurantActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
+            }
+            else if (phoneNumber.length() < 10 || phoneNumber.length() > 11){
+                Toast.makeText(RegisterRestaurantActivity.this, "Số điện thoại không hợp lệ", Toast.LENGTH_LONG).show();
+            }
+            else{
+                restaurant.setName(name);
+                restaurant.setAddress(address);
+                restaurant.setDescription(desciption);
+                restaurant.setPhoneNumber(phoneNumber);
+
+                final ProgressDialog progressDialog = new ProgressDialog(RegisterRestaurantActivity.this);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Add restaurant");
+                progressDialog.show();
+
+                // tạo quán ăn
+                FoodMapApiManager.createRestaurant(restaurant, new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        final int code = (int)response;
+                        if (code > 0){
+                            restaurant.setId(code);
+                            // upload ảnh
+                            FoodMapApiManager.uploadImage(RegisterRestaurantActivity.this, code, "avatarRes", imageURI, new TaskCompleteCallBack() {
+                                @Override
+                                public void OnTaskComplete(Object response) {
+                                    String url = (String)response;
+                                    if (url != null){
+                                        restaurant.setUrlImage(url);
+
+                                        // cập nhật lại thông tin ảnh
+                                        FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
+                                            @Override
+                                            public void OnTaskComplete(Object response) {
+                                                progressDialog.dismiss();
+
+                                                if ((int) response == FoodMapApiManager.SUCCESS){
+                                                    // thêm quán ăn vào danh sách quán ăn
+                                                    FoodMapManager.addRestaurant(RegisterRestaurantActivity.this, restaurant);
+                                                    Owner.getInstance().addRestaurant(restaurant);
+
+                                                    // thoát
+                                                    Intent intent = new Intent();
+                                                    intent.putExtra("isAdd", true);
+                                                    setResult(Activity.RESULT_OK, intent);
+                                                    RegisterRestaurantActivity.this.finish();
+                                                }
+                                                else if ((int) response == ConstantCODE.NOTINTERNET){
+                                                    Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                                                }
+                                                else {
+                                                    Toast.makeText(RegisterRestaurantActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        progressDialog.dismiss();
+                                        Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+                        else if (code == ConstantCODE.NOTINTERNET){
+                            progressDialog.dismiss();
+                            Toast.makeText(RegisterRestaurantActivity.this, "Kiểm tra kết nối internet", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            progressDialog.dismiss();
+                            Toast.makeText(RegisterRestaurantActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
         }
         else if (id == R.id.btnLocation){
 
@@ -140,7 +241,6 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                 intent.putExtra("address", address);
                 startActivityForResult(intent, CLA_ID);
             }
-
         }
     }
 
@@ -149,8 +249,9 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         if (requestCode == IPC_ID){
             if (resultCode == Activity.RESULT_OK){
                 // Chuỗi URI trả về có dạng content://<path>
-                String imageURI = data.getDataString();
-                igvUpload.setImageURI(Uri.parse(imageURI));
+                imageURI = data.getDataString();
+                Uri uri = Uri.parse(imageURI);
+                igvUpload.setImageURI(uri);
             }
         }
         else if (requestCode == CLA_ID){

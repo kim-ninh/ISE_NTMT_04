@@ -53,7 +53,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
 
         loadDataRecyclerView();
-        commentListAdapter = new CommentListAdapter(CommentActivity.this,R.layout.item_comment_list,comments);
+        commentListAdapter = new CommentListAdapter(CommentActivity.this,R.layout.adapter_item_comment_list,comments);
         //commentListAdapter.setOnClickListener(this);
 
 

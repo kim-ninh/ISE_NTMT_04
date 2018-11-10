@@ -75,19 +75,19 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         txtAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
+                Intent intent = new Intent(FavoriteRestaurantsActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
                 intent.putExtra("RestID", restaurants[position].getId());
                 startActivity(intent);
             }
         });
 
-        FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.favor_rest_list, restaurants);
+        FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.adapter_favor_rest_list, restaurants);
         grdFavorRest.setAdapter(adapter);
 
         grdFavorRest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
+                Intent intent = new Intent(FavoriteRestaurantsActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
                 intent.putExtra("RestID", restaurants[position].getId());
                 startActivity(intent);
             }

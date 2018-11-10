@@ -44,27 +44,33 @@
             android:id="@+id/atclSearch"
             android:maxLines="1"
             android:hint="Search"
-            android:gravity="left"/>
+            android:gravity="left"
+            android:layout_weight="1"/>
     </LinearLayout>
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent">
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="10dp">
-        <ImageView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_my_location_button"
-            android:layout_gravity="right"
-            android:id="@+id/igv_mylocation"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_my_location_button"
+                android:layout_gravity="right"
+                android:id="@+id/igv_mylocation"/>
+        </LinearLayout>
+    </FrameLayout>
+
 
 </LinearLayout>

@@ -9,11 +9,23 @@ import com.hcmus.dreamers.foodmap.database.DBManager;
 import org.osmdroid.util.GeoPoint;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FoodMapManager {
 
     private static List<Restaurant> restaurants;
+
+    public  static List<Restaurant> getRestaurants(String username){
+        List<Restaurant> restaurantList = new ArrayList<>();
+        int length = restaurants.size();
+        for (int i = 0; i <length; i++){
+            if (restaurants.get(i).getId_user().equals(username)){
+                restaurantList.add(restaurants.get(i));
+            }
+        }
+        return restaurantList;
+    }
 
     public static Restaurant findRestaurant(int id_rest){
         int n = restaurants.size();
@@ -40,10 +52,10 @@ public class FoodMapManager {
     }
 
     public static void addRestaurant(Context context, Restaurant restaurant){
-        DBManager dbManager = new DBManager(context);
+        //DBManager dbManager = new DBManager(context);
         restaurants.add(restaurant);
-        dbManager.addRestaurant(restaurant);
-        dbManager.close();
+        //dbManager.addRestaurant(restaurant);
+        //dbManager.close();
     }
 
     public static List<Restaurant> getRestaurants(){

@@ -108,7 +108,7 @@ class database
 
     			if ($this->query($queryAddLocation) != -1)
     			{
-    				return true;
+    				return $id;
     			}
     			else
     			{

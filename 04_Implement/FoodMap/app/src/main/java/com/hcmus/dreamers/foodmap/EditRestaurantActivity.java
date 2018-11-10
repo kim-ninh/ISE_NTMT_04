@@ -72,19 +72,36 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_restaurant);
-        //must not remove
-        //getTransferDataFromActivity();
-
-        fetchDataFromServer();              // tempory use
+        //lấy dữ liệu từ Restaurant manager
+        getTransferDataFromActivity();
 
         takeReferenceFromResource();
+        dishes = restaurant.getDishes();
 
-        for (Restaurant res: Owner.getInstance().getListRestaurant())
+
+        //region test without data f*ck my life
+        try
         {
-            if (res.getId() == 3)
-                restaurant = res;
-        }
+            restaurant = new Restaurant(4,
+                    "",
+                    "TEST",
+                    "Bình Tân, HCM",
+                    "09484783434",
+                    "sea food restaurant",
+                    "",
+                    new SimpleDateFormat("hh:mm").parse("07:00"),
+                    new SimpleDateFormat("hh:mm").parse("22:00"),
+                    new GeoPoint(0.0,0.0));
 
+            dishes = new ArrayList<>();   //Empty dish is passed
+            dishes.add(new Dish("Banh trang tron",
+                    5000,
+                    "https://dummyimage.com/141x226.png/dddddd/000000", //http://dummyimage.com/141x226.png/dddddd/000000
+                    new Catalog(1, "Com")));
+
+        }catch (Exception e){
+            //..
+        }
 
         //restaurant should not be null
         if (restaurant == null)
@@ -95,12 +112,13 @@ public class EditRestaurantActivity extends AppCompatActivity {
             finish();
         }
 
-        dishes = restaurant.getDishes();
 
+
+        //generateFakeDishList();
         putDataToViews();
         adapter = new DishInfoListAdapter(
                 this,
-                R.layout.row_dish_info,
+                R.layout.adapter_dish_info_list,
                 dishes
         );
         dishListView.setAdapter(adapter);
@@ -111,21 +129,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handleClickEvent();
-    }
-
-    private void fetchDataFromServer() {
-        List<Restaurant> restaurants =  FoodMapManager.getRestaurants();
-        List<Restaurant> ownerRest = new ArrayList<>();
-        Owner owner = Owner.getInstance();
-
-
-        // Get the restanrant list belong to owner
-        for (Restaurant res: restaurants){
-            if (res.getOwnerUsername().equals(owner.getUsername())){
-                ownerRest.add(res);
-            }
-        }
-        owner.setlistRestaurant(ownerRest);
     }
 
     private void handleClickEvent() {
@@ -254,16 +257,14 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
 
 
-    //TODO must not remove
-//    private void getTransferDataFromActivity() {
-//        // Get the restaurant ID and dish Obj
-//        Gson gson = new Gson();
-//        Intent manageRest = getIntent();
-//        transferData = manageRest.getExtras();
-//        String dishJSON = transferData.getString("restJSON");
-//        restaurant = gson.fromJson(dishJSON, Restaurant.class);
-//        row = transferData.getInt("restRow", -1);
-//    }
+    //TODO row làm chức năng gì ?????
+    private void getTransferDataFromActivity() {
+        Intent data = getIntent();
+        restaurant = (Restaurant) data.getSerializableExtra("rest");
+
+        // row làm chức năng gì ?????
+        // row = transferData.getInt("restRow", -1);
+    }
 
     private void putDataToViews() {
 
@@ -300,6 +301,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
         dishes.add(new Dish("Bánh tráng trộn",20000,"",new Catalog(1, "Cơm")));
     }
 
+
+    // TODO đề nghị kiểm tra và cho chạy các chức năng
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
