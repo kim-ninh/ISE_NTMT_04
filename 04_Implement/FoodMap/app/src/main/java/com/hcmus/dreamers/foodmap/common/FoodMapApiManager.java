@@ -2,10 +2,8 @@ package com.hcmus.dreamers.foodmap.common;
 
 import android.content.Context;
 import android.util.Log;
-import android.graphics.Bitmap;
 
 import com.facebook.AccessToken;
-import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
@@ -674,6 +672,37 @@ public class FoodMapApiManager {
         });
 
         uploadingTask.execute(new DoingTask(GenerateRequest.upload(restID, imageName, base64Data)));
+    }
+
+    public static void deleteImage(String imageURL, final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        TaskRequest deletingTask = new TaskRequest();
+
+        deletingTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String jsonResponseString = response.toString();
+
+                if (jsonResponseString != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        deletingTask.execute(new DoingTask(GenerateRequest.deletePicture(imageURL)));
     }
 }
 

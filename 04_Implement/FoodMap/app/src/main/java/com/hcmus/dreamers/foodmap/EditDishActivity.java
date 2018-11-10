@@ -149,8 +149,29 @@ public class EditDishActivity extends AppCompatActivity {
 
                         if (item.getItemId() == R.id.delete_dishImg)
                         {
-                            imagesUri.remove(position);
-                            adapter.notifyDataSetChanged();
+                            // Xóa hình trên server
+                            String imagePath = imagesUri.get(position).toString();
+                            FoodMapApiManager.deleteImage(imagePath, new TaskCompleteCallBack() {
+                                @Override
+                                public void OnTaskComplete(Object response) {
+                                    if((int)response == FoodMapApiManager.SUCCESS){
+
+                                        // Xóa thành công trên server, cập nhật lại grid view
+                                        imagesUri.remove(position);
+                                        adapter.notifyDataSetChanged();
+                                    }else if((int)response == ConstantCODE.NOTINTERNET){
+                                        Toast.makeText(EditDishActivity.this,
+                                                "Không có kết nối INTERNET!",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+                                    } else {
+                                        Toast.makeText(EditDishActivity.this,
+                                                "Xóa hình ảnh thất bại",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+                                    }
+                                }
+                            });
                         }
                         else if(item.getItemId() == R.id.set_default_thumbnail)
                         {

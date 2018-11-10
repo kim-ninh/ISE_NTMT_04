@@ -1,6 +1,5 @@
 package com.hcmus.dreamers.foodmap.common;
 
-import android.content.Context;
 import android.location.Location;
 
 import com.hcmus.dreamers.foodmap.Model.Comment;
@@ -296,7 +295,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deletePicture(final String urlImage, Context context){
+    public static okhttp3.Request deletePicture(final String urlImage){
         String url = ConstantURL.BASEURL + ConstantURL.DELETEPICTURE;
         Map<String, String> params = new HashMap<>();
         params.put("url", urlImage);
