@@ -1,8 +1,5 @@
 package com.hcmus.dreamers.foodmap.Model;
 
-import com.google.gson.annotations.SerializedName;
-import com.hcmus.dreamers.foodmap.Model.Dish;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;

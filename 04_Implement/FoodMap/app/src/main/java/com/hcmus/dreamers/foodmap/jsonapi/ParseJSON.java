@@ -1,17 +1,14 @@
 package com.hcmus.dreamers.foodmap.jsonapi;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Dish;
-import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.Model.User;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
