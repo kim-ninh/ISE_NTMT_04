@@ -31,6 +31,7 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -74,36 +75,15 @@ public class EditRestaurantActivity extends AppCompatActivity {
         //must not remove
         //getTransferDataFromActivity();
 
+        fetchDataFromServer();              // tempory use
+
         takeReferenceFromResource();
-        //restaurant = Owner.getInstance().getRestaurant(0);    //TODO Bỏ dòng comment khi đã xong phần SQLite
-        //dishes = restaurant.getDishes();                      //TODO Như trên
 
-
-        //region test without data f*ck my life
-        try
+        for (Restaurant res: Owner.getInstance().getListRestaurant())
         {
-            restaurant = new Restaurant(4,
-                    "",
-                    "TEST",
-                    "Bình Tân, HCM",
-                    "09484783434",
-                    "sea food restaurant",
-                    "",
-                    new SimpleDateFormat("hh:mm").parse("07:00"),
-                    new SimpleDateFormat("hh:mm").parse("22:00"),
-                    new GeoPoint(0.0,0.0));
-
-            dishes = new ArrayList<>();   //Empty dish is passed
-            dishes.add(new Dish("Banh trang tron",
-                    5000,
-                    "https://dummyimage.com/141x226.png/dddddd/000000", //http://dummyimage.com/141x226.png/dddddd/000000
-                    new Catalog(1, "Com")));
-
-        }catch (Exception e){
-            //..
+            if (res.getId() == 3)
+                restaurant = res;
         }
-        //endregion debug
-
 
 
         //restaurant should not be null
@@ -115,9 +95,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
             finish();
         }
 
+        dishes = restaurant.getDishes();
 
-
-        //generateFakeDishList();
         putDataToViews();
         adapter = new DishInfoListAdapter(
                 this,
@@ -132,6 +111,21 @@ public class EditRestaurantActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handleClickEvent();
+    }
+
+    private void fetchDataFromServer() {
+        List<Restaurant> restaurants =  FoodMapManager.getRestaurants();
+        List<Restaurant> ownerRest = new ArrayList<>();
+        Owner owner = Owner.getInstance();
+
+
+        // Get the restanrant list belong to owner
+        for (Restaurant res: restaurants){
+            if (res.getOwnerUsername().equals(owner.getUsername())){
+                ownerRest.add(res);
+            }
+        }
+        owner.setlistRestaurant(ownerRest);
     }
 
     private void handleClickEvent() {
