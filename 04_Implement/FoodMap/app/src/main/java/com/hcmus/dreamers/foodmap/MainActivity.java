@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
                 if (restaurant != null){
-                    Intent intent = new Intent(MainActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
+                    Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
                 }

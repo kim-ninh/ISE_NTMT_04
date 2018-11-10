@@ -230,7 +230,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
                 if (restaurant != null){
-                    Intent intent = new Intent(ChooseLocationActivity.this, LoginGuestActivity.RestaurantInfoActivity.class);
+                    Intent intent = new Intent(ChooseLocationActivity.this, RestaurantInfoActivity.class);
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
                 }

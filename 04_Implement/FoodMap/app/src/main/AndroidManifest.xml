@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginGuestActivity$RestaurantInfoActivity" />
+        <activity android:name=".RestaurantInfoActivity" />
         <activity android:name=".LoginOwnerActivity" />
         <activity android:name=".LoginGuestActivity" />
         <activity android:name=".MainActivity" />
