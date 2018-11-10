@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap.common;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.google.firebase.auth.FirebaseUser;
@@ -557,5 +558,53 @@ public class FoodMapApiManager {
 
     }
 
+
+    public static void uploadImage(int restID,
+                                   String imageName,
+                                   String base64Data,
+                                   final TaskCompleteCallBack taskCompleteCallBack){
+
+        TaskRequest uploadingTask = new TaskRequest();
+
+        // Implement call back
+        uploadingTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String jsonResponseString = response.toString();
+
+                if (jsonResponseString != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+
+                        // Get the public URL and send back to caller
+                        String publicImageURL = "";
+
+                        try{
+                            publicImageURL = ParseJSON.parseUrlImage(jsonResponseString);
+                        }catch (Exception e)
+                        {
+                            // This line should never be run
+                            Log.d("ParseJSON", e.getMessage());
+                        }
+
+                        // Send back to caller
+                        taskCompleteCallBack.OnTaskComplete(publicImageURL);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete("NOT FOUND");
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete("NO INTERNET");
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete("NO INTERNET");
+                }
+            }
+        });
+
+        uploadingTask.execute(new DoingTask(GenerateRequest.upload(restID, imageName, base64Data)));
+    }
 }
 
