@@ -52,10 +52,10 @@ public class FoodMapManager {
     }
 
     public static void addRestaurant(Context context, Restaurant restaurant){
-        DBManager dbManager = new DBManager(context);
+        //DBManager dbManager = new DBManager(context);
         restaurants.add(restaurant);
-        dbManager.addRestaurant(restaurant);
-        dbManager.close();
+        //dbManager.addRestaurant(restaurant);
+        //dbManager.close();
     }
 
     public static List<Restaurant> getRestaurants(){

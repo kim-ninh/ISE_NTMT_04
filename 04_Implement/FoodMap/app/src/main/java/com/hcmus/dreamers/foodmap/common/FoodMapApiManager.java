@@ -122,12 +122,12 @@ public class FoodMapApiManager {
                         }
 
                     }
-                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                    else {
                         taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
                     }
-                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
-                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
-                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                 }
             }
         });
@@ -541,10 +541,10 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.getAddressFromString(address)));
     }
 
-    public static void uploadImage(int id_rest, String name, String url, final TaskCompleteCallBack taskCompleteCallBack){
+    public static void uploadImage(Context context, int id_rest, String name, String url, final TaskCompleteCallBack taskCompleteCallBack){
 
         try {
-            String convert = Base64Converter.binary2Base64(url);
+            String convert = Base64Converter.binary2Base64(context, url);
 
             TaskRequest taskRequest = new TaskRequest();
             taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -573,6 +573,7 @@ public class FoodMapApiManager {
             taskRequest.execute(new DoingTask(GenerateRequest.upload(id_rest, name, convert)));
 
         } catch (Exception e) {
+            e.printStackTrace();
             taskCompleteCallBack.OnTaskComplete(null);
         }
     }

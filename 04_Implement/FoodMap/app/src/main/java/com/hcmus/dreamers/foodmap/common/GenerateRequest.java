@@ -296,8 +296,11 @@ public class GenerateRequest {
         params.put("describe_text", restaurant.getDescription());
         params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()) );
         params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
-        params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
-        params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
+        params.put("url_image", restaurant.getUrlImage());
+        if (restaurant.getLocation() != null){
+            params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
+            params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
+        }
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)

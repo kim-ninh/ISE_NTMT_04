@@ -2,6 +2,16 @@
 
 $reponse = array();
 
+function url(){
+    if(isset($_SERVER['HTTPS'])){
+        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    }
+    else{
+        $protocol = 'http';
+    }
+    return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+}
+
 if (isset($_POST["name"]) && isset($_POST["data"]) && isset($_POST["id"]))
 {
 	$img_name = $_POST["name"];
@@ -16,22 +26,26 @@ if (isset($_POST["name"]) && isset($_POST["data"]) && isset($_POST["id"]))
         mkdir("./images/".$id, 0777, true);
     }
 	
+    if (file_exists($upload_dir)){
+    	unlink($upload_dir); //xóa file cũ
+    }
+
 	try {
         file_put_contents($upload_dir, $data_decode); // save
 
         $reponse["message"] = "Upload Success";
-		$reponse["satus"] = 200;
-		$reponse["url"] = $upload_dir;
+		$reponse["status"] = 200;
+		$reponse["url"] = url() . $upload_dir;
 
     } catch (Exception $e) {
         $reponse["message"] = "Upload Fail";
-		$reponse["satus"] = 404;
+		$reponse["status"] = 404;
     }	
 }
 else
 {
 	$reponse["message"] = "invalid request";
-	$reponse["satus"] = 400;
+	$reponse["status"] = 400;
 }
 
 echo json_encode($reponse);

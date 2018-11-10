@@ -141,8 +141,10 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             address = atclSearch.getText().toString();
 
             Intent intent = new Intent();
-            intent.putExtra("lat", restPoint.getLatitude());
-            intent.putExtra("lon", restPoint.getLongitude());
+            if (restPoint != null){
+                intent.putExtra("lat", restPoint.getLatitude());
+                intent.putExtra("lon", restPoint.getLongitude());
+            }
             intent.putExtra("address", address);
             setResult(Activity.RESULT_OK, intent);
 

@@ -112,13 +112,14 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             boolean isAdd = data.getBooleanExtra("isAdd", false);
             if (isAdd){
                 restaurantList.clear();
-                restaurantList.addAll(Owner.getInstance().getListRestaurant());
+                List<Restaurant> temp = Owner.getInstance().getListRestaurant();
+                restaurantList.addAll(temp);
                 restaurantListAdapter.notifyDataSetChanged();
             }
         }
         else if (requestCode == RMA_ID && resultCode == Activity.RESULT_OK){
-            restaurantList.clear();
-            restaurantList.addAll(Owner.getInstance().getListRestaurant());
+            List<Restaurant> temp = Owner.getInstance().getListRestaurant();
+            restaurantList.addAll(temp);
             restaurantListAdapter.notifyDataSetChanged();
         }
     }
