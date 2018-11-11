@@ -23,6 +23,7 @@ import java.util.List;
 
 public class OrderListActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
     private ListView listOffer;
     private OrderListAdapter adapter;
     private List<Offer> offers;
@@ -34,18 +35,24 @@ public class OrderListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_list);
         refferences();
         getItentFromActivity();
-        refreshData();
+        //refreshData();
 
-//        offers = new ArrayList<>();
-//        for (int i = 0; i < 20; i++)
-//            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        offers = new ArrayList<>();
+        for (int i = 0; i < 20; i++)
+            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
 
 
+        adapter = new OrderListAdapter(OrderListActivity.this, R.layout.order_item_list, offers);
+        listOffer.setAdapter(adapter);
 
     }
 
     private void refferences(){
         listOffer = (ListView) findViewById(R.id.list_order);
+        toolbar = (Toolbar)findViewById(R.id.order_toolbar);
     }
 
 
