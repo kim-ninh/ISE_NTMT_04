@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
-    private  IMapController mapController;
+    private IMapController mapController;
     private ArrayList<OverlayItem> markers;
 
 

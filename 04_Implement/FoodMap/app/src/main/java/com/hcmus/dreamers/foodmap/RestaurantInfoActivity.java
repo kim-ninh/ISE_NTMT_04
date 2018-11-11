@@ -64,6 +64,9 @@ import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.osmdroid.util.GeoPoint;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -95,6 +98,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         LinearLayout lnrFavorite;
         LinearLayout lnrRate;
         LinearLayout lnrShare;
+        LinearLayout lnrFindWayMap;
         Button btnContact;
         Restaurant restaurant;
 
@@ -128,7 +132,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             lnrRate = (LinearLayout)findViewById(R.id.lnrRate);
             lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
             btnContact = (Button) findViewById(R.id.btnContact);
-
+            lnrFindWayMap = (LinearLayout) findViewById(R.id.lnrFindWayMap);
 
             //get Restaurant
             Intent intent = this.getIntent();
@@ -155,6 +159,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 lnrFavorite.setOnClickListener(this);
                 lnrComment.setOnClickListener(this);
                 lnrCheckIn.setOnClickListener(this);
+                lnrFindWayMap.setOnClickListener(this);
             }
 
         }
@@ -281,6 +286,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     break;
                 case R.id.btnContact:
                     clickOnContactEvent();
+                    break;
+                case R.id.lnrFindWayMap:
+
+                    Intent intent = new Intent(RestaurantInfoActivity.this, MapActivity.class);
+                    intent.putExtra("endPoint", (Serializable) restaurant.getLocation());
+                    startActivity(intent);
                     break;
                 case R.id.lnrMenu:
                     break;

@@ -62,8 +62,9 @@
             android:label="@string/title_activity_manage_account"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".ChooseLocationActivity" />
-        <activity android:name=".CheckInActivity"></activity>
-        <activity android:name=".RestaurantManageActivity"></activity>
+        <activity android:name=".CheckInActivity" />
+        <activity android:name=".RestaurantManageActivity" />
+        <activity android:name=".MapActivity"></activity>
     </application>
 
 </manifest>
