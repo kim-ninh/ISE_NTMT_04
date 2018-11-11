@@ -615,11 +615,6 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant()));
     }
 
-    // dành cho owner
-    public static void getOffer(String id_rest, TaskCompleteCallBack onTaskCompleteCallBack){
-
-    }
-
     // dành cho guest
     public static void getDiscount(String id_rest, TaskCompleteCallBack onTaskCompleteCallBack){
 
@@ -704,5 +699,22 @@ public class FoodMapApiManager {
 
         deletingTask.execute(new DoingTask(GenerateRequest.deletePicture(imageURL)));
     }
+
+
+
+    public static void getOffer(int id_rest, final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                taskCompleteCallBack.OnTaskComplete(response.toString());
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.getOffer(id_rest)));
+    }
+
 }
 
