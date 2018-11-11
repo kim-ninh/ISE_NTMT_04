@@ -54,6 +54,7 @@ public class CheckInActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         grdCheckInImage = (GridViewItem) findViewById(R.id.grdCheckInImage);
         imgCamera = (ImageView) findViewById(R.id.imgCamera);
         imgFacebook = (ImageView) findViewById(R.id.imgFacebook);
