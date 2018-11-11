@@ -3,11 +3,18 @@ package com.hcmus.dreamers.foodmap.Model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Catalog {
+import java.io.Serializable;
+
+public class Catalog implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
     private String name;
+
+    private static String[] dishTypes = {"Cơm",
+            "Phở",
+            "Chè",
+            "Vỉa hè",};
 
     public Catalog() {
     }
@@ -32,5 +39,9 @@ public class Catalog {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static String[] getDishTypes(){
+        return dishTypes;
     }
 }

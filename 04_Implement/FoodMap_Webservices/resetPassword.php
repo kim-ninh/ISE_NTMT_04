@@ -1,6 +1,24 @@
 <?php
 include "../private/mail.php";
 include "../private/database.php";
+class Owner{
+<<<<<<< HEAD
+		function Owner($username, $password, $name, $phone_number, $email, $url_image, $token){
+=======
+		function Owner($username, $password, $name, $phone_number, $email, $token){
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
+			$this->username = $username;
+			$this->password = $password;
+			$this->name = $name;
+			$this->phone_number = $phone_number;
+			$this->email = $email;
+<<<<<<< HEAD
+			$this->url_image = $url_image;
+=======
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
+			$this->token = $token;
+		}
+	}
 
 $response = array();
 
@@ -20,10 +38,22 @@ if (isset($_POST["email"]))
 		$code = $_POST["code"];
 		$check = $conn->CheckCode($email, $code);
 
-		if ($check == true)
+		if ($check != -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";
+
+			foreach ($check as $row) 
+			{
+				$token = $conn->GetToken($row["USERNAME"]);
+<<<<<<< HEAD
+				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"],$row["URL_IMAGE"], $token);
+=======
+				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $token);
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
+				$response["data"] = $owner;
+				break;
+			}
 		}
 		else
 		{
@@ -40,8 +70,8 @@ if (isset($_POST["email"]))
 			$response["status"] = 200;
 			$response["message"] = "Success";
 
-			$body = "<h1>Mã reset password của bạn là:</h1><br>".$code."<b><b/>";
-
+			$body = "<h1>Mã reset password của bạn là:</h1><b>".$code."<b/>";
+			$subject = "Đặt lại mật khẩu";
 			$mail->SetSubject($subject);
 			$mail->SetContext($body);
 			$mail->SendMail();

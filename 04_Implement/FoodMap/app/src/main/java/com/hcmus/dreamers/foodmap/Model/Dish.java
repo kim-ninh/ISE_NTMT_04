@@ -1,7 +1,9 @@
 package com.hcmus.dreamers.foodmap.Model;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 
-public class Dish {
+import java.io.Serializable;
+
+public class Dish implements Serializable {
     private String name;
     private int price;
     private String urlImage;
@@ -9,9 +11,18 @@ public class Dish {
 
     //
     public Dish() {
-
+        this.name = "";
+        this.price = 0;
+        this.urlImage = "";
+        this.catalog = new Catalog(1,"Cơm");
     }
 
+    public Dish(String name, int price, String urlImage, Catalog catalog) {
+        this.name = name;
+        this.price = price;
+        this.urlImage = urlImage;
+        this.catalog = catalog;
+    }
 
     public Catalog getCatalog() {
         return catalog;
@@ -44,4 +55,7 @@ public class Dish {
     public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
     }
+
+
+
 }

@@ -15,8 +15,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 		$conn = new database();
 		$conn->connect();
 
-		
-		if ($conn->DeleteAccount($strQuery))
+		if ($conn->DeleteOwner($username) != -1)
 		{
 			$response["status"] = 200;
 			$response["message"] = "Success";

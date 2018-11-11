@@ -27,7 +27,8 @@ public class Utils {
 
         // Add Params to Builder
         for ( Map.Entry<String, String> entry : params.entrySet() ) {
-            builder.add( entry.getKey(), entry.getValue() );
+            if (entry.getValue() != null)
+                builder.add( entry.getKey(), entry.getValue() );
         }
         RequestBody requestBody = builder.build();
         return requestBody;

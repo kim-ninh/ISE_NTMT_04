@@ -1,27 +1,25 @@
 package com.hcmus.dreamers.foodmap.Model;
 
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Serializable {
     private Date dateTime;
     private String comment;
-    private com.hcmus.dreamers.foodmap.Model.User user;
+    private String emailGuest;
+    private String emailOwner;
 
     public Comment() {
+        this.emailGuest = "";
+        this.emailOwner = "";
     }
 
-    public Comment(Date dateTime, String comment, com.hcmus.dreamers.foodmap.Model.User user) {
+    public Comment(Date dateTime, String comment, String emailGuest, String emailOwner) {
         this.dateTime = dateTime;
         this.comment = comment;
-        this.user = user;
-    }
-
-    public com.hcmus.dreamers.foodmap.Model.User getUser() {
-        return user;
-    }
-
-    public void setUser(com.hcmus.dreamers.foodmap.Model.User user) {
-        this.user = user;
+        this.emailGuest = emailGuest;
+        this.emailOwner = emailOwner;
     }
 
     public Date getDateTime() {
@@ -38,5 +36,21 @@ public class Comment {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getEmailGuest() {
+        return emailGuest;
+    }
+
+    public void setEmailGuest(String emailGuest) {
+        this.emailGuest = emailGuest;
+    }
+
+    public String getEmailOwner() {
+        return emailOwner;
+    }
+
+    public void setEmailOwner(String emailOwner) {
+        this.emailOwner = emailOwner;
     }
 }

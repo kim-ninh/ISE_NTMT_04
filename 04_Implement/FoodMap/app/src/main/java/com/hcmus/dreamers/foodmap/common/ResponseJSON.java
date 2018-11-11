@@ -1,8 +1,10 @@
 package com.hcmus.dreamers.foodmap.common;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseJSON {
+
     @SerializedName("status")
     private int code;
     @SerializedName("message")
@@ -28,8 +30,11 @@ public class ResponseJSON {
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

@@ -5,6 +5,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/login_owner_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorAccent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Đăng nhập" />
+
+    </android.support.design.widget.AppBarLayout>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="134dp"
@@ -15,25 +30,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:maxLines="1"
         android:ems="10"
         android:inputType="textPersonName"
         android:background="@drawable/backgroun_edittext"
         android:hint="Username"
+        android:text="phuocpr1123"
         android:padding="10dp"
         android:textSize="20sp"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"/>
+        android:layout_marginRight="25dp" />
 
     <EditText
         android:id="@+id/edtPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
+        android:maxLines="1"
         android:layout_marginRight="25dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/backgroun_edittext"
         android:ems="10"
         android:hint="Password"
+        android:text="123456789"
         android:inputType="textPassword"
         android:padding="10dp"
         android:textSize="20sp" />
@@ -51,7 +70,7 @@
         android:id="@+id/btnForgotPassword"/>
 
     <Button
-        android:id="@+id/btnDangNhap"
+        android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -73,10 +92,10 @@
             android:text="Bạn chưa có tài khoản?"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnDangNhap" />
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
         <Button
-            android:id="@+id/btnDangKi"
+            android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"

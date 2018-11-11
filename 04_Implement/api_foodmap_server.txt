@@ -1,5 +1,5 @@
 ﻿Mô tả API FoodMapServer: tất cả các api đều có baseaddress là: http://foodmap.tk/
-** Các trường hợp không hợp lệ sẽ có các responde["status"] lần lượt là:
+** Các trường hợp không hợp lệ sẽ có các response["status"] lần lượt là:
 	+ 200 : Success
 	+ 404 : Not Found
 	+ 400 : Invalid request
@@ -11,7 +11,7 @@
 	+ data_post:
 		* username
 		* password
-	+ responde: chuỗi json gồm
+	+ response: chuỗi json gồm
 		* status: 200
 		* message: Success
 		* data: 
@@ -20,6 +20,7 @@
 			** name
 			** phone_number
 			** email
+			** url_image
 			** token
 			
 - createAccount:
@@ -31,7 +32,7 @@
 		* name
 		* phone_number
 		* email
-	+ responde: chuỗi json gồm
+	+ response: chuỗi json gồm
 		* status: 200
 		* message: Success
 		
@@ -42,8 +43,12 @@
 		* id_rest
 		* comment // đoạn bình luận
 		* guest_email/owner_email (chỉ gửi 1 trong 2)
+<<<<<<< HEAD
+		* token // được gửi về lúc đăng nhập nếu là owner
+=======
 		* token // được gửi về lúc đăng nhập
-	+ responde:
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -57,7 +62,7 @@
 		* url_image
 		* id_catalog // hiện tại gửi mặc định 1 là cơm
 		* token
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -65,7 +70,7 @@
 	+ url: createRestaurant.php
 	+ type: POST
 	+ data_post:
-		* owner_user // tên đăng nhập
+		* owner_username // tên đăng nhập
 		* name
 		* address
 		* phone_number
@@ -75,9 +80,10 @@
 		* lat // tọa độ kinh độ
 		* lon // tọa độ vĩ độ
 		* token
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
+		* id: id nhà hàng vừa được tạo
 		
 - deleteDish:
 	+ url: deleteDish.php
@@ -86,7 +92,7 @@
 		* id_rest
 		* name
 		* token
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -96,7 +102,7 @@
 	+ data_post:
 		* username // username của account
 		* token
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -107,7 +113,7 @@
 		* username
 		* token
 		* các giá trị cần chỉnh sửa
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -119,7 +125,7 @@
 		* name
 		* token
 		* các giá trị cần sửa
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -131,7 +137,7 @@
 		* lat
 		* lon
 		* token
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -142,7 +148,7 @@
 		* id_rest // id của nhà hàng
 		* token
 		* các giá trị cần sửa
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -151,7 +157,7 @@
 	+ type: GET
 	+ data_get:
 		* id_rest //id của nhà hàng cần lấy comment
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* data:
@@ -167,7 +173,7 @@
 	+ type: GET
 	+ data_get:
 		* id_rest //id của nhà hàng cần lấy comment
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* data:
@@ -180,13 +186,13 @@
 - getRestaurant:
 	+ url: getRestaurant.php
 	+ type: GET
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* data:
 			[
 				id,
-				id_user,
+				owner_username,
 				name,
 				address,
 				phone_number,
@@ -228,7 +234,7 @@
 		* name // tên hình ảnh
 		* data // chuổi encode Base64 của hình ảnh
 		* id // id của quán ăn
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* url // đường dẫn của hình ảnh trên host
@@ -238,7 +244,7 @@
 	+ type: POST
 	+ data_post:
 		* url // đường dẫn trên host nhận ở trên upload
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		
@@ -247,7 +253,7 @@
 	+ type: POST
 	+ data_post:
 		* email // email của tài khoản cần reset
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* Nếu thành công sẽ có mail gửi mã code reset về mail của người yêu cầu
@@ -259,19 +265,145 @@
 	+ data_post:
 		* email // email của tài khoản cần reset
 		* code // được lấy trong mail gửi ở bước resetPassword
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
-		
+		* data:
+			** username
+			** password
+			** name
+			** phone_number
+			** email
+<<<<<<< HEAD
+			** url_image
+=======
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
+			** token
+			
 - getCatalog:
 	+ url: getCatalog.php
 	+ type: GET
 	+ data_get: // không có
-	+ responde:
+	+ response:
 		* status: 200
 		* message: Success
 		* data:
 			[
 				id,
 				name
+			] // mảng
+
+- getOffer:
+	+ url: getOffer.php
+	+ type: GET
+	+ data_get: id_rest
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				namedish,
+				discount_percent,
+				guest_email,
+				total
+			] // mảng
+			
+- getDiscount:
+	+ url: getDiscount.php
+	+ type: GET
+	+ data_get: id_rest
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id, // id của discount
+				id_rest,
+				namedish,
+				discount_percent,
+				timestart,
+				timeend
+			] // mảng
+
+- addOffer:
+	+ url: addOffer.php
+	+ type: POST
+	+ data_post:
+		+ guest_email
+		+ total
+		+ id_discount
+	+ response:
+		* status: 200
+		* message: Success
+- createDiscount:
+	+ url: createDiscount.php
+	+ type: POST
+	+ data_post:
+		+ id_rest
+		+ namedish
+		+ discount_percent
+		+ timestart
+		+ timeend
+		+ token
+	+ response:
+		* status: 200
+		* message: Success
+- addGuest:
+	+ url: addGuest.php
+	+ type: POST
+	+ data_post:
+		*email
+		*name
+	+response:
+		* status: 200
+		* message: Success
+- addRank:
+	+ url: addRank.php
+	+ type: POST
+	+ data_post:
+		*guest_email
+		*id_rest
+		*star
+	+response:
+		* status: 200
+		* message: Success
+- deleteRestaurant:
+	+ url: deleteRestaurant.php
+	+ type: POST
+	+ data_post:
+		*id_rest
+		* token
+	+response:
+		* status: 200
+		* message: Success		
+- addFavorite:
+	+ url: addFavorite.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- deleteFavortie:
+	+ url: deleteFavortie.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- getFavorite:
+	+ url: getFavorite.php
+	+ type: GET
+	+ data_post:
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+		* data:
+			[
+				id_rest,
+				guest_email
 			] // mảng
