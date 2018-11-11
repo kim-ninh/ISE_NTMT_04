@@ -43,11 +43,7 @@
 		* id_rest
 		* comment // đoạn bình luận
 		* guest_email/owner_email (chỉ gửi 1 trong 2)
-<<<<<<< HEAD
 		* token // được gửi về lúc đăng nhập nếu là owner
-=======
-		* token // được gửi về lúc đăng nhập
->>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 	+ response:
 		* status: 200
 		* message: Success
@@ -274,10 +270,7 @@
 			** name
 			** phone_number
 			** email
-<<<<<<< HEAD
 			** url_image
-=======
->>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 			** token
 			
 - getCatalog:
