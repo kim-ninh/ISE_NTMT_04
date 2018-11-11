@@ -19,6 +19,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 
+
 public class FavoriteRestaurantsActivity extends AppCompatActivity implements TextWatcher {
 
     ImageView imgBackFavorRest;
@@ -81,7 +82,9 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             }
         });
 
+
         FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.adapter_favor_rest_list, restaurants);
+
         grdFavorRest.setAdapter(adapter);
 
         grdFavorRest.setOnItemClickListener(new AdapterView.OnItemClickListener() {

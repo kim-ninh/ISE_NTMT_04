@@ -2,7 +2,7 @@
 include '../private/database.php';
 
 class Offer{
-	Offer($namedish, $discount_percent, $guest_email, $total){
+	function Offer($namedish, $discount_percent, $guest_email, $total){
 		$this->namedish = $namedish;
 		$this->discount_percent = $discount_percent;
 		$this->guest_email = $guest_email;

@@ -69,7 +69,11 @@ CREATE TABLE CATALOGS
 
 CREATE TABLE COMMENTS
 (
+<<<<<<< HEAD
 	DATE_TIME DATETIME NOT NULL, -- ngày comment // dd-MM-yyyy HH:mm:ss
+=======
+	DATE_TIME DATE NOT NULL, -- ngày comment // dd-MM-yyyy HH:mm:ss
+>>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 	ID_REST INT NOT NULL,
 	GUEST_EMAIL VARCHAR(30) NULL, -- người dùng bình thường
 	OWNER_EMAIL VARCHAR(30) NULL, -- là chủ quán ăn comment

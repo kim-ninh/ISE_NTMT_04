@@ -6,4 +6,5 @@ public interface ConstantCODE {
     public static final int INVALIDREQUEST              = 400;
     public static final int TOKENINVALID                = 444;
     public static final int NOTINTERNET                 = -111;
+
 }

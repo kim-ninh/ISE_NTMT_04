@@ -178,6 +178,7 @@ public class ParseJSON {
             Restaurant rest = new Restaurant();
             rest.setId(o.getInt("id"));
             rest.setOwnerUsername((o.getString("owner_username")));
+
             rest.setName(o.getString("name"));
             rest.setAddress(o.getString("address"));
             rest.setPhoneNumber(o.getString("phone_number"));

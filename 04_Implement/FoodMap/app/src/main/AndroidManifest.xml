@@ -47,6 +47,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".RegisterRestaurantActivity" />
+
         <activity
             android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"
@@ -55,17 +56,20 @@
             android:name=".EditRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
             android:parentActivityName=".RestaurantManageActivity" />
+
         <activity android:name=".RegisterOwnerActivity" />
         <activity android:name=".FavoriteRestaurantsActivity" />
         <activity
             android:name=".ManageAccountActivity"
             android:label="@string/title_activity_manage_account"
             android:parentActivityName=".MainActivity" />
+
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".CheckInActivity" />
         <activity android:name=".RestaurantManageActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".OrderListActivity"></activity>
+
     </application>
 
 </manifest>

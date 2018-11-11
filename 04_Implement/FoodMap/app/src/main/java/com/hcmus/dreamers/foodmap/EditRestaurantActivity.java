@@ -25,7 +25,9 @@ import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+
 import com.hcmus.dreamers.foodmap.Model.Catalog;
+
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
@@ -101,9 +103,11 @@ public class EditRestaurantActivity extends AppCompatActivity {
         dishListView.setAdapter(adapter);
         justifyListViewHeightBasedOnChildren(dishListView);
 
+
         //Enable the Up button
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         handleClickEvent();
     }
@@ -111,12 +115,14 @@ public class EditRestaurantActivity extends AppCompatActivity {
     private void handleClickEvent() {
 
         // Nút Thêm món ăn mới
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddDish);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
 
                 //justifyListViewHeightBasedOnChildren(dishListView);       //TODO nhớ gọi hàm này sau khi đã thêm 1 món ăn
             }
@@ -131,7 +137,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
                 transferData2NextActivity(dish ,position);
             }
         });
-
 
         // Cập nhật giờ mở cửa
         lblOpenHour.setOnClickListener(new View.OnClickListener() {

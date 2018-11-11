@@ -17,6 +17,7 @@
         android:elevation="4dp"
         app:title="Thông tin quán ăn"/>
 
+
     <include layout="@layout/restaurant_information_layout" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -38,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class EditDishActivity extends AppCompatActivity {
 
 
@@ -49,11 +52,13 @@ public class EditDishActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageAdapter adapter;
 
+
     Intent manageRest_manageDish;
     Bundle transferData = new Bundle();
 
     int rest_id;
     int row;
+
     int gridRow = -1;
     Dish dish;
     List<Uri> imagesUri = new ArrayList<>();
@@ -71,8 +76,10 @@ public class EditDishActivity extends AppCompatActivity {
         getTransferDataFromActivity();
         putDataToViews();
 
+
         adapter = new ImageAdapter(this,imagesUri);
         gridView.setAdapter(adapter);
+
         spnrDishType.setAdapter(new ArrayAdapter<String>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
@@ -82,6 +89,7 @@ public class EditDishActivity extends AppCompatActivity {
         //Enable the Up button (Icon look like this: <- )
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         handleClickEvent();
     }
@@ -195,12 +203,15 @@ public class EditDishActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
     }
 
     private void putDataToViews() {
         txtDishName.setText(dish.getName());
         txtDishCost.setText(Integer.toString(dish.getPrice()));
+
         spnrDishType.setSelection(dish.getCatalog().getId() - 1);
+
     }
 
     private void getTransferDataFromActivity() {

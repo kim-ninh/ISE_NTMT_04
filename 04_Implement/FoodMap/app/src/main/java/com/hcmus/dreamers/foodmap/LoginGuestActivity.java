@@ -31,6 +31,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -38,6 +39,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -46,6 +48,7 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -54,6 +57,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
@@ -71,6 +75,7 @@ import java.util.Date;
 import java.util.Map;
 
 
+
 public class LoginGuestActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginGuestActivity";
@@ -83,6 +88,7 @@ public class LoginGuestActivity extends AppCompatActivity {
     Button btnLoginOwner;
     Button btnRegisterOwner;
     Toolbar toolbar;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +118,6 @@ public class LoginGuestActivity extends AppCompatActivity {
         toolbar = (Toolbar)findViewById(R.id.login_guest_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         // init
         mAuth = FirebaseAuth.getInstance();

@@ -37,18 +37,23 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 
+
 import android.text.Editable;
 import android.text.TextWatcher;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -58,7 +63,6 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 
-import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -69,6 +73,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 
 import java.io.File;
 import java.io.Serializable;
@@ -157,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
-
 
         // cài đặt map
         mMap.setBuiltInZoomControls(true);
@@ -524,5 +528,40 @@ public class MainActivity extends AppCompatActivity {
                 addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
         }
+
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id){
+                    case R.id.btnManager:
+                        Log.d(TAG, "onClick: btnManager");
+                        //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
+                        Intent main_manageRest = new Intent(MainActivity.this,
+                                EditRestaurantActivity.class);
+                        startActivity(main_manageRest);
+                        break;
+                    case  R.id.btnFeedBack:
+                        Log.d(TAG, "onClick: btnFeedBack");
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
+                        startActivity(browserIntent);
+                        break;
+                    case  R.id.btnUpdate:
+                        Log.d(TAG, "onClick: btnUpdate");
+                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.btnLogout:
+                        Log.d(TAG, "onClick: btnLogout");
+                        Owner.setInstance(null);
+                        initMenuNotLogin();
+                        break;
+                    case R.id.btnAbout:
+                        Log.d(TAG, "onClick: btnAbout");
+                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 }

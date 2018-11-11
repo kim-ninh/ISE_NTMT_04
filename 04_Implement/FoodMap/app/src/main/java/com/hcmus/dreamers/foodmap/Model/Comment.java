@@ -1,6 +1,5 @@
 package com.hcmus.dreamers.foodmap.Model;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Date;

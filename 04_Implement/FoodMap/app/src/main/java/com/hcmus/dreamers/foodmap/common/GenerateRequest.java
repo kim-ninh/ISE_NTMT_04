@@ -11,6 +11,7 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import org.osmdroid.util.GeoPoint;
 
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class GenerateRequest {
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("comment", comment.getComment());
+
         if(comment.getEmailGuest()!= null && !comment.getEmailGuest().equals(""))
             params.put("guest_email", comment.getEmailGuest());
         else{
@@ -108,7 +110,9 @@ public class GenerateRequest {
     public static okhttp3.Request createRestaurant(final Restaurant restaurant,final String token){
         String url = ConstantURL.BASEURL + ConstantURL.CREATERESTAURANT;
         Map<String, String> params = new HashMap<>();
+
         params.put("owner_username", restaurant.getOwnerUsername());
+
         params.put("name", restaurant.getName());
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
@@ -266,11 +270,13 @@ public class GenerateRequest {
         params.put("describe_text", restaurant.getDescription());
         params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()) );
         params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
+
         params.put("url_image", restaurant.getUrlImage());
         if (restaurant.getLocation() != null){
             params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
             params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         }
+
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -491,6 +497,7 @@ public class GenerateRequest {
                 .build();
         return request;
     }
+
 
     public static okhttp3.Request getAddressFromString(String address){
         String baseUrl = ConstantURL.PHOTONAPI;

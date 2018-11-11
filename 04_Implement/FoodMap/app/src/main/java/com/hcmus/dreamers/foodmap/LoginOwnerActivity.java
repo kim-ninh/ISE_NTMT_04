@@ -51,6 +51,7 @@ public class LoginOwnerActivity extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage("Check login");
 
+
         edtUsername = (EditText)findViewById(R.id.edtUsername);
         edtPassword = (EditText)findViewById(R.id.edtPassword);
         btnForgotPass = (Button)findViewById(R.id.btnForgotPassword);

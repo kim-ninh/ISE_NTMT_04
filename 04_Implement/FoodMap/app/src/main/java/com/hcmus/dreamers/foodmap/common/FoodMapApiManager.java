@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap.common;
 
+
 import android.content.Context;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import org.json.JSONException;
 
 import java.text.ParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class FoodMapApiManager {
             return false;
         return true;
     }
+
 
     public static boolean isGuestLogin(){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -55,6 +58,7 @@ public class FoodMapApiManager {
                         try {
                             Owner.setInstance(ParseJSON.parseOwnerFromCreateAccount(Sresponse));
                             Owner.getInstance().setlistRestaurant(FoodMapManager.getRestaurants(Owner.getInstance().getUsername()));
+
                             taskCompleteCallBack.OnTaskComplete(SUCCESS);
                         } catch (JSONException e) {
                             taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
@@ -329,6 +333,7 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addFavorite(id_rest, guest_email)));
     }
 
+
     public static void addComment(int id_rest, Comment comment, String token, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -356,6 +361,7 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.comment(id_rest, comment, token)));
     }
+
 
     public static void updateDish(int id_rest, final Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
@@ -453,6 +459,7 @@ public class FoodMapApiManager {
 
         taskRequest.execute(new DoingTask(GenerateRequest.getFavorite(guest_email)));
     }
+
 
     public static void deleteRestaurant(final Restaurant restaurant, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();

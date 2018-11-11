@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap.common;
 
+
 import android.content.Context;
 
 import com.hcmus.dreamers.foodmap.Model.Comment;
@@ -97,5 +98,4 @@ public class FoodMapManager {
             }
         }
     }
-
 }
