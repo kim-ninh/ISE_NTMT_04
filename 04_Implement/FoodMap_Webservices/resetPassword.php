@@ -2,20 +2,13 @@
 include "../private/mail.php";
 include "../private/database.php";
 class Owner{
-<<<<<<< HEAD
 		function Owner($username, $password, $name, $phone_number, $email, $url_image, $token){
-=======
-		function Owner($username, $password, $name, $phone_number, $email, $token){
->>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 			$this->username = $username;
 			$this->password = $password;
 			$this->name = $name;
 			$this->phone_number = $phone_number;
 			$this->email = $email;
-<<<<<<< HEAD
 			$this->url_image = $url_image;
-=======
->>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 			$this->token = $token;
 		}
 	}
@@ -46,11 +39,7 @@ if (isset($_POST["email"]))
 			foreach ($check as $row) 
 			{
 				$token = $conn->GetToken($row["USERNAME"]);
-<<<<<<< HEAD
 				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"],$row["URL_IMAGE"], $token);
-=======
-				$owner = new Owner($row["USERNAME"], $row["PASSWORD"], $row["NAME"], $row["PHONE_NUMBER"], $row["EMAIL"], $token);
->>>>>>> 08dc075cad7340d294937b300c5f1773a8def7f0
 				$response["data"] = $owner;
 				break;
 			}
