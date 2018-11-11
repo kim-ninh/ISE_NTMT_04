@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class OrderListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_list);
         refferences();
         getItentFromActivity();
+        //must not remove
         //refreshData();
 
         setSupportActionBar(toolbar);
@@ -48,6 +50,14 @@ public class OrderListActivity extends AppCompatActivity {
         adapter = new OrderListAdapter(OrderListActivity.this, R.layout.order_item_list, offers);
         listOffer.setAdapter(adapter);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return true;
     }
 
     private void refferences(){
