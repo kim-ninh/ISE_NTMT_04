@@ -15,7 +15,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:background="?attr/colorAccent"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        app:title="Quán ăn yêu thích"/>
 
     <ImageView
         android:id="@+id/imgBackFavorLayout"

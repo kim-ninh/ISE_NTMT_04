@@ -274,7 +274,8 @@ public class MainActivity extends AppCompatActivity {
         Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
 
         DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
-        taskDownload.loadImageFromUrl(user.getPhotoUrl().getPath());
+        String avatar = user.getPhotoUrl().toString();
+        taskDownload.loadImageFromUrl(avatar);
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

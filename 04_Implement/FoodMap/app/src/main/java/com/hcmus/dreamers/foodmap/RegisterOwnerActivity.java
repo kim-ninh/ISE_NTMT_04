@@ -50,7 +50,7 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
 
         progressDialog = new ProgressDialog(RegisterOwnerActivity.this);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("Register");
+        progressDialog.setMessage("Register");
     }
 
     @Override
