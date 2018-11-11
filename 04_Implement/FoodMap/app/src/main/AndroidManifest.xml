@@ -64,7 +64,8 @@
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".CheckInActivity" />
         <activity android:name=".RestaurantManageActivity" />
-        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".MapActivity" />
+        <activity android:name=".OrderListActivity"></activity>
     </application>
 
 </manifest>

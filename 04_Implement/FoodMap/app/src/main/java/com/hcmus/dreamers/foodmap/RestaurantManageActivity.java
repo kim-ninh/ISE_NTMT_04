@@ -33,6 +33,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     private final int RRA_ID = 1234;
     private final int RMA_ID = 1111;
+    private final int ROA_ID = 6789;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);
+
     }
 
     @Override
@@ -105,7 +107,9 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     @Override
     public void onItemLongClick(int position, View v) {
-
+        Intent intent = new Intent(RestaurantManageActivity.this, OrderListActivity.class);
+        intent.putExtra("id_rest", restaurantList.get(position).getId());
+        startActivityForResult(intent, ROA_ID);
     }
 
     @Override
@@ -125,4 +129,6 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             restaurantListAdapter.notifyDataSetChanged();
         }
     }
+
+
 }
