@@ -3,14 +3,12 @@ include '../private/database.php';
 
 $response = array();
 
-if (isset($_POST["email_guest"]) && isset($_POST["id_rest"]) && isset($_POST["star"]) )
+if (isset($_POST["guest_email"]) && isset($_POST["id_rest"]) && isset($_POST["star"]) )
 {
 	$conn = new database();
 	$conn->connect();
-	
-	$check = $conn->AddRank($_POST["id_rest"], $_POST["email_guest"], $_POST["star"]);
 
-	if ($check != -1)
+	if ($conn->AddRank($_POST["id_rest"], $_POST["guest_email"], $_POST["star"]) != -1)
 	{
 		$response["status"] = 200;
 		$response["message"] = "Success";

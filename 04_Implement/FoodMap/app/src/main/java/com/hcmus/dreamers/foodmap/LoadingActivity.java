@@ -33,19 +33,31 @@ public class LoadingActivity extends AppCompatActivity {
             public void OnTaskComplete(Object response) {
                 int code = (int) response;
                 if (code == FoodMapApiManager.SUCCESS){
-                    // Kiểm tra đã cấp các quyền truy cập.
-                    checkPermission();
-                }
-                else if (code == FoodMapApiManager.FAIL_INFO){
-                    Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
-                }
-                else if (code == FoodMapApiManager.PARSE_FAIL){
-                    Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
+
+                    FoodMapApiManager.getCatalog(LoadingActivity.this, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            int code = (int) response;
+                            if (code == FoodMapApiManager.SUCCESS){
+                                // Kiểm tra đã cấp các quyền truy cập.
+                                checkPermission();
+                            }
+                            else if (code == ConstantCODE.NOTINTERNET){
+                                Toast.makeText(LoadingActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
                 }
                 else if (code == ConstantCODE.NOTINTERNET){
                     Toast.makeText(LoadingActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
                 }
-
+                else {
+                    Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
                 //finish();
             }
         });

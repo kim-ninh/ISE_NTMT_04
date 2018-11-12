@@ -379,7 +379,7 @@
 		* status: 200
 		* message: Success	
 - deleteFavortie:
-	+ url: deleteFavortie.php
+	+ url: deleteFavorite.php
 	+ type: POST
 	+ data_post:
 		* id_rest

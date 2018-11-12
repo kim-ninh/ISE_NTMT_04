@@ -20,10 +20,8 @@ import java.io.InputStream;
 public class Base64Converter {
     public static String binary2Base64(Context context, String fileName)throws Exception{
         Uri uri = Uri.parse(fileName);
-        InputStream  inputStream  = context.getContentResolver().openInputStream(uri);
+        InputStream inputStream = context.getContentResolver().openInputStream(uri);
 
-//        File sdcard = Environment.getExternalStorageDirectory();
-//        InputStream  inputStream = new FileInputStream(new File(sdcard, fileName));//You can get an inputStream using any IO API
         byte[] bytes;
         byte[] buffer = new byte[8192];
         int bytesRead;

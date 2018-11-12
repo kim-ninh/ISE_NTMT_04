@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap.common;
 
 import android.content.Context;
 
+import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.DBManager;
@@ -16,6 +17,7 @@ import java.util.List;
 public class FoodMapManager {
 
     private static List<Restaurant> restaurants;
+    private static List<Catalog> catalogs;
 
     public  static List<Restaurant> getRestaurants(String username){
         List<Restaurant> restaurantList = new ArrayList<>();
@@ -97,5 +99,31 @@ public class FoodMapManager {
                 return;
             }
         }
+    }
+
+    public static List<String> getCatalogsString(){
+        List<String> list = new ArrayList<>();
+        int size = catalogs.size();
+        for (int i = 0; i < size; i++){
+            list.add(catalogs.get(i).getName());
+        }
+        return list;
+    }
+
+    public static Catalog findCatalog(String catalogName){
+        int size = catalogs.size();
+        for (int i =0;i < size;i++){
+            if (catalogs.get(i).getName().equals(catalogName))
+                return catalogs.get(i);
+        }
+        return null;
+    }
+
+    public static List<Catalog> getCatalogs() {
+        return catalogs;
+    }
+
+    public static void setCatalogs(Context context, List<Catalog> catalogs) {
+        FoodMapManager.catalogs = catalogs;
     }
 }

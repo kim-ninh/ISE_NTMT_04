@@ -622,6 +622,41 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant()));
     }
 
+    // lấy danh sách catalog
+    public static void getCatalog(final Context context, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            FoodMapManager.setCatalogs(context, ParseJSON.parseCatalog(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getCatalog()));
+    }
+
     // dành cho guest
     public static void getDiscount(String id_rest, TaskCompleteCallBack onTaskCompleteCallBack){
 
@@ -722,6 +757,38 @@ public class FoodMapApiManager {
 
         taskRequest.execute(new DoingTask(GenerateRequest.getOffer(id_rest)));
     }
+
+
+    public static void addDish(int id_rest, Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String jsonResponseString = response.toString();
+
+                if (jsonResponseString != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                    else {
+                        taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.addDish(id_rest, dish, Owner.getInstance().getToken())));
+    }
+
+
 
 }
 

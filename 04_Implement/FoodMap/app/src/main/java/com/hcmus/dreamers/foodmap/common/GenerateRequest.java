@@ -89,7 +89,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createDish(final int id_rest, final Dish dish, final String token){
+    public static okhttp3.Request addDish(final int id_rest, final Dish dish, final String token){
         String url = ConstantURL.BASEURL + ConstantURL.CREATEDISH;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));

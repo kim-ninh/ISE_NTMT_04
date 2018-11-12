@@ -41,6 +41,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
     // arbitrary interprocess communication ID (just a nickname!)
     private final int IPC_ID = (int) (10001 * Math.random());
+    private final int AFA_ID = 1009;
 
 
     @Override
@@ -115,16 +117,13 @@ public class EditRestaurantActivity extends AppCompatActivity {
     private void handleClickEvent() {
 
         // Nút Thêm món ăn mới
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddDish);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-
-                //justifyListViewHeightBasedOnChildren(dishListView);       //TODO nhớ gọi hàm này sau khi đã thêm 1 món ăn
+               Intent intent = new Intent(EditRestaurantActivity.this, AddDishActivity.class);
+               intent.putExtra("rest", (Serializable)restaurant);
+               startActivityForResult(intent, AFA_ID);
             }
         });
 
@@ -231,13 +230,16 @@ public class EditRestaurantActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             }
+            else if (requestCode == AFA_ID && resultCode == Activity.RESULT_OK){
+                boolean isAdd = data.getBooleanExtra("isAdd", false);
+                if (isAdd)
+                    justifyListViewHeightBasedOnChildren(dishListView);
+            }
         }catch (Exception e){
             Toast.makeText(getBaseContext(),e.getMessage(), Toast.LENGTH_LONG)
                     .show();
         } //try
     }// onActivityResult
-
-
 
     //TODO row làm chức năng gì ?????
     private void getTransferDataFromActivity() {
@@ -449,7 +451,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         // Invoke task
         addDishTask.execute(new DoingTask(GenerateRequest
-                .createDish(id_rest, dish, Owner.getInstance().getToken())));
+                .addDish(id_rest, dish, Owner.getInstance().getToken())));
     }
 
     public void AddComment(int id_rest, Comment comment) {
