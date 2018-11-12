@@ -109,12 +109,12 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void OnTaskComplete(Object response) {
                         String url = (String) response;
-                        if (response != null){
+                        if (url != null){
                             final Dish dish = new Dish();
                             dish.setName(name);
                             dish.setCatalog(catalog);
                             dish.setPrice(Integer.valueOf(price));
-                            dish.setUrlImage(urlImage);
+                            dish.setUrlImage(url);
 
                             FoodMapApiManager.addDish(restaurant.getId(), dish, new TaskCompleteCallBack() {
                                 @Override
