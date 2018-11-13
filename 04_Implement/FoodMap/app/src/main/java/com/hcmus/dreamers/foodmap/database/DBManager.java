@@ -373,7 +373,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public Catalog getCatalog(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-
+        Catalog catalog;
 
         Cursor cursor = db.query(TABLE_CATALOGS, null, KEY_ID + " = ?", new String[] {String.valueOf(id)},
                 null, null, null);
@@ -381,11 +381,13 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
         cursor.moveToFirst();
 
+        catalog = new Catalog(cursor.getInt(cursor.getColumnIndex(KEY_ID)),
+                cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+
         cursor.close();
         db.close();
 
-        return new Catalog(cursor.getInt(cursor.getColumnIndex(KEY_ID)),
-                cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+        return catalog;
 
     }
 
@@ -439,6 +441,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public GeoPoint getLocation(int id_rest) {
         SQLiteDatabase db = this.getReadableDatabase();
+        GeoPoint location;
 
         Cursor cursor = db.query(TABLE_LOCATION, null, KEY_ID_REST + "=?", new String[] {String.valueOf(id_rest)}
                 , null,null,null);
@@ -446,11 +449,13 @@ public class DBManager extends SQLiteOpenHelper {
             return null;
         cursor.moveToFirst();
 
+        location = new GeoPoint(cursor.getDouble(cursor.getColumnIndex(KEY_LAT)),
+                cursor.getDouble(cursor.getColumnIndex(KEY_LON)));
+
         cursor.close();
         db.close();
 
-        return new GeoPoint(cursor.getDouble(cursor.getColumnIndex(KEY_LAT)),
-                cursor.getDouble(cursor.getColumnIndex(KEY_LON)));
+        return location;
     }
 
     public HashMap<String, Integer> getRanks(int id_rest) {
