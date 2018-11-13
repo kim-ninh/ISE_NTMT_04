@@ -138,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
 
         // thêm restaurant
         addMarkerRestaurant();
+
+        //Upload data to Guest or Owner If checkLogin() == true
+
+
     }
 
     @Override
@@ -276,6 +280,21 @@ public class MainActivity extends AppCompatActivity {
         txtEmail.setText(user.getEmail());
 
         Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
+
+        FoodMapApiManager.getFavorite(Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                int code = (int) response;
+
+                if(code == ConstantCODE.SUCCESS)
+                {
+                    Log.i(TAG, "Upload data to Guest successfully");
+                }
+                else{
+                    Log.i(TAG, "Error: Can't upload data to Guest " + Integer.toString(code));
+                }
+            }
+        });
 
         DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
         String avatar = user.getPhotoUrl().toString();
@@ -563,5 +582,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    void uploadDataToAccount() {
+        if(FoodMapApiManager.isGuestLogin()){
+
+        }
     }
 }
