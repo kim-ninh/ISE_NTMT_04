@@ -6,27 +6,27 @@
 
     <ImageView
         android:id="@+id/imgBackFavorRest"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/icon_foodmap" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@id/imgBackFavorRest"
         android:layout_alignTop="@id/imgBackFavorRest"
         android:layout_alignRight="@id/imgBackFavorRest"
         android:layout_alignBottom="@id/imgBackFavorRest">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="#803a3939">
 
             <TextView
                 android:id="@+id/txtFavorRestName"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="restaurant name"
                 android:textSize="15dp"

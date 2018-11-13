@@ -92,7 +92,7 @@ if ($listRestaurants != -1)
 		if ($listRanks != -1)
 		{
 			foreach ($listRanks as $rank) {
-				array_push($ranks, new Rank($rank["EMAIL_USER"], $rank["STAR"]));
+				array_push($ranks, new Rank($rank["EMAIL_GUEST"], $rank["STAR"]));
 			}
 		}
 			
