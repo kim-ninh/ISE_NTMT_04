@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.HttpUrl;
 import okhttp3.RequestBody;
 
 public class GenerateRequest {
@@ -178,6 +179,7 @@ public class GenerateRequest {
         String url = ConstantURL.BASEURL + ConstantURL.GETFAVORITE;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guest_email);
+
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
