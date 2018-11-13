@@ -315,7 +315,7 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
@@ -403,7 +403,7 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
@@ -788,7 +788,45 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addDish(id_rest, dish, Owner.getInstance().getToken())));
     }
 
+    public static void addRank(String guestEmail, int restID, int star, final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        TaskRequest taskRequest = new TaskRequest();
 
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String JsonObjectString = response.toString();
+
+                if (JsonObjectString != null) {
+                    try {
+                        ResponseJSON responseJSON = ParseJSON.parseFromAllResponse(response.toString());
+
+                        if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.INVALIDREQUEST) {
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.INVALIDREQUEST);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else {
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.addRank(guestEmail, restID, star)));
+    }
 
 }
 
