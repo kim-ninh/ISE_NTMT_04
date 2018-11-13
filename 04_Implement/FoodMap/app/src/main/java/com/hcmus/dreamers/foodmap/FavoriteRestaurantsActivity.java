@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
     ImageView imgBackFavorRest;
     AutoCompleteTextView txtAutoComplete;
-    GridView grdFavorRest;
+    GridViewItem grdFavorRest;
 
     List<String> items = new ArrayList<>();
 
@@ -44,7 +45,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
         imgBackFavorRest = (ImageView) findViewById(R.id.imgBackFavorLayout);
         txtAutoComplete = (AutoCompleteTextView) findViewById(R.id.txtAutoComplete);
-        grdFavorRest = (GridView)findViewById(R.id.grdFavorRest);
+        grdFavorRest = (GridViewItem) findViewById(R.id.grdFavorRest);
 
 
         //debug
