@@ -62,6 +62,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -100,6 +101,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     LinearLayout lnrRate;
     LinearLayout lnrShare;
     LinearLayout lnrFindWayMap;
+
+    ImageView imgHeart;
     Button btnContact;
     Restaurant restaurant;
 
@@ -134,6 +137,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
         btnContact = (Button) findViewById(R.id.btnContact);
         lnrFindWayMap = (LinearLayout) findViewById(R.id.lnrFindWayMap);
+        imgHeart = (ImageView) findViewById(R.id.imgHeart);
 
         //get Restaurant
         Intent intent = this.getIntent();
@@ -178,6 +182,17 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     }
 
     private void setLayoutInfo() {
+        //set status favorite
+        if(FoodMapApiManager.isGuestLogin()) {
+            Toast.makeText(RestaurantInfoActivity.this, "login", Toast.LENGTH_LONG).show();
+
+            if (Guest.getInstance().isFavoriteRestaurant(restaurant.getId())) {
+                imgHeart.setImageResource(R.drawable.ic_red_heart);
+            }
+        }
+        else {
+            Toast.makeText(RestaurantInfoActivity.this, "Not login", Toast.LENGTH_LONG).show();
+        }
         //set Description Image
         DownloadImageTask taskDownload = new DownloadImageTask(imgDescription, getApplicationContext());
         taskDownload.loadImageFromUrl(restaurant.getUrlImage());
@@ -309,46 +324,100 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         startActivityForResult(intent, CM_ID);
     }
 
-    private void clickOnFavoriteEvent(){
+    private void clickOnFavoriteEvent() {
         //check login
-        if(FoodMapApiManager.isGuestLogin())
-        {
+        if (FoodMapApiManager.isGuestLogin()) {
+            lnrFavorite.setClickable(false);
+
             //kiem tra da ton tai trong ds yeu thich chua
-            if(!Guest.getInstance().getFavRestaurant().contains(restaurant))
-            {
-                Guest.getInstance().getFavRestaurant().add(restaurant);
-                restaurant.setnFavorites(restaurant.getnFavorites() + 1);
+            if (!Guest.getInstance().isFavoriteRestaurant(restaurant.getId())) {
+                FoodMapApiManager.addFavorite(Guest.getInstance().getEmail(), restaurant.getId(), new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        int code = (int) response;
+
+                        if (code == ConstantCODE.SUCCESS) {
+                            Guest.getInstance().getFavRestaurant().add(restaurant);
+                            restaurant.setnFavorites(restaurant.getnFavorites() + 1);
+                            imgHeart.setImageResource(R.drawable.ic_red_heart);
+
+                            Log.i(TAG, "Add favorite restaurant successfully");
+                            Toast.makeText(RestaurantInfoActivity.this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Log.i(TAG, "Error transfer data");
+                            Toast.makeText(RestaurantInfoActivity.this, "Add error " + Integer.toString(code), Toast.LENGTH_LONG).show();
+                        }
+
+                        lnrFavorite.setClickable(true);
+                    }
+                });
+
+            } else {
+                FoodMapApiManager.deleteFavorite(Guest.getInstance().getEmail(), restaurant.getId(), new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        int code = (int) response;
+
+                        if (code == ConstantCODE.SUCCESS) {
+                            Guest.getInstance().removeFavoriteRestaurant(restaurant.getId());
+                            restaurant.setnFavorites(restaurant.getnFavorites() - 1);
+                            imgHeart.setImageResource(R.drawable.ic_heart);
+
+                            Log.i(TAG, "Delete favorite restaurant successfully");
+                            Toast.makeText(RestaurantInfoActivity.this, "This restaurant was removed out your favorites", Toast.LENGTH_LONG).show();
+                        } else {
+                            Log.i(TAG, "Error transfer data");
+                            Toast.makeText(RestaurantInfoActivity.this, "Delete error", Toast.LENGTH_LONG).show();
+                        }
+
+                        lnrFavorite.setClickable(true);
+                    }
+                });
             }
-            Toast.makeText(this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
+
+        } else {
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
         }
     }
 
     private void clickOnRateEvent() {
         //check login
-        if(FoodMapApiManager.isGuestLogin()) {
-            View ratingLayout = getLayoutInflater().inflate(R.layout.dialog_rating, null);
-            //final AlertDialog dialog = new AlertDialog(RestaurantInfoActivity.this);
+        if (FoodMapApiManager.isGuestLogin()) {
+
             final Dialog dialog = new Dialog(RestaurantInfoActivity.this);
             dialog.setContentView(R.layout.dialog_rating);
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();
 
-            final RatingBar rtbRate = (RatingBar) ratingLayout.findViewById(R.id.rtbRate);
-            Button btnRateSubmit = (Button) ratingLayout.findViewById(R.id.btnRateSubmit);
+            final RatingBar rtbRate = (RatingBar) dialog.findViewById(R.id.rtbRate);
+            Button btnRateSubmit = (Button) dialog.findViewById(R.id.btnRateSubmit);
             btnRateSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    restaurant.getRanks().put(Guest.getInstance().getEmail(), rtbRate.getNumStars());
+                    FoodMapApiManager.addRank(Guest.getInstance().getEmail(), restaurant.getId(),  (int) rtbRate.getRating(),
+                            new TaskCompleteCallBack() {
+                                @Override
+                                public void OnTaskComplete(Object response) {
+                                    int code = (int) response;
+
+                                    if (code == ConstantCODE.SUCCESS) {
+                                        restaurant.getRanks().put(Guest.getInstance().getEmail(), (int) rtbRate.getRating());
+
+                                        Log.i(TAG, "Submit rate successfully");
+                                        Toast.makeText(RestaurantInfoActivity.this, "Thank you for your submit", Toast.LENGTH_LONG).show();
+
+                                    } else {
+                                        Log.i(TAG, "Error transfer data");
+                                        Toast.makeText(RestaurantInfoActivity.this, "Submit error " + Integer.toString(code), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                     dialog.dismiss();
                 }
             });
-        }
-        else {
+        } else {
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
         }
     }
