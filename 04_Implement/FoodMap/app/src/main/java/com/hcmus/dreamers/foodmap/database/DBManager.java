@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
+
 import java.text.DateFormat;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
@@ -22,7 +25,7 @@ import java.util.Map;
 
 public class DBManager extends SQLiteOpenHelper {
     // Database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;      // old = 1
 
     // Database name
     private static final String DATABASE_NAME = "FOODMAP_DATABASE";
@@ -35,6 +38,14 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String TABLE_COMMENTS = "COMMENTS";
     private static final String TABLE_RANK = "RANK";
 
+    // Drop table
+    private static final String DROP_TABLE_RESTAURANT = "DROP TABLE IF EXISTS " + TABLE_RESTAURANT;
+    private static final String DROP_TABLE_LOCATION = "DROP TABLE IF EXISTS " + TABLE_LOCATION;
+    private static final String DROP_TABLE_DISH = "DROP TABLE IF EXISTS " + TABLE_DISH;
+    private static final String DROP_TABLE_CATALOGS = "DROP TABLE IF EXISTS " + TABLE_CATALOGS;
+    private static final String DROP_TABLE_COMMENTS = "DROP TABLE IF EXISTS " + TABLE_COMMENTS;
+    private static final String DROP_TABLE_RANK = "DROP TABLE IF EXISTS " + TABLE_RANK;
+
     // Common column names
     private static final String KEY_NAME = "NAME";
     private static final String KEY_ID = "ID";
@@ -43,7 +54,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     // RESTAURANT Table - column names
     //private static final String KEY_ID = "ID";
-    private static final String KEY_ID_USER = "ID_USER";
+    private static final String KEY_OWNER_USERNAME = "OWNER_USERNAME";
     //private static final String KEY_NAME = "NAME";
     private static final String KEY_ADDRESS = "ADDRESS";
     private static final String KEY_PHONE_NUMBER = "PHONE_NUMBER";
@@ -87,7 +98,7 @@ public class DBManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_TABLE_RESTAURANT = "CREATE TABLE " + TABLE_RESTAURANT + "("
                 + KEY_ID + " INT PRIMARY KEY,"
-                + KEY_ID_USER + " VARCHAR(20),"
+                + KEY_OWNER_USERNAME + " VARCHAR(20),"
                 + KEY_NAME + " VARCHAR(100),"
                 + KEY_ADDRESS + " VARCHAR(50),"
                 + KEY_PHONE_NUMBER + " VARCHAR(11) CHECK(LENGTH(" + KEY_PHONE_NUMBER + ") IN (10, 11)),"
@@ -145,7 +156,14 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(DROP_TABLE_RANK);
+        db.execSQL(DROP_TABLE_COMMENTS);
+        db.execSQL(DROP_TABLE_DISH);
+        db.execSQL(DROP_TABLE_LOCATION);
+        db.execSQL(DROP_TABLE_CATALOGS);
+        db.execSQL(DROP_TABLE_RESTAURANT);
 
+        onCreate(db);
     }
 
     public void addCatalog(Catalog catalog) {
@@ -155,35 +173,45 @@ public class DBManager extends SQLiteOpenHelper {
         value.put(KEY_ID, catalog.getId());
         value.put(KEY_NAME, catalog.getName());
 
-        db.insert(TABLE_CATALOGS, null, value);
+        if (db.insertWithOnConflict(TABLE_CATALOGS, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            updateCatalog(catalog);
+        }
+
         db.close();
     }
 
-    public void addComment(Comment comment) {
+    public void addComment(int id_rest, Comment comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
-
         DateFormat df = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
         value.put(KEY_DATE_TIME, df.format(comment.getDateTime()));
-        value.put(KEY_NAME, comment.getComment());
+        value.put(KEY_ID_REST, id_rest);
+        value.put(KEY_COMMENT, comment.getComment());
         value.put(KEY_GUEST_EMAIL, comment.getEmailGuest());
         value.put(KEY_OWNER_EMAIL, comment.getEmailOwner());
 
-        db.insert(TABLE_COMMENTS, null, value);
+        if (db.insertWithOnConflict(TABLE_COMMENTS, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            updateComment(id_rest, comment);
+        }
+
         db.close();
     }
 
-    public void addDish(Dish dish) {
+    public void addDish(int id_rest, Dish dish) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
 
         value.put(KEY_NAME, dish.getName());
+        value.put(KEY_ID_REST, id_rest);
         value.put(KEY_PRICE, dish.getPrice());
         value.put(KEY_URL_IMAGE, dish.getUrlImage());
         value.put(KEY_ID_CATALOG, dish.getCatalog().getId());
 
-        db.insert(TABLE_DISH, null, value);
+        if (db.insertWithOnConflict(TABLE_DISH, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            db.update(TABLE_DISH, value, KEY_NAME + " =? AND " + KEY_ID_REST + " =?", new String[]{dish.getName(), String.valueOf(id_rest)});
+        }
+
         db.close();
     }
 
@@ -193,9 +221,12 @@ public class DBManager extends SQLiteOpenHelper {
 
         value.put(KEY_ID_REST, id_rest);
         value.put(KEY_LAT, location.getLatitude());
-        value.put(KEY_LAT, location.getLongitude());
+        value.put(KEY_LON, location.getLongitude());
 
-        db.insert(TABLE_LOCATION, null, value);
+        if (db.insertWithOnConflict(TABLE_LOCATION, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            updateLocation(id_rest, location);
+        }
+
         db.close();
     }
 
@@ -207,41 +238,49 @@ public class DBManager extends SQLiteOpenHelper {
         value.put(KEY_EMAIL_GUEST, email_guest);
         value.put(KEY_STAR, star);
 
-        db.insert(TABLE_CATALOGS, null, value);
+        if (db.insertWithOnConflict(TABLE_RANK, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            updateRank(id_rest, email_guest, star);
+        }
+
+
         db.close();
     }
 
     public void addRestaurant(Restaurant restaurant) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
+        DateFormat df = new SimpleDateFormat("HH:mm");
 
         // add common data
         value.put(KEY_ID, restaurant.getId());
+        value.put(KEY_OWNER_USERNAME, restaurant.getOwnerUsername());
         value.put(KEY_NAME, restaurant.getName());
         value.put(KEY_ADDRESS, restaurant.getAddress());
         value.put(KEY_PHONE_NUMBER, restaurant.getPhoneNumber());
         value.put(KEY_DESCRIBE_TEXT, restaurant.getDescription());
         value.put(KEY_URL_IMAGE, restaurant.getUrlImage());
-        value.put(KEY_TIME_OPEN, restaurant.getTimeOpen().toString());
-        value.put(KEY_TIME_CLOSE, restaurant.getTimeClose().toString());
+        value.put(KEY_TIME_OPEN, df.format(restaurant.getTimeOpen()));
+        value.put(KEY_TIME_CLOSE, df.format(restaurant.getTimeClose()));
 
-        db.insert(TABLE_CATALOGS, null, value);
+        if (db.insertWithOnConflict(TABLE_RESTAURANT, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
+            db.update(TABLE_RESTAURANT, value, KEY_ID + " = " + restaurant.getId(), null);
+        }
+
         db.close();
 
         // add Location data
-        GeoPoint location = restaurant.getLocation();
-        addLocation(restaurant.getId(), location);
+        addLocation(restaurant.getId(), restaurant.getLocation());
 
         // add Dishes data
         List<Dish> list_dish = restaurant.getDishes();
         for (Dish dish : list_dish) {
-            this.addDish(dish);
+            this.addDish(restaurant.getId(), dish);
         }
 
         // add Comments
         List<Comment> list_comment = restaurant.getComments();
         for (Comment comment : list_comment) {
-            this.addComment(comment);
+            this.addComment(restaurant.getId(), comment);
         }
 
         // add Ranks
@@ -251,30 +290,111 @@ public class DBManager extends SQLiteOpenHelper {
         }
     }
 
+    public void updateCatalog(Catalog catalog) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_ID, catalog.getId());
+        value.put(KEY_NAME, catalog.getName());
+
+        db.update(TABLE_CATALOGS,
+                value,
+                KEY_ID + " =?",
+                new String[]{String.valueOf(catalog.getId())});
+
+        db.close();
+    }
+
+    public void updateComment(int id_rest, Comment comment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+        DateFormat df = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+
+        value.put(KEY_DATE_TIME, df.format(comment.getDateTime()));
+        value.put(KEY_ID_REST, id_rest);
+        value.put(KEY_COMMENT, comment.getComment());
+        value.put(KEY_GUEST_EMAIL, comment.getEmailGuest());
+        value.put(KEY_OWNER_EMAIL, comment.getEmailOwner());
+
+        db.update(TABLE_COMMENTS,
+                value,
+                KEY_DATE_TIME + " =? AND " + KEY_ID_REST + " =?",
+                new String[] { df.format(comment.getDateTime()), String.valueOf(id_rest)});
+
+        db.close();
+    }
+
+    public void updateDish(int id_rest, Dish dish) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_NAME, dish.getName());
+        value.put(KEY_ID_REST, id_rest);
+        value.put(KEY_PRICE, dish.getPrice());
+        value.put(KEY_URL_IMAGE, dish.getUrlImage());
+        value.put(KEY_ID_CATALOG, dish.getCatalog().getId());
+
+        db.update(TABLE_DISH, value, KEY_NAME + " =? AND " + KEY_ID_REST + " =?", new String[]{dish.getName(), String.valueOf(id_rest)});
+
+        db.close();
+    }
+
+    public void updateLocation(int id_rest, GeoPoint location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_ID_REST, id_rest);
+        value.put(KEY_LAT, location.getLatitude());
+        value.put(KEY_LON, location.getLongitude());
+
+        db.update(TABLE_LOCATION,
+                value,
+                KEY_LAT + " =? AND " + KEY_LON + " =?",
+                new String[] {String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude())});
+
+        db.close();
+    }
+
+    public void updateRank(int id_rest, String email_guest, int star) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_ID_REST, id_rest);
+        value.put(KEY_EMAIL_GUEST, email_guest);
+        value.put(KEY_STAR, star);
+
+        db.update(TABLE_RANK,
+                value,
+                KEY_ID_REST + " =? AND " + KEY_EMAIL_GUEST + " =?",
+                new String[] {String.valueOf(id_rest), email_guest});
+
+        db.close();
+    }
+
     public Catalog getCatalog(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_CATALOGS
-                    + " WHERE " + KEY_ID + " = " + String.valueOf(id);
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_CATALOGS, null, KEY_ID + " = ?", new String[] {String.valueOf(id)},
+                null, null, null);
         if (cursor == null)
             return null;
         cursor.moveToFirst();
 
+        cursor.close();
+        db.close();
+
         return new Catalog(cursor.getInt(cursor.getColumnIndex(KEY_ID)),
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+
     }
 
     public List<Comment> getComments(int id_rest) throws ParseException {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Comment> comments = new ArrayList<Comment>();
 
-        String query = "SELECT * FROM " + TABLE_COMMENTS
-                + " WHERE " + KEY_ID_REST + " = " + String.valueOf(id_rest)
-                + " ORDER BY " + KEY_DATE_TIME;
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_COMMENTS, null, KEY_ID_REST + " = ?", new String[] {String.valueOf(id_rest)},
+                null, null, KEY_DATE_TIME);
 
         if (cursor.moveToFirst())
         {
@@ -288,6 +408,9 @@ public class DBManager extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+        cursor.close();
+        db.close();
+
         return comments;
     }
 
@@ -295,11 +418,8 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Dish> dishes = new ArrayList<Dish>();
 
-        String query = "SELECT * FROM " + TABLE_DISH
-                + " WHERE " + KEY_ID_REST + " = " + String.valueOf(id_rest)
-                + " ORDER BY " + KEY_PRICE;
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_DISH, null, KEY_ID_REST + "=?",
+                new String[] {String.valueOf(id_rest)}, null, null, null);
 
         if (cursor.moveToFirst())
         {
@@ -311,19 +431,23 @@ public class DBManager extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+        cursor.close();
+        db.close();
+
         return dishes;
     }
 
     public GeoPoint getLocation(int id_rest) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_LOCATION
-                + " WHERE " + KEY_ID_REST + " = " + String.valueOf(id_rest);
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_LOCATION, null, KEY_ID_REST + "=?", new String[] {String.valueOf(id_rest)}
+                , null,null,null);
         if (cursor == null)
             return null;
         cursor.moveToFirst();
+
+        cursor.close();
+        db.close();
 
         return new GeoPoint(cursor.getDouble(cursor.getColumnIndex(KEY_LAT)),
                 cursor.getDouble(cursor.getColumnIndex(KEY_LON)));
@@ -333,10 +457,8 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         HashMap<String , Integer> ranks = new HashMap<>();
 
-        String query = "SELECT * FROM " + TABLE_RANK
-                + " WHERE " + KEY_ID_REST + " = " + String.valueOf(id_rest);
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_RANK, null, KEY_ID_REST + "=?", new String[] {String.valueOf(id_rest)},
+                null, null,null);
 
         if (cursor.moveToFirst())
         {
@@ -346,35 +468,39 @@ public class DBManager extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+        cursor.close();
+        db.close();
+
         return ranks;
     }
 
     public Restaurant getRestaurant(int id_rest) throws ParseException {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_RESTAURANT
-                + " WHERE " + KEY_ID + " = " + String.valueOf(id_rest);
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_RESTAURANT, null, KEY_ID + "=?", new String[] {String.valueOf(id_rest)},
+                null, null,null);
         if (cursor == null)
             return null;
 
         DateFormat df = new SimpleDateFormat("HH:mm");
 
         Restaurant restaurant = new Restaurant(id_rest,
-                                                cursor.getString(cursor.getColumnIndex(KEY_NAME)),
-                                                cursor.getString(cursor.getColumnIndex(KEY_ID_USER)),
-                                                cursor.getString(cursor.getColumnIndex(KEY_ADDRESS)),
-                                                cursor.getString(cursor.getColumnIndex(KEY_PHONE_NUMBER)),
-                                                cursor.getString(cursor.getColumnIndex(KEY_DESCRIBE_TEXT)),
-                                                cursor.getString(cursor.getColumnIndex(KEY_URL_IMAGE)),
-                                                df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
-                                                df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
-                                                getLocation(id_rest));
+                cursor.getString(cursor.getColumnIndex(KEY_NAME)),
+                cursor.getString(cursor.getColumnIndex(KEY_OWNER_USERNAME)),
+                cursor.getString(cursor.getColumnIndex(KEY_ADDRESS)),
+                cursor.getString(cursor.getColumnIndex(KEY_PHONE_NUMBER)),
+                cursor.getString(cursor.getColumnIndex(KEY_DESCRIBE_TEXT)),
+                cursor.getString(cursor.getColumnIndex(KEY_URL_IMAGE)),
+                df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
+                df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
+                getLocation(id_rest));
 
         restaurant.setDishes(getDishes(id_rest));
         restaurant.setComments(getComments(id_rest));
         restaurant.setRanks(getRanks(id_rest));
+
+        cursor.close();
+        db.close();
 
         return restaurant;
     }
@@ -383,10 +509,7 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Restaurant> restaurants = new ArrayList<>();
 
-        String query = "SELECT * FROM " + TABLE_RESTAURANT
-                    + " ORDER BY " + KEY_ID;
-
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_RESTAURANT, null, null, null, null,null, KEY_ID);
 
         if (cursor.moveToFirst())
         {
@@ -395,7 +518,7 @@ public class DBManager extends SQLiteOpenHelper {
             do {
                 Restaurant restaurant = new Restaurant(cursor.getInt(cursor.getColumnIndex(KEY_ID)),
                         cursor.getString(cursor.getColumnIndex(KEY_NAME)),
-                        cursor.getString(cursor.getColumnIndex(KEY_ID_USER)),
+                        cursor.getString(cursor.getColumnIndex(KEY_OWNER_USERNAME)),
                         cursor.getString(cursor.getColumnIndex(KEY_ADDRESS)),
                         cursor.getString(cursor.getColumnIndex(KEY_PHONE_NUMBER)),
                         cursor.getString(cursor.getColumnIndex(KEY_DESCRIBE_TEXT)),
@@ -411,6 +534,9 @@ public class DBManager extends SQLiteOpenHelper {
                 restaurants.add(restaurant);
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
+        db.close();
 
         return restaurants;
     }

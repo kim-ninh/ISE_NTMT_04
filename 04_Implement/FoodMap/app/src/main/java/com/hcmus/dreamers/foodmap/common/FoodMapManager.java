@@ -55,10 +55,10 @@ public class FoodMapManager {
     }
 
     public static void addRestaurant(Context context, Restaurant restaurant){
-        //DBManager dbManager = new DBManager(context);
+        DBManager dbManager = new DBManager(context);
         restaurants.add(restaurant);
-        //dbManager.addRestaurant(restaurant);
-        //dbManager.close();
+        dbManager.addRestaurant(restaurant);
+        dbManager.close();
     }
 
     public static List<Restaurant> getRestaurants(){
@@ -68,11 +68,11 @@ public class FoodMapManager {
     public static void setRestaurants(Context context, List<Restaurant> restaurants) {
         FoodMapManager.restaurants = restaurants;
 
-//        DBManager dbManager = new DBManager(context);
-//        for (Restaurant rest: FoodMapManager.restaurants) {
-//            dbManager.addRestaurant(rest);
-//        }
-//        dbManager.close();
+        DBManager dbManager = new DBManager(context);
+        for (Restaurant rest: FoodMapManager.restaurants) {
+            dbManager.addRestaurant(rest);
+        }
+        dbManager.close();
     }
 
     public static List<Comment> getComment(Context context, int id_rest){
@@ -125,5 +125,11 @@ public class FoodMapManager {
 
     public static void setCatalogs(Context context, List<Catalog> catalogs) {
         FoodMapManager.catalogs = catalogs;
+
+        DBManager dbManager = new DBManager(context);
+        for (Catalog catalog : FoodMapManager.catalogs) {
+            dbManager.addCatalog(catalog);
+        }
+        dbManager.close();
     }
 }
