@@ -62,6 +62,7 @@ public class DBManager extends SQLiteOpenHelper {
     //private static final String KEY_URL_IMAGE = "URL_IMAGE";
     private static final String KEY_TIME_OPEN = "TIME_OPEN";
     private static final String KEY_TIME_CLOSE = "TIME_CLOSE";
+    private static final String KEY_TOTAL_CHECKIN = "TOTAL_CHECKIN";
 
     // LOCATION Table - column names
     //private static final String ID_REST = "ID_REST";
@@ -87,8 +88,9 @@ public class DBManager extends SQLiteOpenHelper {
 
     // RANK Table - column names
     //private static final String KEY_ID_REST = "ID_REST";
-    private static final String KEY_EMAIL_GUEST = "EMAIL_GUEST";
     private static final String KEY_STAR = "START";
+
+
 
     public DBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -105,7 +107,8 @@ public class DBManager extends SQLiteOpenHelper {
                 + KEY_DESCRIBE_TEXT + " TEXT,"
                 + KEY_URL_IMAGE + " VARCHAR(200),"
                 + KEY_TIME_OPEN + " CHAR(5),"       // hh:mm
-                + KEY_TIME_CLOSE + " CHAR(5));";
+                + KEY_TIME_CLOSE + " CHAR(5),"
+                + KEY_TOTAL_CHECKIN + " INT);";
 
         final String CREATE_TABLE_LOCATION = "CREATE TABLE " + TABLE_LOCATION + "("
                 + KEY_ID_REST + " INT NOT NULL,"
@@ -140,9 +143,9 @@ public class DBManager extends SQLiteOpenHelper {
 
         final String CREATE_TABLE_RANK = "CREATE TABLE " + TABLE_RANK + "("
                 + KEY_ID_REST + " INT NOT NULL,"
-                + KEY_EMAIL_GUEST + " VARCHAR(30),"
+                + KEY_GUEST_EMAIL + " VARCHAR(30),"
                 + KEY_STAR + " INT NOT NULL CHECK(" + KEY_STAR + " >= 1 AND " + KEY_STAR + " <= 5),"
-                + "PRIMARY KEY(" + KEY_ID_REST + ", " + KEY_EMAIL_GUEST + "), "
+                + "PRIMARY KEY(" + KEY_ID_REST + ", " + KEY_GUEST_EMAIL + "), "
                 + "FOREIGN KEY (" + KEY_ID_REST + ") REFERENCES " + TABLE_RESTAURANT + "(" + KEY_ID + "));";
 
         // Create table(s)
@@ -235,7 +238,7 @@ public class DBManager extends SQLiteOpenHelper {
         ContentValues value = new ContentValues();
 
         value.put(KEY_ID_REST, id_rest);
-        value.put(KEY_EMAIL_GUEST, email_guest);
+        value.put(KEY_GUEST_EMAIL, email_guest);
         value.put(KEY_STAR, star);
 
         if (db.insertWithOnConflict(TABLE_RANK, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
@@ -261,6 +264,7 @@ public class DBManager extends SQLiteOpenHelper {
         value.put(KEY_URL_IMAGE, restaurant.getUrlImage());
         value.put(KEY_TIME_OPEN, df.format(restaurant.getTimeOpen()));
         value.put(KEY_TIME_CLOSE, df.format(restaurant.getTimeClose()));
+        value.put(KEY_TOTAL_CHECKIN, restaurant.getNum_checkin());
 
         if (db.insertWithOnConflict(TABLE_RESTAURANT, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
             db.update(TABLE_RESTAURANT, value, KEY_ID + " = " + restaurant.getId(), null);
@@ -360,12 +364,12 @@ public class DBManager extends SQLiteOpenHelper {
         ContentValues value = new ContentValues();
 
         value.put(KEY_ID_REST, id_rest);
-        value.put(KEY_EMAIL_GUEST, email_guest);
+        value.put(KEY_GUEST_EMAIL, email_guest);
         value.put(KEY_STAR, star);
 
         db.update(TABLE_RANK,
                 value,
-                KEY_ID_REST + " =? AND " + KEY_EMAIL_GUEST + " =?",
+                KEY_ID_REST + " =? AND " + KEY_GUEST_EMAIL + " =?",
                 new String[] {String.valueOf(id_rest), email_guest});
 
         db.close();
@@ -389,6 +393,51 @@ public class DBManager extends SQLiteOpenHelper {
 
         return catalog;
 
+    }
+
+    public List<Catalog> getAllCatalog() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Catalog> catalogs = new ArrayList<>();
+
+        Cursor cursor = db.query(TABLE_CATALOGS, null, null, null, null,null, KEY_ID);
+        if (cursor == null)
+            return null;
+        cursor.moveToFirst();
+
+        if (cursor.moveToFirst())
+        {
+            DateFormat df = new SimpleDateFormat("HH:mm");
+
+            do {
+                Catalog catalog = new Catalog(
+                        cursor.getInt(cursor.getColumnIndex(KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+                catalogs.add(catalog);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return catalogs;
+
+    }
+
+    public int getNumCheckin(int id_rest){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_RESTAURANT, new String[]{KEY_TOTAL_CHECKIN}, KEY_ID_REST + " = ?", new String[] {String.valueOf(id_rest)},
+                null, null, null);
+        if (cursor == null)
+            return 0;
+
+        cursor.moveToFirst();
+        int numCheckin = cursor.getInt(cursor.getColumnIndex(KEY_TOTAL_CHECKIN));
+
+        cursor.close();
+        db.close();
+
+        return numCheckin;
     }
 
     public List<Comment> getComments(int id_rest) throws ParseException {
@@ -468,7 +517,7 @@ public class DBManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst())
         {
             do{
-                ranks.put(cursor.getString(cursor.getColumnIndex(KEY_EMAIL_GUEST)),
+                ranks.put(cursor.getString(cursor.getColumnIndex(KEY_GUEST_EMAIL)),
                         cursor.getInt(cursor.getColumnIndex(KEY_STAR)));
             } while (cursor.moveToNext());
         }
@@ -498,7 +547,8 @@ public class DBManager extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(KEY_URL_IMAGE)),
                 df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
                 df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
-                getLocation(id_rest));
+                getLocation(id_rest),
+                getNumCheckin(id_rest));
 
         restaurant.setDishes(getDishes(id_rest));
         restaurant.setComments(getComments(id_rest));
@@ -530,7 +580,8 @@ public class DBManager extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(KEY_URL_IMAGE)),
                         df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
                         df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
-                        getLocation(cursor.getInt(cursor.getColumnIndex(KEY_ID))));
+                        getLocation(cursor.getInt(cursor.getColumnIndex(KEY_ID))),
+                        getNumCheckin(cursor.getInt(cursor.getColumnIndex(KEY_ID))));
 
                 restaurant.setDishes(getDishes(restaurant.getId()));
                 restaurant.setComments(getComments(restaurant.getId()));

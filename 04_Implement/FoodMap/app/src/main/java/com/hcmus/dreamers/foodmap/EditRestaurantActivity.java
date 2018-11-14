@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -33,7 +32,6 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
@@ -367,127 +365,6 @@ public class EditRestaurantActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_item_menu,menu);
         return true;
-    }
-	
-	public void UpdateInformation(int id_rest,
-                                  String name,
-                                  String address,
-                                  String phoneNumber,
-                                  String description,
-                                  Date timeOpen,
-                                  Date timeClose,
-                                  GeoPoint location) {
-
-        // Set the new Restaurant info
-        final Restaurant newRestaurant = new Restaurant(id_rest, null, address, name,
-                phoneNumber, description, null, timeOpen, timeClose, location);
-
-
-        TaskRequest updateRestaurantInfoTask = new TaskRequest();
-
-        // Implement call back
-        updateRestaurantInfoTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                try
-                {
-                    ResponseJSON responseJSON =  ParseJSON.parseFromAllResponse(response.toString());
-
-                    // Pop-up the result message through Toast
-                    if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(EditRestaurantActivity.this,
-                                "Update successful!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(EditRestaurantActivity.this,
-                                responseJSON.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                }catch (Exception e){
-                    Toast.makeText(EditRestaurantActivity.this,
-                            e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        // Invoke task
-        updateRestaurantInfoTask.execute(new DoingTask(GenerateRequest
-                .updateRestaurant(newRestaurant, Owner.getInstance().getToken())));
-    }
-
-    public void AddDish(int id_rest, Dish dish) {
-        TaskRequest addDishTask = new TaskRequest();
-
-        // Implement call back
-        addDishTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                try
-                {
-                    ResponseJSON responseJSON =  ParseJSON.parseFromAllResponse(response.toString());
-
-                    // Pop-up the result message through Toast
-                    if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(EditRestaurantActivity.this,
-                                "Update successful!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(EditRestaurantActivity.this,
-                                responseJSON.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                }catch (Exception e){
-                    Toast.makeText(EditRestaurantActivity.this,
-                            e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        // Invoke task
-        addDishTask.execute(new DoingTask(GenerateRequest
-                .addDish(id_rest, dish, Owner.getInstance().getToken())));
-    }
-
-    public void AddComment(int id_rest, Comment comment) {
-        TaskRequest addComment = new TaskRequest();
-
-        // Implement call back
-        addComment.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                try
-                {
-                    ResponseJSON responseJSON =  ParseJSON.parseFromAllResponse(response.toString());
-
-                    // Pop-up the result message through Toast
-                    if (ConstantCODE.SUCCESS == responseJSON.getCode()){
-                        Toast.makeText(EditRestaurantActivity.this,
-                                "Update successful!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(EditRestaurantActivity.this,
-                                responseJSON.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                }catch (Exception e){
-                    Toast.makeText(EditRestaurantActivity.this,
-                            e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        // Invoke task
-        addComment.execute(new DoingTask(GenerateRequest
-                .comment(id_rest, comment, Owner.getInstance().getToken())));
     }
 
     //region

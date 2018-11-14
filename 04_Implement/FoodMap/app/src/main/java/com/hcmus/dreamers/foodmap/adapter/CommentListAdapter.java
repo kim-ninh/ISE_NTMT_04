@@ -41,11 +41,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolderComment viewHolderComment, int i) {
         String email = commentList.get(i).getEmailGuest();
+        int imageRes = R.drawable.ic_avatar_guest_comment;
 
-        if (email.equals("")){
+        if (email.equals("") || email.equals("null")){
             email = commentList.get(i).getEmailOwner();
+            imageRes = R.drawable.ic_avatar_owner_comment;
         }
 
+        viewHolderComment.igvAvatar.setImageResource(imageRes);
         viewHolderComment.txtEmail.setText(email);
         viewHolderComment.txtComment.setText(commentList.get(i).getComment());
     }
