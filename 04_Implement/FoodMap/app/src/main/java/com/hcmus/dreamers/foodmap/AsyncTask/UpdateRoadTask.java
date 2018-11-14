@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap.AsyncTask;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
@@ -16,6 +17,7 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
 
     private Context context;
     private MapView mapView;
+    private Polyline roadOverlay;
 
     public UpdateRoadTask(Context context, MapView mapView)
     {
@@ -34,8 +36,16 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
     protected void onPostExecute(Road road) {
         super.onPostExecute(road);
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+        roadOverlay = RoadManager.buildRoadOverlay(road);
+        roadOverlay.setWidth(15);
+        roadOverlay.setColor(Color.RED);
+        roadOverlay.setGeodesic(true);
         mapView.getOverlays().add(roadOverlay);
         mapView.invalidate();
+    }
+
+    public void removePolyline() {
+        roadOverlay.onDestroy();
+
     }
 }
