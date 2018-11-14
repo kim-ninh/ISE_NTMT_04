@@ -79,7 +79,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private static final String TAG = "RestAcitvity";
     private static final int CM_ID = 1009;
-
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -147,7 +146,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             Log.i(TAG,"can't get restaurant data");
             Toast.makeText(this,"can't get restaurant data", Toast.LENGTH_LONG).show();
         }
-
         else
         {
             setLayoutInfo();
@@ -218,23 +216,14 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
 
         //Set a number of rates
-        try {
-            double average = 0;
-
-            for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
-                average += kvp.getValue();
-            }
-
-            if(average != 0)
-            {
-                average /= restaurant.getRanks().size();
-            }
-
-            txtNRate.setText(String.format("%.1f",average));
-        }catch (Exception e)
-        {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        double averageRate = 0;
+        for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
+            averageRate += kvp.getValue();
         }
+        if(restaurant.getRanks().size() != 0) {
+            txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
+        }
+
 
 
         //set Time and Status
@@ -315,7 +304,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     }
 
     private void clickOnCheckInEvent() {
-        startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+        if(FoodMapApiManager.isGuestLogin()) {
+            startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+        }
+        else{
+            Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void clickOnCommentEvent(){
@@ -403,8 +397,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                     int code = (int) response;
 
                                     if (code == ConstantCODE.SUCCESS) {
+                                        FoodMapManager.setFavoriteRestaurant(restaurant.getId(), Guest.getInstance().getEmail(), (int) rtbRate.getRating());
                                         restaurant.getRanks().put(Guest.getInstance().getEmail(), (int) rtbRate.getRating());
-
+                                        double averageRate = 0;
+                                        for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
+                                            averageRate += kvp.getValue();
+                                        }
+                                        if(restaurant.getRanks().size() != 0) {
+                                            txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
+                                        }
                                         Log.i(TAG, "Submit rate successfully");
                                         Toast.makeText(RestaurantInfoActivity.this, "Thank you for your submit", Toast.LENGTH_LONG).show();
 
