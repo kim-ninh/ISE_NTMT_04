@@ -34,6 +34,7 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.adapter.ImageAdapter;
 import com.hcmus.dreamers.foodmap.common.Base64Converter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class EditDishActivity extends AppCompatActivity {
         spnrDishType.setAdapter(new ArrayAdapter<String>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
-                Catalog.getDishTypes()
+                FoodMapManager.getCatalogsString()
         ));
 
         //Enable the Up button (Icon look like this: <- )
@@ -113,7 +114,8 @@ public class EditDishActivity extends AppCompatActivity {
         spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dish.setCatalog(new Catalog(position + 1,Catalog.getDishTypes()[position]));
+                List<String> catalogsString = FoodMapManager.getCatalogsString();
+                dish.setCatalog(new Catalog(position + 1,catalogsString.get(position)));
             }
 
             @Override

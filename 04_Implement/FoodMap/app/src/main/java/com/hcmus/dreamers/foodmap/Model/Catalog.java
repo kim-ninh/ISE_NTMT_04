@@ -11,11 +11,6 @@ public class Catalog implements Serializable {
     @SerializedName("name")
     private String name;
 
-    private static String[] dishTypes = {"Cơm",
-            "Phở",
-            "Chè",
-            "Vỉa hè",};
-
     public Catalog() {
     }
 
@@ -41,7 +36,4 @@ public class Catalog implements Serializable {
         this.name = name;
     }
 
-    public static String[] getDishTypes(){
-        return dishTypes;
-    }
 }
