@@ -13,6 +13,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.ViewPagerAdapter;
 import com.hcmus.dreamers.foodmap.fragment.DishListFragment;
 import com.hcmus.dreamers.foodmap.fragment.OneFragment;
+import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
 import com.hcmus.dreamers.foodmap.fragment.RestaurantInfoFragment;
 
 public class EditRestaurantActivity extends AppCompatActivity implements RestaurantInfoFragment.OnFragmentInteractionListener {
@@ -44,7 +45,7 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
 
         adapter.addFragment(new RestaurantInfoFragment(), "CHUNG");
         adapter.addFragment(new DishListFragment(), "MÓN ĂN");
-        adapter.addFragment(new OneFragment(), "THREE");
+        adapter.addFragment(new OrderListFragment(), "ĐƠN ĐẶT HÀNG");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
