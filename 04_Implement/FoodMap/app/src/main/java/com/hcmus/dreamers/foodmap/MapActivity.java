@@ -47,7 +47,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity implements View.OnClickListener {
+public class MapActivity extends AppCompatActivity{
 
     MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
@@ -60,9 +60,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
     private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
     private UpdateRoadTask updateRoadTask;
 
-    FloatingActionButton fabMenu;
     FloatingActionButton fabSearch;
-    boolean isShowFabSearch = false;
 
     @Override
     protected void onPause() {
@@ -80,7 +78,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        fabMenu = (FloatingActionButton) findViewById(R.id.fabMenu);
         fabSearch = (FloatingActionButton) findViewById(R.id.fabSearch);
 
         //set header toolbar in the layout
@@ -114,8 +111,12 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             showingPath();
         }
 
-        fabMenu.setOnClickListener(this);
-        fabSearch.setOnClickListener(this);
+        fabSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchAutoCompleteSupportInit();
+            }
+        });
 
     }
     @Override
@@ -202,26 +203,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         //Display the paths between 2 points
         updateRoadTask = new UpdateRoadTask(getApplicationContext(), mMap);
         updateRoadTask.execute(pointsList);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId())
-        {
-            case R.id.fabMenu:
-                if(!isShowFabSearch) {
-                    fabSearch.show();
-                    isShowFabSearch = true;
-                }
-                else{
-                    fabSearch.hide();
-                    isShowFabSearch = false;
-                }
-                break;
-            case R.id.fabSearch:
-                searchAutoCompleteSupportInit();
-                break;
-        }
     }
 
     void searchAutoCompleteSupportInit(){

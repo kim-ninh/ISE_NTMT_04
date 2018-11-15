@@ -24,14 +24,12 @@
         android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabMenu"
+        android:id="@+id/fabSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
-        app:srcCompat="@android:drawable/ic_dialog_dialer"
+        app:srcCompat="@drawable/ic_white_search"
         app:fabSize="normal"/>
-
-    <include layout="@layout/fab_layout"/>
 
 </android.support.design.widget.CoordinatorLayout>

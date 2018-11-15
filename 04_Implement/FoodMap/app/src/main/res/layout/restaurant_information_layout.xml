@@ -359,7 +359,6 @@
 
             <!--2.5-->
             <LinearLayout
-                android:id="@+id/lnrFindWayMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -383,7 +382,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
-                        android:text="restaurant address"/>
+                        android:text="restaurant address"
+                        android:textSize="15dp"/>
 
                 </LinearLayout><!--2.5.1-->
 
@@ -399,14 +399,19 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/ic_food" />
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/txtDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:text="restaurant description"
+                            android:textSize="15dp"/>
+                    </ScrollView>
 
-                    <TextView
-                        android:id="@+id/txtDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:text="restaurant description" />
 
                 </LinearLayout><!--2.5.1-->
 
@@ -429,47 +434,27 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
-                        android:text="100$ - 2000$" />
+                        android:text="0 VND"
+                        android:textSize="15dp"/>
 
                 </LinearLayout><!--2.5.1-->
 
             </LinearLayout><!--2.5-->
 
             <!--2.6-->
-            <LinearLayout
-                android:id="@+id/lnrMenu"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/custom_border">
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:text="Menu"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="#f5710c"
+                android:fontFamily="sans-serif-condensed"/><!--2.6-->
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_menu"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="15dp"
-                    android:text="Menu"
-                    android:textStyle="bold"/>
-
-                <!-- this is useful for making the place holder-->
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="end"
-                    android:src="@drawable/ic_next"/>
-
-            </LinearLayout><!--2.6-->
 
             <!--2.7-->
             <ListView
