@@ -34,7 +34,7 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.adapter.ImageAdapter;
 import com.hcmus.dreamers.foodmap.common.Base64Converter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.io.File;
