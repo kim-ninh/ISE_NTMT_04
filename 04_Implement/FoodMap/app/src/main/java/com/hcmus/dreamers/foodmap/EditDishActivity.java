@@ -226,7 +226,9 @@ public class EditDishActivity extends AppCompatActivity {
         txtDishName.setText(dish.getName());
         txtDishCost.setText(Integer.toString(dish.getPrice()));
 
-        spnrDishType.setSelection(dish.getCatalog().getId() - 1);
+        // cần tìm vị trí của catalog trong danh sách, ko phải ID của catalog!
+        int catalogPosition = FoodMapManager.getCatalogPosition(dish.getCatalog().getId());
+        spnrDishType.setSelection(catalogPosition);
 
     }
 
@@ -322,6 +324,10 @@ public class EditDishActivity extends AppCompatActivity {
         if(txtDishName.length() > 0 && txtDishCost.length() > 0){
             dish.setName(txtDishName.getText().toString());
             dish.setPrice(Integer.parseInt(txtDishCost.getText().toString()));
+
+            String catalogString =(String) spnrDishType.getSelectedItem();
+            Catalog catalog = FoodMapManager.findCatalog(catalogString);
+            dish.setCatalog(catalog);
             return true;
         }
         return false;
