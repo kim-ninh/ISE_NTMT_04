@@ -32,6 +32,7 @@ import java.util.List;
 
 public class DishListFragment extends Fragment {
 
+    int selectedRow = -1;
     List<Dish> dishes;
     Restaurant restaurant;
 
@@ -100,7 +101,8 @@ public class DishListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Dish dish = dishes.get(position);
-                transferData2NextActivity(dish ,position);
+                selectedRow = position;
+                transferData2NextActivity(dish);
             }
         });
 
@@ -116,7 +118,7 @@ public class DishListFragment extends Fragment {
         });
     }
 
-    private void transferData2NextActivity(Dish dish, int position) {
+    private void transferData2NextActivity(Dish dish) {
 
         Bundle transferData = new Bundle();
         Gson gson = new Gson();
@@ -126,7 +128,6 @@ public class DishListFragment extends Fragment {
 
         transferData.putString("dishJSON",gson.toJson(dish));
         transferData.putInt("restID", restaurant.getId());
-        transferData.putInt("dishRow", position);
 
         manageRest_manageDish.putExtras(transferData);
         startActivityForResult(manageRest_manageDish, IPC_ID);
@@ -143,17 +144,15 @@ public class DishListFragment extends Fragment {
                 {
                     Gson gson = new Gson();
                     Dish dish;
-                    int dishRowID;
 
-                    int delete = data.getIntExtra("delete", -1);
-                    if(delete == -1){
+                    Boolean isDelete = data.getBooleanExtra("isDelete", false);
+                    if(! isDelete){
                         String dishJSON =  data.getStringExtra("dishJSON");
-                        dishRowID = data.getIntExtra("dishRow", -1);
                         dish = gson.fromJson(dishJSON, Dish.class);
-                        dishes.set(dishRowID, dish);
+                        dishes.set(selectedRow, dish);
                         Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
                     }else{
-                        dishes.remove(delete);
+                        dishes.remove(selectedRow);
                         Toast.makeText(context, "Xóa thành công!", Toast.LENGTH_LONG).show();
                     }
                     adapter.notifyDataSetChanged();

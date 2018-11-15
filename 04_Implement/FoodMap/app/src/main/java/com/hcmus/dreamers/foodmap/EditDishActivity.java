@@ -58,7 +58,6 @@ public class EditDishActivity extends AppCompatActivity {
     Bundle transferData = new Bundle();
 
     int rest_id;
-    int row;
 
     int gridRow = -1;
     Dish dish;
@@ -226,7 +225,6 @@ public class EditDishActivity extends AppCompatActivity {
         rest_id = transferData.getInt("restID");
         String dishJSON = transferData.getString("dishJSON");
         dish = gson.fromJson(dishJSON, Dish.class);
-        row = transferData.getInt("dishRow");
 
         // Check null pointer and shut down activity
         if (dish == null)
@@ -260,7 +258,7 @@ public class EditDishActivity extends AppCompatActivity {
                     public void OnTaskComplete(Object response) {
                         if((int)response == FoodMapApiManager.SUCCESS){
                             Intent intent = new Intent();
-                            intent.putExtra("delete", row);
+                            intent.putExtra("isDelete", true);
                             setResult(RESULT_OK, intent);
                             finish();
                         }else if((int)response == ConstantCODE.NOTINTERNET){
@@ -281,7 +279,6 @@ public class EditDishActivity extends AppCompatActivity {
                                 Gson gson = new Gson();
                                 Intent intent = new Intent();
                                 intent.putExtra("dishJSON", gson.toJson(dish));
-                                intent.putExtra("dishRow", row);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             }else if((int)response == ConstantCODE.NOTINTERNET){

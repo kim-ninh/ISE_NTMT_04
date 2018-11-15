@@ -20,7 +20,6 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
 
 
     public Restaurant restaurant;
-    int row;
 
     Toolbar toolbar;
     TabLayout tabLayout;
@@ -53,7 +52,6 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
     }
 
 
-    //TODO row làm chức năng gì ?????
     private void getTransferDataFromActivity() {
         Intent data = getIntent();
         restaurant = (Restaurant) data.getSerializableExtra("rest");
@@ -68,8 +66,6 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
             return;
         }
 
-        // row làm chức năng gì ?????
-        // row = transferData.getInt("restRow", -1);
     }
 
 
