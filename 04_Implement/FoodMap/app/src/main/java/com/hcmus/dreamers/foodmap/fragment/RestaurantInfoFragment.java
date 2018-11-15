@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap.fragment;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,14 +18,20 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -254,7 +261,6 @@ public class RestaurantInfoFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //getActivity().getMenuInflater().inflate(R.menu.edit_item_menu,menu);
         inflater.inflate(R.menu.edit_item_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -264,47 +270,49 @@ public class RestaurantInfoFragment extends Fragment {
         switch (item.getItemId())
         {
             case R.id.action_delete:
-                Toast.makeText(context,"Delete button hit",Toast.LENGTH_LONG).show();
-//                FoodMapApiManager.deleteRestaurant(restaurant.getId(), new TaskCompleteCallBack() {
-//                    @Override
-//                    public void OnTaskComplete(Object response) {
-//                        if((int)response == FoodMapApiManager.SUCCESS){
-//                            Intent intent = new Intent();
-//                            intent.putExtra("delete", row);
-//                            setResult(RESULT_OK, intent);
-//                            finish();
-//                        }else if((int)response == ConstantCODE.NOTINTERNET){
-//                            Toast.makeText(EditRestaurantActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-//                        } else {
-//                            Toast.makeText(EditRestaurantActivity.this, "Xóa món ăn thất bại!", Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
+                //Toast.makeText(context,"Delete button hit",Toast.LENGTH_LONG).show();
+                FoodMapApiManager.deleteRestaurant(restaurant, new TaskCompleteCallBack() {
+                    @Override
+                    public void OnTaskComplete(Object response) {
+                        if((int)response == FoodMapApiManager.SUCCESS){
+                            Intent intent = new Intent();
+
+                            intent.putExtra("isDelete",true);
+                            editRestaurantActivity.setResult(RESULT_OK, intent);
+                            editRestaurantActivity.finish();
+                        }else if((int)response == ConstantCODE.NOTINTERNET){
+                            Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Xóa quán thất bại!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 return true;
 
             case R.id.action_done:
-                Toast.makeText(context,"Done button hit",Toast.LENGTH_LONG).show();
-//                if(checkValid()){
-//                    FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
-//                        @Override
-//                        public void OnTaskComplete(Object response) {
-//                            if((int)response == FoodMapApiManager.SUCCESS) {
-//                                Gson gson = new Gson();
-//                                Intent intent = new Intent();
-//                                intent.putExtra("restJSON", gson.toJson(restaurant));
-//                                intent.putExtra("restRow", row);
-//                                setResult(RESULT_OK, intent);
-//                                finish();
-//                            }else if((int)response == ConstantCODE.NOTINTERNET){
-//                                Toast.makeText(EditRestaurantActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-//                            } else {
-//                                Toast.makeText(EditRestaurantActivity.this, "Xóa nhà hàng thất bại!", Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//                    });
-//                }else{
-//                    Toast.makeText(EditRestaurantActivity.this, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
-//                }
+                //Toast.makeText(context,"Done button hit",Toast.LENGTH_LONG).show();
+                if(checkValid()){
+                    FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            if((int)response == FoodMapApiManager.SUCCESS) {
+
+                                Gson gson = new Gson();
+                                Intent intent = new Intent();
+                                intent.putExtra("restJSON", gson.toJson(restaurant));
+
+                                editRestaurantActivity.setResult(RESULT_OK, intent);
+                                editRestaurantActivity.finish();
+                            }else if((int)response == ConstantCODE.NOTINTERNET){
+                                Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(context, "Cập nhật nhà hàng thất bại!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

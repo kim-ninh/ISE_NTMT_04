@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.RestaurantListAdapter;
@@ -30,6 +32,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     private RestaurantListAdapter restaurantListAdapter;
     private List<Restaurant> restaurantList;
+    private int selectedRow = -1;
 
     private final int RRA_ID = 1234;
     private final int RMA_ID = 1111;
@@ -67,6 +70,9 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rcvRestaurant.setLayoutManager(mLayoutManager);
 
+        // TODO Tại sao ở đây ko lấy tham chiếu trực tiếp?
+        // restaurantList = Owner.getInstance().getListRestaurant()
+
         restaurantList = new ArrayList<>();
         restaurantList.addAll(Owner.getInstance().getListRestaurant());
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
@@ -103,6 +109,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         Intent intent = new Intent(RestaurantManageActivity.this, EditRestaurantActivity.class);
         intent.putExtra("rest", restaurantList.get(position));
         startActivityForResult(intent, RMA_ID);
+        selectedRow = position;
     }
 
     @Override
@@ -124,8 +131,24 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             }
         }
         else if (requestCode == RMA_ID && resultCode == Activity.RESULT_OK){
-            List<Restaurant> temp = Owner.getInstance().getListRestaurant();
-            restaurantList.addAll(temp);
+            //TODO Đã tiết kiệm chi phí việc phải thêm lại toàn bộ danh sách
+            //List<Restaurant> temp = Owner.getInstance().getListRestaurant();
+            //restaurantList.addAll(temp);
+
+            boolean isDelete = data.getBooleanExtra("isDelete",false);
+
+            if (isDelete)
+            {
+                restaurantList.remove(selectedRow);
+            }else
+            {
+                String restJSON = data.getStringExtra("restJSON");
+                Restaurant restaurant = new Gson().fromJson(restJSON,Restaurant.class);
+
+                restaurantList.remove(selectedRow);
+                restaurantList.add(selectedRow, restaurant);
+            }
+
             restaurantListAdapter.notifyDataSetChanged();
         }
     }
