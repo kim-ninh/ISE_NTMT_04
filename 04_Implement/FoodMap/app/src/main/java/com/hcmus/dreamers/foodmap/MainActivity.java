@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -313,9 +314,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -377,9 +384,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -453,9 +466,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -543,41 +562,6 @@ public class MainActivity extends AppCompatActivity {
                 addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
         }
-
-        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch (id){
-                    case R.id.btnManager:
-                        Log.d(TAG, "onClick: btnManager");
-                        //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
-                        Intent main_manageRest = new Intent(MainActivity.this,
-                                EditRestaurantActivity.class);
-                        startActivity(main_manageRest);
-                        break;
-                    case  R.id.btnFeedBack:
-                        Log.d(TAG, "onClick: btnFeedBack");
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
-                        startActivity(browserIntent);
-                        break;
-                    case  R.id.btnUpdate:
-                        Log.d(TAG, "onClick: btnUpdate");
-                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.btnLogout:
-                        Log.d(TAG, "onClick: btnLogout");
-                        Owner.setInstance(null);
-                        initMenuNotLogin();
-                        break;
-                    case R.id.btnAbout:
-                        Log.d(TAG, "onClick: btnAbout");
-                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return true;
-            }
-        });
     }
 
     void uploadDataToAccount() {
