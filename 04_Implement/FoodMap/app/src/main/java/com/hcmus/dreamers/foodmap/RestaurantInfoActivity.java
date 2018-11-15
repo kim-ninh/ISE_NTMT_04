@@ -504,6 +504,14 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         startActivity(callIntent);
     }
 
+    //region
+    //
+    // This method is get the adapter of the listview and calculate it size when all items are show
+    // Then we will have some thing like *ListView without Scrolling*
+    //
+    // Source: https://stackoverflow.com/questions/4338185/how-to-get-a-non-scrollable-listview
+    //endregion
+    // TODO REMEMBER to call this method every time the ListView adapter has changed (updated/deleted)
     public void justifyListViewHeightBasedOnChildren (ListView listView) {
 
         ListAdapter adapter = listView.getAdapter();
