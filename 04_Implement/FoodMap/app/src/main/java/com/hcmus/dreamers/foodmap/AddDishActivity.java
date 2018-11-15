@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -124,8 +125,13 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
                                     if (code == FoodMapApiManager.SUCCESS){
                                         restaurant.getDishes().add(dish);
 
+                                        // Send new dish back to previous activity/fragment
+                                        // to update the list view
                                         Intent data = new Intent();
-                                        data.putExtra("isAdd", true);
+                                        Gson gson = new Gson();
+                                        String dishJSON = gson.toJson(dish);
+                                        data.putExtra("dishJSON", dishJSON);
+
                                         setResult(Activity.RESULT_OK, data);
                                         AddDishActivity.this.finish();
                                     }
