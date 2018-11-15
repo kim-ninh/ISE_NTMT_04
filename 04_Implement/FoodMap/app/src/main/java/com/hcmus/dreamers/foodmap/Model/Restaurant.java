@@ -26,8 +26,12 @@ public class Restaurant implements Serializable {
     // bảng lưu thông tin người đánh giá
     // keyvalue: <email, star>
     private HashMap<String, Integer> ranks;
+
+    private int num_checkin;
+
     //
     public Restaurant() {
+        num_checkin = 0;
         dishes = new ArrayList<Dish>();
         comments = new ArrayList<Comment>();
         ranks = new HashMap<String, Integer>();
@@ -42,7 +46,8 @@ public class Restaurant implements Serializable {
                       String urlImage,
                       Date timeOpen,
                       Date timeClose,
-                      GeoPoint location) {
+                      GeoPoint location,
+                      int num_checkin) {
         this.id = id_rest;
         this.ownerUsername = ownerUsername;
         this.name = name;
@@ -53,7 +58,16 @@ public class Restaurant implements Serializable {
         this.timeOpen = timeOpen;
         this.timeClose = timeClose;
         this.location = location;
+        this.num_checkin = num_checkin;
 	}
+
+    public int getNum_checkin() {
+        return num_checkin;
+    }
+
+    public void setNum_checkin(int num_checkin) {
+        this.num_checkin = num_checkin;
+    }
 
     public List<Comment> getComments() {
         return comments;

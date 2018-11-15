@@ -337,6 +337,19 @@ class database
 		return $this->query($strQuery);
 	}
 
+
+	public function AddCheckin($id_rest, $guest_email)
+	{
+		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'")';
+		return $this->query($strQuery);
+	}
+
+	public function GetCheckin($id_rest)
+	{
+		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN';
+		return $this->query($strQuery);
+	}
+
 	// close connection
 	public function disconnect()
 	{

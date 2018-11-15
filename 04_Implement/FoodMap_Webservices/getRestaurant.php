@@ -4,7 +4,7 @@ include "../private/database.php";
 
 //create class Restaurant
 class Restaurant{
-	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs){
+	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs, $num_checkin){
 		$this->id = $id;
 		$this->owner_username= $owner_username;
 		$this->name = $name;
@@ -19,6 +19,7 @@ class Restaurant{
 		$this->ranks = $rank;
 		$this->comments = $comments;
 		$this->dishs = $dishs;
+		$this->num_checkin = $num_checkin;
 	}
 }
 class Comment{
@@ -95,11 +96,22 @@ if ($listRestaurants != -1)
 				array_push($ranks, new Rank($rank["EMAIL_GUEST"], $rank["STAR"]));
 			}
 		}
-			
+		
+		// get number checkin
+		$countCheckin = $conn->GetCheckin($id_rest);
+		$checkin = 0;
+		if ($countCheckin != -1)
+		{
+			foreach ($countCheckin as $row) {
+				$checkin = $row["COUNT"];
+				break;
+			}
+		}
+
 		//
 		array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
 			$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
-			$row['LAT'], $row['LON'], $ranks, $comments, $dishs));
+			$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $checkin));
 	}
 
 	$response["status"] = 200;

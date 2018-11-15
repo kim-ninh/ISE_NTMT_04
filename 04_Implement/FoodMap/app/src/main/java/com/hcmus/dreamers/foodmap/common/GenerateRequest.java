@@ -11,12 +11,10 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import org.osmdroid.util.GeoPoint;
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.HttpUrl;
 import okhttp3.RequestBody;
 
 public class GenerateRequest {
@@ -247,6 +245,22 @@ public class GenerateRequest {
         params.put("lat", String.valueOf(location.getLatitude()));
         params.put("lon", String.valueOf(location.getLongitude()));
         params.put("token", token);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request addCheckin(final int id_rest, final String guest_email){
+
+        String url = ConstantURL.BASEURL + ConstantURL.UPDATELOCAION;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("guest_email", guest_email);
+
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)

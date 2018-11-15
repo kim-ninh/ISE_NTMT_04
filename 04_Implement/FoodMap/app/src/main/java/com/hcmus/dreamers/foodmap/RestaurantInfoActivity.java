@@ -3,7 +3,6 @@ package com.hcmus.dreamers.foodmap;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,43 +32,29 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import org.osmdroid.util.GeoPoint;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -79,7 +63,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private static final String TAG = "RestAcitvity";
     private static final int CM_ID = 1009;
-
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -147,7 +130,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             Log.i(TAG,"can't get restaurant data");
             Toast.makeText(this,"can't get restaurant data", Toast.LENGTH_LONG).show();
         }
-
         else
         {
             setLayoutInfo();
@@ -218,23 +200,14 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
 
         //Set a number of rates
-        try {
-            double average = 0;
-
-            for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
-                average += kvp.getValue();
-            }
-
-            if(average != 0)
-            {
-                average /= restaurant.getRanks().size();
-            }
-
-            txtNRate.setText(String.format("%.1f",average));
-        }catch (Exception e)
-        {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        double averageRate = 0;
+        for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
+            averageRate += kvp.getValue();
         }
+        if(restaurant.getRanks().size() != 0) {
+            txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
+        }
+
 
 
         //set Time and Status
@@ -315,7 +288,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     }
 
     private void clickOnCheckInEvent() {
-        startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+        if(FoodMapApiManager.isGuestLogin()) {
+            startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+        }
+        else{
+            Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void clickOnCommentEvent(){
@@ -403,8 +381,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                     int code = (int) response;
 
                                     if (code == ConstantCODE.SUCCESS) {
+                                        FoodMapManager.setFavoriteRestaurant(restaurant.getId(), Guest.getInstance().getEmail(), (int) rtbRate.getRating());
                                         restaurant.getRanks().put(Guest.getInstance().getEmail(), (int) rtbRate.getRating());
-
+                                        double averageRate = 0;
+                                        for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
+                                            averageRate += kvp.getValue();
+                                        }
+                                        if(restaurant.getRanks().size() != 0) {
+                                            txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
+                                        }
                                         Log.i(TAG, "Submit rate successfully");
                                         Toast.makeText(RestaurantInfoActivity.this, "Thank you for your submit", Toast.LENGTH_LONG).show();
 

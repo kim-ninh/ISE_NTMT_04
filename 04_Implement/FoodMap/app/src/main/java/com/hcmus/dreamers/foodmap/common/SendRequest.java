@@ -12,7 +12,7 @@ import okhttp3.Response;
 public class SendRequest {
     public static String send(Request request) throws IOException {
         OkHttpClient client = new OkHttpClient();
-        //client.newBuilder().connectTimeout(20000,  TimeUnit.MILLISECONDS);
+        client.newBuilder().connectTimeout(5000,  TimeUnit.MILLISECONDS);
 
         Response response = client.newCall(request).execute();
         StringBuilder sb = new StringBuilder();

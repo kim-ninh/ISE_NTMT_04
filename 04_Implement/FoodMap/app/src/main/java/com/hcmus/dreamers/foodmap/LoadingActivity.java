@@ -14,10 +14,9 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
-
-// Example here: https://github.com/googlesamples/android-RuntimePermissions
 
 public class LoadingActivity extends AppCompatActivity {
 
@@ -43,22 +42,21 @@ public class LoadingActivity extends AppCompatActivity {
                                 checkPermission();
                             }
                             else if (code == ConstantCODE.NOTINTERNET){
-                                Toast.makeText(LoadingActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+                                getDataLocal("Kiểm tra kết nối internet");
                             }
                             else {
-                                Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                getDataLocal("Error");
                             }
                         }
                     });
 
                 }
                 else if (code == ConstantCODE.NOTINTERNET){
-                    Toast.makeText(LoadingActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+                    getDataLocal("Kiểm tra kết nối internet");
                 }
                 else {
-                    Toast.makeText(LoadingActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    getDataLocal("Error");
                 }
-                //finish();
             }
         });
     }
@@ -127,6 +125,21 @@ public class LoadingActivity extends AppCompatActivity {
         startActivity(intent);
 
         LoadingActivity.this.finish();
+    }
+
+    void getDataLocal(final String msgError){
+        FoodMapManager.getDataFromDatabase(LoadingActivity.this, new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int)response == ConstantCODE.SUCCESS){
+                    checkPermission();
+                }
+                else {
+                    Toast.makeText(LoadingActivity.this, msgError, Toast.LENGTH_LONG).show();
+                    LoadingActivity.this.finish();
+                }
+            }
+        });
     }
 
 

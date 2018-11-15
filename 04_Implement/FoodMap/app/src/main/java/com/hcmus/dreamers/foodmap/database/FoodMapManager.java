@@ -1,12 +1,13 @@
-package com.hcmus.dreamers.foodmap.common;
+package com.hcmus.dreamers.foodmap.database;
 
 
 import android.content.Context;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.database.DBManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -132,4 +133,33 @@ public class FoodMapManager {
         }
         dbManager.close();
     }
+
+    public static void setFavoriteRestaurant(int restID, String guestEmail, int star){
+        for(int i = 0; i < restaurants.size(); i++)
+        {
+            if( restaurants.get(i).getId() == restID){
+                restaurants.get(i).getRanks().put(guestEmail, star);
+                return;
+            }
+        }
+    }
+
+    //use on offline mode
+    public static void getDataFromDatabase(Context context, TaskCompleteCallBack taskCompleteCallBack){
+        DBManager dbManager = new DBManager(context);
+
+        try {
+
+            restaurants = dbManager.getAllRestaurant();
+            catalogs = dbManager.getAllCatalog();
+
+            taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+        } catch (ParseException e) {
+            restaurants = null;
+            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
+        }
+
+        dbManager.close();
+    }
+
 }

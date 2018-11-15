@@ -219,7 +219,8 @@
 						price,
 						url_image,
 						id_catalog
-					] //mảng
+					] //mảng,
+				num_checkin // số lượng người đã checkin
 			] // mảng
 
 			
@@ -400,3 +401,24 @@
 				id_rest,
 				guest_email
 			] // mảng
+
+
+- addCheckin:
+	+ url: addCheckin.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+ response:
+		* status: 200
+		* message: Success	
+- getCheckin:
+	+ url: getCheckin.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+	+ response
+		* status: 200
+		* message: Success	
+		* data:
+			** count // số lượng lần checkin tại nhà hàng
