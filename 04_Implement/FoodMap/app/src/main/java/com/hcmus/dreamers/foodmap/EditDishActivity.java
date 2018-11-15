@@ -75,7 +75,6 @@ public class EditDishActivity extends AppCompatActivity {
 
         takeReferenceFromResource();
         getTransferDataFromActivity();
-        putDataToViews();
 
 
         adapter = new ImageAdapter(this,imagesUri);
@@ -86,6 +85,8 @@ public class EditDishActivity extends AppCompatActivity {
                 R.layout.support_simple_spinner_dropdown_item,
                 FoodMapManager.getCatalogsString()
         ));
+
+        putDataToViews();
 
         //Enable the Up button (Icon look like this: <- )
         setSupportActionBar(toolbar);
@@ -295,6 +296,10 @@ public class EditDishActivity extends AppCompatActivity {
                 }
 
 
+                return true;
+
+            case android.R.id.home:
+                finish();
                 return true;
 
             default:
