@@ -36,6 +36,7 @@ import com.hcmus.dreamers.foodmap.common.Base64Converter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -160,15 +161,28 @@ public class EditDishActivity extends AppCompatActivity {
                         if (item.getItemId() == R.id.delete_dishImg)
                         {
                             // Xóa hình trên server
-                            String imagePath = imagesUri.get(position).toString();
-                            FoodMapApiManager.deleteImage(imagePath, new TaskCompleteCallBack() {
+                            String absolutePath = imagesUri.get(position).toString();
+                            String imageName = new File(absolutePath).getName();
+                            String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, rest_id, imageName);
+
+                            FoodMapApiManager.deleteImage(relativePath, new TaskCompleteCallBack() {
                                 @Override
                                 public void OnTaskComplete(Object response) {
-                                    if((int)response == FoodMapApiManager.SUCCESS){
+                                    if((int)response == ConstantCODE.SUCCESS){
 
                                         // Xóa thành công trên server, cập nhật lại grid view
+                                        if (dish.getUrlImage().equals(imagesUri.get(position).toString()))
+                                        {
+                                            dish.setUrlImage("");
+                                        }
+
                                         imagesUri.remove(position);
                                         adapter.notifyDataSetChanged();
+                                        Toast.makeText(EditDishActivity.this,
+                                                "Xóa thành công",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+
                                     }else if((int)response == ConstantCODE.NOTINTERNET){
                                         Toast.makeText(EditDishActivity.this,
                                                 "Không có kết nối INTERNET!",
