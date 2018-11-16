@@ -23,6 +23,7 @@ public class Restaurant implements Serializable {
     private String address;
     //so luong guest da yeu thich
     private int nFavorites;
+    private int nShare;
     // bảng lưu thông tin người đánh giá
     // keyvalue: <email, star>
     private HashMap<String, Integer> ranks;
@@ -184,4 +185,11 @@ public class Restaurant implements Serializable {
         return -1;
     }
 
+    public int getnShare() {
+        return nShare;
+    }
+
+    public void setnShare(int nShare) {
+        this.nShare = nShare;
+    }
 }

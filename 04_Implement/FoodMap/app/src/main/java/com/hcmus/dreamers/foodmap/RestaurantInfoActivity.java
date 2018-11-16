@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -63,31 +64,35 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private static final String TAG = "RestAcitvity";
     private static final int CM_ID = 1009;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 
-    TextView txtRestName;
-    TextView txtNCheckIn;
-    TextView txtNComment;
-    TextView txtNFavorite;
-    TextView txtNShare;
-    TextView txtNRate;
-    TextView txtStatus;
-    TextView txtOpenTime;
-    TextView txtLocation;
-    TextView txtDescription;
-    ImageView imgDescription;
-    ListView lstDish;
-    LinearLayout lnrCheckIn;
-    LinearLayout lnrComment;
-    LinearLayout lnrFavorite;
-    LinearLayout lnrRate;
-    LinearLayout lnrShare;
-    LinearLayout lnrFindWayMap;
+    private TextView txtRestName;
+    private TextView txtNCheckIn;
+    private TextView txtNComment;
+    private TextView txtNFavorite;
+    private TextView txtNShare;
+    private TextView txtNRate;
+    private TextView txtStatus;
+    private TextView txtOpenTime;
+    private TextView txtLocation;
+    private TextView txtDescription;
+    private TextView txtPrice;
+    private ImageView imgDescription;
+    private ListView lstDish;
+    private LinearLayout lnrCheckIn;
+    private LinearLayout lnrComment;
+    private LinearLayout lnrFavorite;
+    private LinearLayout lnrRate;
+    private LinearLayout lnrShare;
+    private FloatingActionButton fabMoreInfo;
+    private FloatingActionButton fabOffer;
+    private FloatingActionButton fabLocation;
 
-    ImageView imgHeart;
-    Button btnContact;
-    Restaurant restaurant;
+    private ImageView imgHeart;
+    private Button btnContact;
+    private Restaurant restaurant;
+    private boolean isMoreInfoClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtOpenTime = (TextView) findViewById(R.id.txtOpenTime);
         txtLocation = (TextView) findViewById(R.id.txtLocation);
         txtDescription = (TextView) findViewById(R.id.txtDescription);
+        txtPrice = (TextView) findViewById(R.id.txtPrice);
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
         lnrCheckIn = (LinearLayout) findViewById(R.id.lnrCheckIn);
@@ -119,9 +125,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         lnrRate = (LinearLayout)findViewById(R.id.lnrRate);
         lnrShare = (LinearLayout)findViewById(R.id.lnrShare);
         btnContact = (Button) findViewById(R.id.btnContact);
-        lnrFindWayMap = (LinearLayout) findViewById(R.id.lnrFindWayMap);
         imgHeart = (ImageView) findViewById(R.id.imgHeart);
-
+        fabMoreInfo = (FloatingActionButton) findViewById(R.id.fabMoreInfo);
+        fabOffer= (FloatingActionButton) findViewById(R.id.fabOffer);
+        fabLocation = (FloatingActionButton) findViewById(R.id.fabLocation);
         //get Restaurant
         Intent intent = this.getIntent();
         restaurant = (Restaurant) intent.getSerializableExtra("rest");
@@ -146,7 +153,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             lnrFavorite.setOnClickListener(this);
             lnrComment.setOnClickListener(this);
             lnrCheckIn.setOnClickListener(this);
-            lnrFindWayMap.setOnClickListener(this);
+            fabMoreInfo.setOnClickListener(this);
+            fabOffer.setOnClickListener(this);
+            fabLocation.setOnClickListener(this);
         }
 
     }
@@ -183,21 +192,16 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtRestName.setText(restaurant.getName());
 
         //Set a number of  check-in
-
+        txtNCheckIn.setText(Integer.toString(restaurant.getNum_checkin()));
 
         // Set a number of comments
-        try {
-            txtNComment.setText(Integer.toString(restaurant.getComments().size()));
-        }catch (Exception e)
-        {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        txtNComment.setText(Integer.toString(restaurant.getComments().size()));
 
         // Set a number of favorites
         txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
         //Set a number of shares
-
+        txtNFavorite.setText(Integer.toString(restaurant.getnShare()));
 
         //Set a number of rates
         double averageRate = 0;
@@ -207,8 +211,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         if(restaurant.getRanks().size() != 0) {
             txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
         }
-
-
 
         //set Time and Status
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
@@ -239,7 +241,24 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtDescription.setText((restaurant.getDescription()));
 
         //Set Price range of restaurant
+        int minPrice = 0, maxPrice = 0;
+        int price;
+        for(int i = 0; i < restaurant.getDishes().size(); i++)
+        {
+            price =  restaurant.getDishes().get(i).getPrice();
 
+            if(minPrice == 0 || minPrice > price){
+                minPrice = price;
+            }
+
+            if(maxPrice == 0 || maxPrice < price){
+                maxPrice = price;
+            }
+        }
+        if(minPrice == maxPrice)
+            txtPrice.setText(Integer.toString(minPrice) + " VND");
+        else
+            txtPrice.setText(String.format("%d VND - %d VND", minPrice, maxPrice));
 
         //set Menu
         try {
@@ -276,13 +295,27 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             case R.id.btnContact:
                 clickOnContactEvent();
                 break;
-            case R.id.lnrFindWayMap:
+            case R.id.fabMoreInfo:
+                if(isMoreInfoClick)
+                {
+                    fabOffer.hide();
+                    fabLocation.hide();
+                    isMoreInfoClick = false;
+                }
+                else {
+                    fabOffer.show();
+                    fabLocation.show();
+                    isMoreInfoClick = true;
+                }
+                break;
+            case R.id.fabOffer:
+                //add offer here
 
+                break;
+            case R.id.fabLocation:
                 Intent intent = new Intent(RestaurantInfoActivity.this, MapActivity.class);
                 intent.putExtra("endPoint", (Serializable) restaurant.getLocation());
                 startActivity(intent);
-                break;
-            case R.id.lnrMenu:
                 break;
         }
     }
@@ -381,7 +414,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                     int code = (int) response;
 
                                     if (code == ConstantCODE.SUCCESS) {
+                                        //update data to local database
                                         FoodMapManager.setFavoriteRestaurant(restaurant.getId(), Guest.getInstance().getEmail(), (int) rtbRate.getRating());
+
+                                        //reset rate average
                                         restaurant.getRanks().put(Guest.getInstance().getEmail(), (int) rtbRate.getRating());
                                         double averageRate = 0;
                                         for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
@@ -465,8 +501,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
                 }
             };
-
-
 
             //load image on facebook
             Picasso.with(getApplicationContext())

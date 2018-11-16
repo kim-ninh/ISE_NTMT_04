@@ -236,6 +236,11 @@ public class ParseJSON {
         return list;
     }
 
+    public static Offer parseOfferObject(String response){
+        Offer offer = gson.fromJson(response, Offer.class);
+        return offer;
+    }
+
 
     public static List<Discount> parseDiscount(String response) throws JSONException, ParseException {
         List<Discount> list = new ArrayList<>();
