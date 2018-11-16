@@ -236,8 +236,9 @@ public class ParseJSON {
         return list;
     }
 
-    public static Offer parseOfferObject(String response){
-        Offer offer = gson.fromJson(response, Offer.class);
+    public static Offer parseOfferObject(String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        Offer offer = gson.fromJson(object.getJSONObject("order").toString(), Offer.class);
         return offer;
     }
 
