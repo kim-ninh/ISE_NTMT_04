@@ -349,23 +349,10 @@ public class EditDishActivity extends AppCompatActivity {
 
                    // Chuỗi URI trả về có dạng content://<path>
                    Uri imageUri = Uri.parse(data.getDataString());
-                   File imageFile = new File(imageUri.getPath());
-                   String encodedData = "";
-
-
-                   // Mã hóa hình theo Base64
-                   try
-                   {
-                       encodedData = Base64Converter.encodeToBase64(EditDishActivity.this,
-                               imageUri);
-                   }catch (Exception e)
-                   {
-                        Log.d("ConvertBase64",e.getMessage());
-                   }
-
 
                    // Upload hình lên server
-                    FoodMapApiManager.uploadImage(rest_id, imageFile.getName(), encodedData, new TaskCompleteCallBack() {
+                    FoodMapApiManager.uploadImage(EditDishActivity.this ,
+                            rest_id, imageUri,  new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
 
@@ -390,9 +377,7 @@ public class EditDishActivity extends AppCompatActivity {
 
                                 // Đã có lỗi trong quá trình upload, in thông báo
                                 Toast.makeText(EditDishActivity.this,
-                                        strResponse,
-                                        Toast.LENGTH_LONG)
-                                        .show();
+                                        strResponse, Toast.LENGTH_LONG).show();
                             }
                         }// OnTaskComplete
                     });
