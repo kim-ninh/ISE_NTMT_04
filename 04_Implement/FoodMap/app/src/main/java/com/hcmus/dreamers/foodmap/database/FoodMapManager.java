@@ -121,6 +121,20 @@ public class FoodMapManager {
         return null;
     }
 
+    public static int getCatalogPosition(int catalogId)
+    {
+        int pos = -1;
+        for (int i = 0; i < catalogs.size(); i++)
+        {
+            if (catalogId == catalogs.get(i).getId())
+            {
+                pos = i;
+                break;
+            }
+        }
+        return pos;
+    }
+
     public static List<Catalog> getCatalogs() {
         return catalogs;
     }

@@ -226,7 +226,9 @@ public class EditDishActivity extends AppCompatActivity {
         txtDishName.setText(dish.getName());
         txtDishCost.setText(Integer.toString(dish.getPrice()));
 
-        spnrDishType.setSelection(dish.getCatalog().getId() - 1);
+        // cần tìm vị trí của catalog trong danh sách, ko phải ID của catalog!
+        int catalogPosition = FoodMapManager.getCatalogPosition(dish.getCatalog().getId());
+        spnrDishType.setSelection(catalogPosition);
 
     }
 
@@ -322,6 +324,10 @@ public class EditDishActivity extends AppCompatActivity {
         if(txtDishName.length() > 0 && txtDishCost.length() > 0){
             dish.setName(txtDishName.getText().toString());
             dish.setPrice(Integer.parseInt(txtDishCost.getText().toString()));
+
+            String catalogString =(String) spnrDishType.getSelectedItem();
+            Catalog catalog = FoodMapManager.findCatalog(catalogString);
+            dish.setCatalog(catalog);
             return true;
         }
         return false;
@@ -343,23 +349,10 @@ public class EditDishActivity extends AppCompatActivity {
 
                    // Chuỗi URI trả về có dạng content://<path>
                    Uri imageUri = Uri.parse(data.getDataString());
-                   File imageFile = new File(imageUri.getPath());
-                   String encodedData = "";
-
-
-                   // Mã hóa hình theo Base64
-                   try
-                   {
-                       encodedData = Base64Converter.encodeToBase64(EditDishActivity.this,
-                               imageUri);
-                   }catch (Exception e)
-                   {
-                        Log.d("ConvertBase64",e.getMessage());
-                   }
-
 
                    // Upload hình lên server
-                    FoodMapApiManager.uploadImage(rest_id, imageFile.getName(), encodedData, new TaskCompleteCallBack() {
+                    FoodMapApiManager.uploadImage(EditDishActivity.this ,
+                            rest_id, imageUri,  new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
 
@@ -384,9 +377,7 @@ public class EditDishActivity extends AppCompatActivity {
 
                                 // Đã có lỗi trong quá trình upload, in thông báo
                                 Toast.makeText(EditDishActivity.this,
-                                        strResponse,
-                                        Toast.LENGTH_LONG)
-                                        .show();
+                                        strResponse, Toast.LENGTH_LONG).show();
                             }
                         }// OnTaskComplete
                     });

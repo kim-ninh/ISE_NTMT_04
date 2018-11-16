@@ -2,12 +2,14 @@ package com.hcmus.dreamers.foodmap.common;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.EditDishActivity;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -20,6 +22,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.ParseException;
 
 import java.util.ArrayList;
@@ -710,6 +713,26 @@ public class FoodMapApiManager {
         });
 
         uploadingTask.execute(new DoingTask(GenerateRequest.upload(restID, imageName, base64Data)));
+    }
+
+    public static void uploadImage(Context context,
+                                   int restID,
+                                   Uri imageUri,
+                                   final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        File imageFile = new File(imageUri.getPath());
+        String encodedData = "";
+
+        // Mã hóa hình theo base64
+        try
+        {
+            encodedData = Base64Converter.encodeToBase64(context, imageUri);
+        }catch (Exception e)
+        {
+            Log.d("ConvertBase64",e.getMessage());
+        }
+
+        uploadImage(restID, imageFile.getName(),encodedData,taskCompleteCallBack);
     }
 
     public static void deleteImage(String imageURL, final TaskCompleteCallBack taskCompleteCallBack)

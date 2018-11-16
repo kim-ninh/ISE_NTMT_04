@@ -39,4 +39,11 @@ public class DownloadImageTask {
                 });
     }
 
+    public void loadImageFromUrl(String url, Callback callback)
+    {
+        Picasso.with(context).load(url)
+                .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                .into(imageView, callback);
+    }
 }
