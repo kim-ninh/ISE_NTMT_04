@@ -180,13 +180,14 @@ public class MainActivity extends AppCompatActivity {
         markers = new ArrayList<OverlayItem>();
 
         // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
-        // thêm marker vào
+        this.mLocationOverlay = new MyLocationNewOverlay(mMap);
         mMap.getOverlays().add(this.mLocationOverlay);
-
+        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        this.mLocationOverlay.setPersonIcon(iconMyLocation);
+        this.mLocationOverlay.enableMyLocation();
+        this.mLocationOverlay.disableFollowLocation();
+        this.mLocationOverlay.setOptionsMenuEnabled(true);
+        mapController.animateTo(this.mLocationOverlay.getMyLocation());
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void moveCamera(GeoPoint point){
-        mapController.setCenter(point);
+        mapController.animateTo(point);
     }
 
     // navigation menu and toolbar init

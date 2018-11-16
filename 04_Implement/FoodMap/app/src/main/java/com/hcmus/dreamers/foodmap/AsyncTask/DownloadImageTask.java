@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap.AsyncTask;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.hcmus.dreamers.foodmap.R;
@@ -8,8 +9,11 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class DownloadImageTask {
+    private static final String TAG = "DownloadImageTask";
+
     private ImageView imageView;
     private Context context;
+
 
     public DownloadImageTask(ImageView imageView, Context context)
     {
@@ -17,7 +21,7 @@ public class DownloadImageTask {
         this.context = context;
     }
 
-    public void loadImageFromUrl(String url)
+    public void loadImageFromUrl(final String url)
     {
         Picasso.with(context).load(url)
                 .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
@@ -25,12 +29,12 @@ public class DownloadImageTask {
                 .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
-
+                        Log.e(TAG, "onSuccess: " + url);
                     }
 
                     @Override
                     public void onError() {
-
+                        Log.e(TAG, "onError: " + url);
                     }
                 });
     }
