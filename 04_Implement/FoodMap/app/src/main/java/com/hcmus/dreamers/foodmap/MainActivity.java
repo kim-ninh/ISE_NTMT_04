@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         addMarkerRestaurant();
 
         //Upload data to Guest or Owner If checkLogin() == true
-        NotificationBuilder.ShowNotification(MainActivity.this, "FoodMap Loading", "FoodMap đã sẵn sàng");
 
     }
 

@@ -426,7 +426,7 @@ public class DBManager extends SQLiteOpenHelper {
     public int getNumCheckin(int id_rest){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_RESTAURANT, new String[]{KEY_TOTAL_CHECKIN}, KEY_ID_REST + " = ?", new String[] {String.valueOf(id_rest)},
+        Cursor cursor = db.query(TABLE_RESTAURANT, new String[]{KEY_TOTAL_CHECKIN}, KEY_ID + " = ?", new String[] {String.valueOf(id_rest)},
                 null, null, null);
         if (cursor == null)
             return 0;
