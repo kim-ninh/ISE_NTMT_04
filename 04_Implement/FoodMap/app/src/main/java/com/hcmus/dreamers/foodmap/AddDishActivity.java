@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.method.DateTimeKeyListener;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +31,7 @@ import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AddDishActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -104,7 +106,9 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
 
-                String nameImage = "dish_" + restaurant.getDishes().size() +"_" + Calendar.getInstance().getTime().toString();
+                Date date = Calendar.getInstance().getTime();
+
+                String nameImage = "dish_" + restaurant.getDishes().size() +"_" + date.getTime();
                 FoodMapApiManager.uploadImage(AddDishActivity.this, restaurant.getId(), nameImage, urlImage, new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
