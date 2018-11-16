@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap.database;
 
 import android.content.Context;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.LoadDataLocalTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
@@ -146,20 +147,13 @@ public class FoodMapManager {
 
     //use on offline mode
     public static void getDataFromDatabase(Context context, TaskCompleteCallBack taskCompleteCallBack){
-        DBManager dbManager = new DBManager(context);
-
-        try {
-
-            restaurants = dbManager.getAllRestaurant();
-            catalogs = dbManager.getAllCatalog();
-
-            taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
-        } catch (ParseException e) {
-            restaurants = null;
-            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
+        if (restaurants == null || catalogs == null){
+            restaurants = new ArrayList<Restaurant>();
+            catalogs = new ArrayList<Catalog>();
         }
 
-        dbManager.close();
+        LoadDataLocalTask loadDataLocalTask = new LoadDataLocalTask(context, restaurants, catalogs, taskCompleteCallBack);
+        loadDataLocalTask.execute();
     }
 
 }
