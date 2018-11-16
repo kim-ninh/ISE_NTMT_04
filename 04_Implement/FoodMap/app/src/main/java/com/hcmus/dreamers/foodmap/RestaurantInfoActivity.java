@@ -490,9 +490,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 }
 
                 @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
                 }
+
 
                 @Override
                 public void onPrepareLoad(Drawable placeHolderDrawable) {
@@ -501,7 +502,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             };
 
             //load image on facebook
-            Picasso.with(getApplicationContext())
+            Picasso.get()
                     .load(restaurant.getUrlImage())
                     .into(target);
         }

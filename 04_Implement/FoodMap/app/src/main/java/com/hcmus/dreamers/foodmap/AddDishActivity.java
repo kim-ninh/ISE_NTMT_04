@@ -108,7 +108,7 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
 
                 Date date = Calendar.getInstance().getTime();
 
-                String nameImage = "dish_" + restaurant.getDishes().size() +"_" + date.getTime();
+                String nameImage = "dish_" + restaurant.getDishes().size() +"_" + String.valueOf(date.getTime());
                 FoodMapApiManager.uploadImage(AddDishActivity.this, restaurant.getId(), nameImage, urlImage, new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
