@@ -23,7 +23,8 @@ public class DownloadImageTask {
 
     public void loadImageFromUrl(final String url)
     {
-        Picasso.with(context).load(url)
+        Picasso.get()
+                .load(url)
                 .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .into(imageView, new Callback() {
@@ -33,7 +34,7 @@ public class DownloadImageTask {
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
                         Log.e(TAG, "onError: " + url);
                     }
                 });
@@ -41,7 +42,8 @@ public class DownloadImageTask {
 
     public void loadImageFromUrl(String url, Callback callback)
     {
-        Picasso.with(context).load(url)
+        Picasso.get()
+                .load(url)
                 .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
                 .into(imageView, callback);

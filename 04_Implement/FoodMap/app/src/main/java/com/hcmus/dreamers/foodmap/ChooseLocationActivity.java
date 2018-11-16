@@ -168,7 +168,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ChooseLocationActivity.this),mMap);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        mLocationOverlay.disableFollowLocation();
+        mapController.animateTo(this.mLocationOverlay.getMyLocation());
+
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
@@ -241,7 +243,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         return mOverlay;
     }
     private void moveCamera(GeoPoint point){
-        mapController.setCenter(point);
+        mapController.animateTo(point);
     }
 
     //

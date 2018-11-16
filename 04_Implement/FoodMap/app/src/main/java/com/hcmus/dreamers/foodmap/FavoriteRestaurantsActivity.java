@@ -31,6 +31,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
     AutoCompleteTextView txtAutoComplete;
     GridViewItem grdFavorRest;
 
+    List<Restaurant> favorRestaurant;
     List<String> items = new ArrayList<>();
 
     @Override
@@ -47,7 +48,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         txtAutoComplete = (AutoCompleteTextView) findViewById(R.id.txtAutoComplete);
         grdFavorRest = (GridViewItem) findViewById(R.id.grdFavorRest);
 
-
+        favorRestaurant = Guest.getInstance().getFavRestaurant();
         //debug
         //set Image background of favorite restaurant layout
         try {
@@ -76,7 +77,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
-                intent.putExtra("rest", Guest.getInstance().getFavRestaurant().get(position));
+                intent.putExtra("rest", favorRestaurant.get(position));
                 startActivity(intent);
             }
         });
@@ -90,7 +91,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
-                intent.putExtra("rest",Guest.getInstance().getFavRestaurant().get(position));
+                intent.putExtra("rest",favorRestaurant.get(position));
                 startActivity(intent);
             }
         });

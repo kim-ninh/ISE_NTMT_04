@@ -37,16 +37,6 @@ public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
 
         ImageView imgBackFavorRest = (ImageView) cell.findViewById(R.id.imgBackFavorRest);
         TextView txtFavorRestName = (TextView) cell.findViewById(R.id.txtFavorRestName);
-        if (convertView == null) {
-            // new image in GridView formatted to:
-            // 100x75 pixels (its actual size)
-            // center-cropped, and 5dp padding all around
-            imgBackFavorRest.setLayoutParams(new GridViewItem.LayoutParams(100, 75));
-            imgBackFavorRest.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imgBackFavorRest.setPadding(5, 5, 5, 5);
-        } else {
-            imgBackFavorRest = (ImageView) convertView;
-        }
 
         DownloadImageTask downloadImageTask = new DownloadImageTask( imgBackFavorRest, context);
         downloadImageTask.loadImageFromUrl(restes.get(position).getUrlImage());
