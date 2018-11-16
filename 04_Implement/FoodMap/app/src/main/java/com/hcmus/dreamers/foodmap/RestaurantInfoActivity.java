@@ -66,6 +66,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     private static final int CM_ID = 1009;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    private boolean isGuestLogin = false;
 
     private TextView txtRestName;
     private TextView txtNCheckIn;
@@ -139,6 +140,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }
         else
         {
+            isGuestLogin = FoodMapApiManager.isGuestLogin();
             setLayoutInfo();
 
             //set phone call event
@@ -174,16 +176,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private void setLayoutInfo() {
         //set status favorite
-        if(FoodMapApiManager.isGuestLogin()) {
-            Toast.makeText(RestaurantInfoActivity.this, "login", Toast.LENGTH_LONG).show();
-
+        if(isGuestLogin) {
             if (Guest.getInstance().isFavoriteRestaurant(restaurant.getId())) {
                 imgHeart.setImageResource(R.drawable.ic_red_heart);
             }
         }
-        else {
-            Toast.makeText(RestaurantInfoActivity.this, "Not login", Toast.LENGTH_LONG).show();
-        }
+
         //set Description Image
         DownloadImageTask taskDownload = new DownloadImageTask(imgDescription, getApplicationContext());
         taskDownload.loadImageFromUrl(restaurant.getUrlImage());
@@ -321,7 +319,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     }
 
     private void clickOnCheckInEvent() {
-        if(FoodMapApiManager.isGuestLogin()) {
+        if(isGuestLogin) {
             startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
         }
         else{
@@ -337,7 +335,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private void clickOnFavoriteEvent() {
         //check login
-        if (FoodMapApiManager.isGuestLogin()) {
+        if (isGuestLogin) {
             lnrFavorite.setClickable(false);
 
             //kiem tra da ton tai trong ds yeu thich chua
@@ -394,7 +392,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private void clickOnRateEvent() {
         //check login
-        if (FoodMapApiManager.isGuestLogin()) {
+        if (isGuestLogin) {
 
             final Dialog dialog = new Dialog(RestaurantInfoActivity.this);
             dialog.setContentView(R.layout.dialog_rating);
@@ -444,7 +442,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     }
 
     private void clickOnShareEvent(){
-        if(FoodMapApiManager.isGuestLogin()) {
+        if(isGuestLogin) {
 
             //Init Facebook
             callbackManager = CallbackManager.Factory.create();
