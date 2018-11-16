@@ -13,12 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
@@ -65,6 +67,8 @@ public class RestaurantInfoFragment extends Fragment {
     EditText txtPhoneNumber;
     TextView lblOpenHour;
     TextView lblCloseHour;
+    ImageView imgDescription;
+    EditText txtDescription;
 
 
     public RestaurantInfoFragment() {
@@ -184,6 +188,10 @@ public class RestaurantInfoFragment extends Fragment {
         txtAddress.setText(restaurant.getAddress());
         lblOpenHour.setText(openingHour);
         lblCloseHour.setText(closingHour);
+        txtDescription.setText(restaurant.getDescription());
+
+        DownloadImageTask task = new DownloadImageTask(imgDescription,context);
+        task.loadImageFromUrl(restaurant.getUrlImage());
     }
 
     private void takeReferenceFromResource() {
@@ -192,6 +200,8 @@ public class RestaurantInfoFragment extends Fragment {
         txtPhoneNumber = (EditText) rootLayout.findViewById(R.id.txtPhoneNumber);
         lblCloseHour = (TextView) rootLayout.findViewById(R.id.closeHour);
         lblOpenHour = (TextView) rootLayout.findViewById(R.id.openHour);
+        imgDescription = (ImageView) rootLayout.findViewById(R.id.imgDescription);
+        txtDescription = (EditText) rootLayout.findViewById(R.id.txtDescription);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
