@@ -46,7 +46,7 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView dishImage = cell.findViewById(R.id.imageViewDish);
         final ProgressBar progressBar = cell.findViewById(R.id.progressBar);
-
+        progressBar.setVisibility(View.INVISIBLE);
         String imageUri = imagesUri.get(position).toString();
 
         // Đường dẫn luôn là public

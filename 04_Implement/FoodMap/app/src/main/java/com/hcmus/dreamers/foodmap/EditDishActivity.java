@@ -1,14 +1,17 @@
 package com.hcmus.dreamers.foodmap;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -42,9 +45,13 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -71,6 +78,8 @@ public class EditDishActivity extends AppCompatActivity {
 
     // arbitrary interprocess communication ID (just a nickname!)
     private final int IPC_PICK_IMAGE_ID = (int) (10001 * Math.random());
+    private static final int REQUEST_OPEN_GALERY = 12345;
+    private static final int REQUEST_TAKE_PHOTO = 11111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,15 +116,9 @@ public class EditDishActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Open Galery to pick image
-                Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+                // Add new image
                 gridRow = imagesUri.size();
-                imagesUri.add(Uri.parse(""));
-                adapter.notifyDataSetChanged();
-
-                startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
+                showPopupMenuSelection(view); //Chụp từ camera/chọn từ Galery
             }
         });
 
@@ -137,14 +140,8 @@ public class EditDishActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // Chọn hình khác để đổi
-                Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
                 gridRow = position;
-                startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
-
+                showPopupMenuSelection(view);
             }
         });
 
@@ -228,6 +225,48 @@ public class EditDishActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void showPopupMenuSelection(View view) {
+        // Đổi hình đại diện (Từ máy ảnh hoặc thư viện)
+
+        PopupMenu popupMenu = new PopupMenu(EditDishActivity.this, view);
+        // Inflating the popup using xml file
+        popupMenu.getMenuInflater().inflate(R.menu.pick_image_menu, popupMenu.getMenu());
+        // registering popup with OnMenuItemClickListener
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                int itemID = item.getItemId();
+                switch (itemID){
+                    case R.id.open_camera:
+                        if (gridRow == imagesUri.size())
+                        {
+                            imagesUri.add(Uri.parse(""));
+                            adapter.notifyDataSetChanged();
+                        }
+                        dispatchTakePictureIntent();
+                        break;
+
+
+                    case R.id.open_galery:
+                        if (gridRow == imagesUri.size())
+                        {
+                            imagesUri.add(Uri.parse(""));
+                            adapter.notifyDataSetChanged();
+                        }
+                        Intent intent = new Intent(Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(intent, REQUEST_OPEN_GALERY);
+
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
     }
 
     private void putDataToViews() {
@@ -358,62 +397,68 @@ public class EditDishActivity extends AppCompatActivity {
     }
 
     @Override
+    @SuppressLint("NewApi")
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IPC_PICK_IMAGE_ID && resultCode == Activity.RESULT_OK){
 
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
+            startCropImageActivity(photoURI);
+        }
+
+        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK)
+        {
             // Chuỗi URI trả về có dạng content://<path>
             Uri imageUri = Uri.parse(data.getDataString());
+            startCropImageActivity(imageUri);
+        }
 
-            RelativeLayout cell =(RelativeLayout) gridView.getChildAt(gridRow);
-            progressBar = cell.findViewById(R.id.progressBar);
-            progressBar.setIndeterminate(true);
-            progressBar.setVisibility(View.VISIBLE);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
 
-            // Upload hình lên server
-            FoodMapApiManager.uploadImage(EditDishActivity.this ,
-                    rest_id, imageUri,  new TaskCompleteCallBack() {
-                        @Override
-                        public void OnTaskComplete(Object response) {
+                RelativeLayout cell =(RelativeLayout) gridView.getChildAt(gridRow);
+                progressBar = cell.findViewById(R.id.progressBar);
+                progressBar.setIndeterminate(true);
+                progressBar.setVisibility(View.VISIBLE);
 
-                            progressBar.setVisibility(View.INVISIBLE);
+                // Upload hình lên server
+                FoodMapApiManager.uploadImage(EditDishActivity.this ,
+                        rest_id, resultUri,  new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
 
-                            // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
-                            String strResponse = (String) response;
-                            if (strResponse.matches("^(http|https)://.*"))
-                            {
+                                progressBar.setVisibility(View.INVISIBLE);
 
-                                // Cập nhật dataset List<Uri> => Cập nhật grid view
-                                if (gridRow != -1)
+                                // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
+                                String strResponse = (String) response;
+                                if (strResponse.matches("^(http|https)://.*"))
                                 {
-                                    //Thay đổi 1 hình có sẵn
+                                    // Cập nhật dataset List<Uri> => Cập nhật grid view
                                     imagesUri.remove(gridRow);
                                     imagesUri.add(gridRow, Uri.parse(strResponse));
-                                }else {
-                                    // Thêm mới 1 hình
-                                    imagesUri.add(Uri.parse(strResponse));
-                                }
+                                    adapter.notifyDataSetChanged();
 
-                                adapter.notifyDataSetChanged();
-
-
-                                //Nếu danh sách chỉ có 1 hình, hỏi người dùng
-                                // có muốn làm hình mặc định hay không
-                                if (imagesUri.size() == 1)
-                                {
+                                    //Nếu danh sách chỉ có 1 hình, hỏi người dùng
+                                    // có muốn làm hình mặc định hay không
                                     showConfirmDefaultImageDialog();
+                                }else{
+
+                                    // Đã có lỗi trong quá trình upload, in thông báo
+                                    Toast.makeText(EditDishActivity.this,
+                                            strResponse, Toast.LENGTH_LONG).show();
                                 }
-
-                            }else{
-
-                                // Đã có lỗi trong quá trình upload, in thông báo
-                                Toast.makeText(EditDishActivity.this,
-                                        strResponse, Toast.LENGTH_LONG).show();
-                            }
-                        }// OnTaskComplete
-                    });
-        }// IPC_PICK_IMAGE_ID
+                            }// OnTaskComplete
+                        });
+                //ic_avatar.setImageURI(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Toast.makeText(EditDishActivity.this,
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void showConfirmDefaultImageDialog() {
@@ -436,5 +481,51 @@ public class EditDishActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    Uri photoURI;
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.e("CreateImageFile", ex.getMessage());
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                photoURI = FileProvider.getUriForFile(this,
+                        "com.hcmus.dreamers.foodmap",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .start(this);
     }
 }
