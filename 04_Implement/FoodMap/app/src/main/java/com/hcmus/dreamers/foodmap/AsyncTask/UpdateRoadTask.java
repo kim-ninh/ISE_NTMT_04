@@ -37,8 +37,8 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
         super.onPostExecute(road);
 
         roadOverlay = RoadManager.buildRoadOverlay(road);
-        roadOverlay.setWidth(15);
-        roadOverlay.setColor(Color.RED);
+        roadOverlay.setWidth(10);
+        roadOverlay.setColor(Color.BLUE);
         roadOverlay.setGeodesic(true);
         mapView.getOverlays().add(roadOverlay);
         mapView.invalidate();

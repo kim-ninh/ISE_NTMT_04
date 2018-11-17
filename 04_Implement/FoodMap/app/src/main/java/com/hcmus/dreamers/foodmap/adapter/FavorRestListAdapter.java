@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,11 +41,18 @@ public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
         ImageView imgBackFavorRest = (ImageView) cell.findViewById(R.id.imgBackFavorRest);
         TextView txtFavorRestName = (TextView) cell.findViewById(R.id.txtFavorRestName);
 
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(350, 350);
+
+        imgBackFavorRest.setLayoutParams(layoutParams);
+        imgBackFavorRest.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         DownloadImageTask downloadImageTask = new DownloadImageTask( imgBackFavorRest, context);
         downloadImageTask.loadImageFromUrl(restes.get(position).getUrlImage());
 
         txtFavorRestName.setText(restes.get(position).getName());
 
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.scale_list);
+        cell.startAnimation(animation);
         return cell;
     }
 

@@ -32,9 +32,13 @@ io.sockets.on('connection', function (socket) {
 //		email_owner
 //		email_guest
 //		id_rest
-//		order: [ 
-//					{id_dish, number}
-//				]
+//		id_discount
+//		order: {
+//					namedish,
+//					discount_percent,
+//					guest_email,
+//					total
+//				}
   //}
   
   socket.on('send_order', function(data){ //
