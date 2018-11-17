@@ -15,13 +15,9 @@
         android:textSize="18sp"
         android:padding="10dp"/>
 
-    <ImageView
-        android:id="@+id/imgDescription"
-        android:layout_width="match_parent"
+    <include layout="@layout/loading_image_cell"
         android:layout_height="150dp"
-        android:scaleType="centerCrop"
-        android:paddingTop="10dp"/>
-
+        android:layout_width="match_parent"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

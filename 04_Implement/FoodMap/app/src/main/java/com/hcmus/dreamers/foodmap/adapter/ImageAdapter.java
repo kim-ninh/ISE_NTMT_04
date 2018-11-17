@@ -42,9 +42,9 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-        View cell = inflater.inflate(R.layout.grid_cell, null);
+        View cell = inflater.inflate(R.layout.loading_image_cell, null);
 
-        ImageView dishImage = cell.findViewById(R.id.imageViewDish);
+        ImageView dishImage = cell.findViewById(R.id.imageView);
         final ProgressBar progressBar = cell.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
         String imageUri = imagesUri.get(position).toString();

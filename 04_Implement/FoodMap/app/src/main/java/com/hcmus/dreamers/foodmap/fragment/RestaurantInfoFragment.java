@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap.fragment;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,19 +21,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.AddDishActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.EditDishActivity;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.ManageAccountActivity;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.squareup.picasso.Callback;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -83,6 +88,7 @@ public class RestaurantInfoFragment extends Fragment {
     TextView lblCloseHour;
     ImageView imgDescription;
     EditText txtDescription;
+    ProgressBar progressBar;
 
 
     public RestaurantInfoFragment() {
@@ -240,8 +246,23 @@ public class RestaurantInfoFragment extends Fragment {
         lblCloseHour.setText(closingHour);
         txtDescription.setText(restaurant.getDescription());
 
+        if (restaurant.getUrlImage().matches("^(http|https)://.*"))
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.INVISIBLE);
+
         DownloadImageTask task = new DownloadImageTask(imgDescription,context);
-        task.loadImageFromUrl(restaurant.getUrlImage());
+        task.loadImageFromUrl(restaurant.getUrlImage(), new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void takeReferenceFromResource() {
@@ -250,8 +271,9 @@ public class RestaurantInfoFragment extends Fragment {
         txtPhoneNumber = (EditText) rootLayout.findViewById(R.id.txtPhoneNumber);
         lblCloseHour = (TextView) rootLayout.findViewById(R.id.closeHour);
         lblOpenHour = (TextView) rootLayout.findViewById(R.id.openHour);
-        imgDescription = (ImageView) rootLayout.findViewById(R.id.imgDescription);
+        imgDescription = (ImageView) rootLayout.findViewById(R.id.imageView);
         txtDescription = (EditText) rootLayout.findViewById(R.id.txtDescription);
+        progressBar = (ProgressBar) rootLayout.findViewById(R.id.progressBar);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -352,12 +374,18 @@ public class RestaurantInfoFragment extends Fragment {
 
             case R.id.action_done:
                 //Toast.makeText(context,"Done button hit",Toast.LENGTH_LONG).show();
+                final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setMessage("Updating restaurant");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
                 if(checkValid()){
                     FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
-                            if((int)response == FoodMapApiManager.SUCCESS) {
+                            progressDialog.dismiss();
 
+                            if((int)response == FoodMapApiManager.SUCCESS) {
+                                Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_LONG).show();
                                 Gson gson = new Gson();
                                 Intent intent = new Intent();
                                 intent.putExtra("restJSON", gson.toJson(restaurant));
@@ -441,8 +469,8 @@ public class RestaurantInfoFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-
                 imgDescription.setImageURI(resultUri);
+                uploadImageToServer(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(context,
@@ -454,5 +482,31 @@ public class RestaurantInfoFragment extends Fragment {
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
                 .start(getContext(),this);
+    }
+
+    private void uploadImageToServer(Uri imageUri)
+    {
+        if (imageUri != null)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+            // Upload hình lên Server
+            FoodMapApiManager.uploadImage(getContext(),
+                    restaurant.getId(), imageUri, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                           progressBar.setVisibility(View.INVISIBLE);
+
+                            String strResponse = (String) response;
+                            if (strResponse.matches("^(http|https)://.*"))
+                            {
+                                restaurant.setUrlImage(strResponse);
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), strResponse, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
     }
 }
