@@ -13,7 +13,6 @@ public class OrderSocket {
     }
 
     public static Socket getInstance(){
-        synchronized (mSocket){
             if(mSocket == null){
                 try {
                     mSocket = IO.socket(ConstantURL.URLWEBSOCKET);
@@ -24,7 +23,6 @@ public class OrderSocket {
                     return null;
                 }
             }
-        }
         return mSocket;
     }
 }

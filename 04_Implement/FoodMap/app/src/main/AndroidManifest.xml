@@ -81,6 +81,7 @@
         <activity android:name=".OrderListActivity"></activity>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
+        <service android:name=".service.OrderService"/>
     </application>
 
 </manifest>

@@ -123,9 +123,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //stop service
+        Intent myIntent = new Intent(MainActivity.this, OrderService.class);
+        // Gọi phương thức stopservice
+        stopService(myIntent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // setup view
         mapInit();

@@ -66,6 +66,7 @@ public class OrderService extends Service {
     @Override
     public void onDestroy() {
         socket.disconnect();
+        Toast.makeText(this, "disconnected", Toast.LENGTH_SHORT).show();
     }
 
     @Nullable
