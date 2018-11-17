@@ -434,10 +434,10 @@ public class GenerateRequest {
         params.put("guest_email", guest_email);
         params.put("total", String.valueOf(total));
         params.put("id_discount", String.valueOf(id_discount));
-        String url = Utils.buildUrl(baseUrl, params);
+        RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .get()
+                .url(baseUrl)
+                .post(bodyRequest)
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
