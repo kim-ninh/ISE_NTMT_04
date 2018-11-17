@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.style.ParagraphStyle;
+import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -23,7 +24,6 @@ import org.json.JSONObject;
 
 public class OrderService extends Service {
     private Socket socket;
-    private Context context;
     private OrderEmitterListener receiceOrder = new OrderEmitterListener(new TaskCompleteCallBack() {
         @Override
         public void OnTaskComplete(Object response) {
@@ -34,7 +34,7 @@ public class OrderService extends Service {
                     @Override
                     public void OnTaskComplete(Object response) {
                         if((int)response == ConstantCODE.SUCCESS){
-                            NotificationBuilder.ShowNotification(context, "Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
+                            NotificationBuilder.ShowNotification(OrderService.this, "Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
                             String content = "{\"email_guest\":" + offer.getGuestEmail() + ", \"status\":200, \"message\":\"Đặt hàng thành công!\"";
                             socket.emit("send_result", content);
                         }else{
@@ -57,8 +57,8 @@ public class OrderService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String email = intent.getStringExtra("email");
-        context = (Context) intent.getSerializableExtra("context");
         socket.emit("register", email);
+        Toast.makeText(this, email + " registed", Toast.LENGTH_SHORT).show();
         socket.on("receive_order", receiceOrder);
         return START_STICKY;
     }

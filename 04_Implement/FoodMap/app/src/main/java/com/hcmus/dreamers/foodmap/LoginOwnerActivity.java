@@ -23,6 +23,7 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.service.OrderService;
 
 
 public class LoginOwnerActivity extends AppCompatActivity {
@@ -73,6 +74,11 @@ public class LoginOwnerActivity extends AppCompatActivity {
                         public void OnTaskComplete(Object response) {
                             progressDialog.dismiss();
                             if ((int)response == FoodMapApiManager.SUCCESS){
+                                //start service
+                                Intent myIntent = new Intent(LoginOwnerActivity.this, OrderService.class);
+                                myIntent.putExtra("email", Owner.getInstance().getEmail());
+                                // Gọi phương thức startService (Truyền vào đối tượng Intent)
+                                startService(myIntent);
                                 Intent returnIntent = new Intent();
                                 returnIntent.putExtra("isLogin", true);
                                 LoginOwnerActivity.this.setResult(Activity.RESULT_OK, returnIntent);
@@ -92,6 +98,7 @@ public class LoginOwnerActivity extends AppCompatActivity {
                 }
             }
         });
+
 
 
         btnRegister.setOnClickListener(new View.OnClickListener() {

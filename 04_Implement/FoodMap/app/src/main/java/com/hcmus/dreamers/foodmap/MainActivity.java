@@ -61,6 +61,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.service.OrderService;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -100,6 +101,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mMap.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!Owner.getInstance().getEmail().equals("")){
+            //start service
+            Intent myIntent = new Intent(MainActivity.this, OrderService.class);
+            myIntent.putExtra("email", Owner.getInstance().getEmail());
+            // Gọi phương thức startService (Truyền vào đối tượng Intent)
+            startService(myIntent);
+        }
     }
 
     @Override
