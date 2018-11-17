@@ -46,7 +46,7 @@ io.sockets.on('connection', function (socket) {
 		  console.log('id_send_order' + id);
 		  io.to(id).emit('receive_order', data);
 	  }else{
-		  socket.emit('result', {status:404, message:'Order fail!'});
+		  socket.emit('receive_result', {status:404, message:'Chủ nhà hàng hiện đang offline!'});
 	  }
   });
   
@@ -67,8 +67,6 @@ io.sockets.on('connection', function (socket) {
 		  var id = users[index].id;
 		  console.log('id_send_result' + id);
 		  io.to(id).emit('receive_result', response);
-	  }else{
-		  socket.emit('result', {status:404, message:'Turn back fail!'});
 	  }
   });
   
