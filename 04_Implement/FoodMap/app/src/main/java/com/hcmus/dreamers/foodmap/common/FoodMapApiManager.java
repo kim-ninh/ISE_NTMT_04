@@ -27,6 +27,8 @@ import java.io.File;
 import java.text.ParseException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class FoodMapApiManager {
@@ -732,8 +734,9 @@ public class FoodMapApiManager {
         {
             Log.d("ConvertBase64",e.getMessage());
         }
-
-        uploadImage(restID, imageFile.getName(),encodedData,taskCompleteCallBack);
+        Date date = Calendar.getInstance().getTime();
+        String imageName = String.format("%tF_%tT_%s",date.getTime(), date.getTime(), imageFile.getName());
+        uploadImage(restID, imageName,encodedData,taskCompleteCallBack);
     }
 
     public static void deleteImage(String imageURL, final TaskCompleteCallBack taskCompleteCallBack)
