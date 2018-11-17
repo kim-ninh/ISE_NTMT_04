@@ -152,6 +152,21 @@ class database
 		return $this->query($strQuery); 
 	}
 
+	public function GetSumFavorite($id_rest)
+	{
+		$strQuery = 'SELECT COUNT(*) AS NUMBERFAV FROM FAVORITE WHERE ID_REST ='.$id_rest;
+		$result = $this->query($strQuery);
+
+		if ($result != -1)
+		{
+			foreach($result as $row)
+			{
+				return $row["NUMBERFAV"];
+			}
+		}
+		return -1;
+	}
+
 	public function DeleteFavorite($id_rest, $guest_email)
 	{
 		$strQuery = 'DELETE FROM FAVORITE WHERE ID_REST = '.$id_rest.' AND GUEST_EMAIL = "'.$guest_email.'"';
@@ -226,6 +241,9 @@ class database
 	{
 		$strQuery = 'SELECT FC_GETTOKEN("'.$username.'") AS TOKEN;';
 		$token = $this->query($strQuery);
+		if ($token == -1)
+			return -1;
+		
 		foreach($token as $row)
 		{
 			return $row["TOKEN"];
@@ -312,8 +330,17 @@ class database
 	// thêm offer
 	public function AddOffer($guest_email, $total, $id_discount)
 	{
-		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.')';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.') AS RESULT';
+		$result = $this->query($strQuery);
+
+		foreach($result as $row)
+		{
+			if ($row["RESULT"] === "1")
+			{
+				return 0;
+			}
+		}
+		return -1;
 	}
 
 	// tạo discount
@@ -346,7 +373,19 @@ class database
 
 	public function GetCheckin($id_rest)
 	{
-		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN';
+		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN WHERE ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function AddShare($id_rest, $guest_email)
+	{
+		$strQuery = 'SELECT FC_ADDSHARE('.$id_rest.', "'.$guest_email.'")';
+		return $this->query($strQuery);
+	}
+
+	public function GetShare($id_rest)
+	{
+		$strQuery = 'SELECT SUM(TOTAL_SHARE) COUNT FROM SHARE WHERE ID_REST = '.$id_rest;
 		return $this->query($strQuery);
 	}
 

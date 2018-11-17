@@ -243,7 +243,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         return mOverlay;
     }
     private void moveCamera(GeoPoint point){
-        mapController.animateTo(point);
+        mapController.setCenter(point);
     }
 
     //

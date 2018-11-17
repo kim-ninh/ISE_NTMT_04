@@ -3,27 +3,18 @@ include "../private/database.php"
 
 $response = array();
 
-if (isset($_POST["id_rest"]))
+if (isset($_POST["id_rest"]) && isset($_POST["guest_email"]))
 {
 	$id_rest = $_POST["id_rest"];
+	$guest_email = $_POST["guest_email"];
 
 	$conn = new database();
 	$conn->connect();
 
-	$listCheckin = $conn->GetCheckin($id_rest);
-
-	if ($listCheckin != -1)
+	if ($conn->AddShare($id_rest, $guest_email) != -1)
 	{
-		$data = 0;
-
-		foreach ($listCheckin as $row) {
-			$data = $row["COUNT"];
-			break;
-		}
-
 		$response["status"] = 200;
 		$response["message"] = "Success";
-		$response["data"] = $data;
 	}
 	else 
 	{

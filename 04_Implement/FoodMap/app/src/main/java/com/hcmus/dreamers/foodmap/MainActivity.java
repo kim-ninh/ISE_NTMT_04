@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void moveCamera(GeoPoint point){
-        mapController.animateTo(point);
+        mapController.setCenter(point);
     }
 
     // navigation menu and toolbar init

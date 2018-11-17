@@ -17,7 +17,7 @@ io.sockets.on('connection', function (socket) {
 	//io.sockets.emit('serverguitinnhan', { noidung: "okbaby" });
   socket.on('register', function (email) {//email of user ---------- send from user when connect
 	if(email){
-			if (users.indexOf(email) == -1){
+			if (users.findIndex(soc => soc.email === email) == -1){
 				socket.email = email;
 				users.push(socket);
 				console.log("Email: " + socket.email);
@@ -26,17 +26,15 @@ io.sockets.on('connection', function (socket) {
 	}
   });
   
-//{
+  //structure of order
+  
+  //{
 //		email_owner
 //		email_guest
 //		id_rest
-//		id_discount
-//		order: {
-//					namedish,
-//					discount_percent,
-//					guest_email,
-//					total
-//				}
+//		order: [ 
+//					{id_dish, number}
+//				]
   //}
   
   socket.on('send_order', function(data){ //
