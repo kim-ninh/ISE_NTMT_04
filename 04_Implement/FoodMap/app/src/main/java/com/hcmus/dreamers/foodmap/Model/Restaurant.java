@@ -48,7 +48,9 @@ public class Restaurant implements Serializable {
                       Date timeOpen,
                       Date timeClose,
                       GeoPoint location,
-                      int num_checkin) {
+                      int num_checkin,
+                      int nFavorites,
+                      int nShare) {
         this.id = id_rest;
         this.ownerUsername = ownerUsername;
         this.name = name;
@@ -60,6 +62,8 @@ public class Restaurant implements Serializable {
         this.timeClose = timeClose;
         this.location = location;
         this.num_checkin = num_checkin;
+        this.nFavorites = nFavorites;
+        this.nShare = nShare;
 	}
 
     public int getNum_checkin() {

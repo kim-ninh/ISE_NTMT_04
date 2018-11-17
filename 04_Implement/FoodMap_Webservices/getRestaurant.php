@@ -4,7 +4,7 @@ include "../private/database.php";
 
 //create class Restaurant
 class Restaurant{
-	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs, $num_checkin){
+	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs,  $num_favorite, $num_checkin, $num_share){
 		$this->id = $id;
 		$this->owner_username= $owner_username;
 		$this->name = $name;
@@ -19,7 +19,9 @@ class Restaurant{
 		$this->ranks = $rank;
 		$this->comments = $comments;
 		$this->dishs = $dishs;
+		$this->num_favorite = $num_favorite;
 		$this->num_checkin = $num_checkin;
+		$this->num_share = $num_share;
 	}
 }
 class Comment{
@@ -102,16 +104,36 @@ if ($listRestaurants != -1)
 		$checkin = 0;
 		if ($countCheckin != -1)
 		{
-			foreach ($countCheckin as $row) {
-				$checkin = $row["COUNT"];
+			foreach ($countCheckin as $rowCheckin) {
+				$checkin = $rowCheckin["COUNT"];
+				if (is_null($checkin))
+					$checkin = 0;
 				break;
 			}
 		}
 
+		// get number share
+		$countShare = $conn->GetShare($id_rest);
+		$share = 0;
+		if ($countShare != -1)
+		{
+			foreach ($countShare as $rowShare) {
+				$share = $rowShare["COUNT"];
+				if (is_null($share))
+					$share = 0;
+				break;
+			}
+		}
+
+		// get number favortie
+		$favorite = $conn->GetSumFavorite($id_rest);
+		if ($favorite == -1 || is_null($favorite))
+			$favorite = 0;
+
 		//
 		array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
 			$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
-			$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $checkin));
+			$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $favorite, $checkin, $share));
 	}
 
 	$response["status"] = 200;

@@ -10,13 +10,13 @@ if (isset($_POST["id_rest"]))
 	$conn = new database();
 	$conn->connect();
 
-	$listCheckin = $conn->GetCheckin($id_rest);
+	$listShare = $conn->GetShare($id_rest);
 
-	if ($listCheckin != -1)
+	if ($listShare != -1)
 	{
 		$data = 0;
 
-		foreach ($listCheckin as $row) {
+		foreach ($listShare as $row) {
 			$data = $row["COUNT"];
 			break;
 		}

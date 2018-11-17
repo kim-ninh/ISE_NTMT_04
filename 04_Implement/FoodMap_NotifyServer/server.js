@@ -17,7 +17,7 @@ io.sockets.on('connection', function (socket) {
 	//io.sockets.emit('serverguitinnhan', { noidung: "okbaby" });
   socket.on('register', function (email) {//email of user ---------- send from user when connect
 	if(email){
-			if (users.indexOf(email) == -1){
+			if (users.findIndex(soc => soc.email === email) == -1){
 				socket.email = email;
 				users.push(socket);
 				console.log("Email: " + socket.email);
@@ -26,7 +26,9 @@ io.sockets.on('connection', function (socket) {
 	}
   });
   
-//{
+  //structure of order
+  
+  //{
 //		email_owner
 //		email_guest
 //		id_rest
@@ -48,7 +50,7 @@ io.sockets.on('connection', function (socket) {
 		  console.log('id_send_order' + id);
 		  io.to(id).emit('receive_order', data);
 	  }else{
-		  socket.emit('result', {status:404, message:'Order fail!'});
+		  socket.emit('receive_result', {status:404, message:'Chủ nhà hàng hiện đang offline!'});
 	  }
   });
   
@@ -69,8 +71,6 @@ io.sockets.on('connection', function (socket) {
 		  var id = users[index].id;
 		  console.log('id_send_result' + id);
 		  io.to(id).emit('receive_result', response);
-	  }else{
-		  socket.emit('result', {status:404, message:'Turn back fail!'});
 	  }
   });
   

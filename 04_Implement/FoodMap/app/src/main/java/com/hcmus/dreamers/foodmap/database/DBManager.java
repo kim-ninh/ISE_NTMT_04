@@ -63,6 +63,8 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_TIME_OPEN = "TIME_OPEN";
     private static final String KEY_TIME_CLOSE = "TIME_CLOSE";
     private static final String KEY_TOTAL_CHECKIN = "TOTAL_CHECKIN";
+    private static final String KEY_TOTAL_SHARE = "TOTAL_SHARE";
+    private static final String KEY_TOTAL_FAVORITE = "TOTAL_FAVORITE";
 
     // LOCATION Table - column names
     //private static final String ID_REST = "ID_REST";
@@ -108,7 +110,9 @@ public class DBManager extends SQLiteOpenHelper {
                 + KEY_URL_IMAGE + " VARCHAR(200),"
                 + KEY_TIME_OPEN + " CHAR(5),"       // hh:mm
                 + KEY_TIME_CLOSE + " CHAR(5),"
-                + KEY_TOTAL_CHECKIN + " INT);";
+                + KEY_TOTAL_CHECKIN + " INT,"
+                + KEY_TOTAL_FAVORITE + " INT,"
+                + KEY_TOTAL_SHARE + " INT);";
 
         final String CREATE_TABLE_LOCATION = "CREATE TABLE " + TABLE_LOCATION + "("
                 + KEY_ID_REST + " INT NOT NULL,"
@@ -265,6 +269,8 @@ public class DBManager extends SQLiteOpenHelper {
         value.put(KEY_TIME_OPEN, df.format(restaurant.getTimeOpen()));
         value.put(KEY_TIME_CLOSE, df.format(restaurant.getTimeClose()));
         value.put(KEY_TOTAL_CHECKIN, restaurant.getNum_checkin());
+        value.put(KEY_TOTAL_FAVORITE, restaurant.getnFavorites());
+        value.put(KEY_TOTAL_SHARE, restaurant.getnShare());
 
         if (db.insertWithOnConflict(TABLE_RESTAURANT, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
             db.update(TABLE_RESTAURANT, value, KEY_ID + " = " + restaurant.getId(), null);
@@ -440,6 +446,40 @@ public class DBManager extends SQLiteOpenHelper {
         return numCheckin;
     }
 
+    public int getNumFavorite(int id_rest){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_RESTAURANT, new String[]{KEY_TOTAL_FAVORITE}, KEY_ID + " = ?", new String[] {String.valueOf(id_rest)},
+                null, null, null);
+        if (cursor == null)
+            return 0;
+
+        cursor.moveToFirst();
+        int numCheckin = cursor.getInt(cursor.getColumnIndex(KEY_TOTAL_FAVORITE));
+
+        cursor.close();
+        db.close();
+
+        return numCheckin;
+    }
+
+    public int getNumShare(int id_rest){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_RESTAURANT, new String[]{KEY_TOTAL_SHARE}, KEY_ID + " = ?", new String[] {String.valueOf(id_rest)},
+                null, null, null);
+        if (cursor == null)
+            return 0;
+
+        cursor.moveToFirst();
+        int numCheckin = cursor.getInt(cursor.getColumnIndex(KEY_TOTAL_SHARE));
+
+        cursor.close();
+        db.close();
+
+        return numCheckin;
+    }
+
     public List<Comment> getComments(int id_rest) throws ParseException {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Comment> comments = new ArrayList<Comment>();
@@ -548,7 +588,9 @@ public class DBManager extends SQLiteOpenHelper {
                 df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
                 df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
                 getLocation(id_rest),
-                getNumCheckin(id_rest));
+                getNumCheckin(id_rest),
+                getNumFavorite(id_rest),
+                getNumShare(id_rest));
 
         restaurant.setDishes(getDishes(id_rest));
         restaurant.setComments(getComments(id_rest));
@@ -581,7 +623,9 @@ public class DBManager extends SQLiteOpenHelper {
                         df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_OPEN))),
                         df.parse(cursor.getString(cursor.getColumnIndex(KEY_TIME_CLOSE))),
                         getLocation(cursor.getInt(cursor.getColumnIndex(KEY_ID))),
-                        getNumCheckin(cursor.getInt(cursor.getColumnIndex(KEY_ID))));
+                        getNumCheckin(cursor.getInt(cursor.getColumnIndex(KEY_ID))),
+                        getNumFavorite(cursor.getInt(cursor.getColumnIndex(KEY_ID))),
+                        getNumShare(cursor.getInt(cursor.getColumnIndex(KEY_ID))));
 
                 restaurant.setDishes(getDishes(restaurant.getId()));
                 restaurant.setComments(getComments(restaurant.getId()));

@@ -62,6 +62,7 @@ import android.widget.Toast;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.service.OrderService;
+import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -106,18 +107,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(!Owner.getInstance().getEmail().equals("")){
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if((Owner.getInstance() != null) && !Owner.getInstance().getEmail().equals("")  && OrderSocket.isNULL()){
             //start service
             Intent myIntent = new Intent(MainActivity.this, OrderService.class);
             myIntent.putExtra("email", Owner.getInstance().getEmail());
             // Gọi phương thức startService (Truyền vào đối tượng Intent)
             startService(myIntent);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         navmenuToolbarInit();
         mMap.onResume();
     }
@@ -253,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void moveCamera(GeoPoint point){
-        mapController.animateTo(point);
+        mapController.setCenter(point);
     }
 
     // navigation menu and toolbar init

@@ -191,7 +191,9 @@ public class ParseJSON {
             rest.setRanks(parseRanks(o.getJSONArray("ranks")));
             rest.setComments(parseComment(o.getJSONArray("comments")));
             rest.setDishes(parseDish(o.getJSONArray("dishs")));
-            rest.setNum_checkin(o.getInt("num_checkin"));
+            rest.setNum_checkin(o.get("num_checkin") == null ? 0 :o.getInt("num_checkin"));
+            rest.setnFavorites(o.get("num_favorite") == null ? 0 : o.getInt("num_favorite"));
+            rest.setnShare(o.get("num_share") == null ? 0 : o.getInt("num_share"));
             listRestaurants.add(rest);
         }
         return listRestaurants;
