@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.RestaurantInfoFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/lblBasicInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="THÔNG TIN CHUNG"
+        android:textSize="18sp"
+        android:padding="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgDescription"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:paddingTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <TextView
+            android:id="@+id/lblResName"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tên quán"
+            android:labelFor="@id/txtResName"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/txtResName"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textShortMessage"
+            android:background="@drawable/custom_border"
+            android:text="Tửu quán"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <TextView
+            android:id="@+id/lblAddress"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ"
+            android:labelFor="@id/txtAddress"/>
+
+        <EditText
+            android:id="@+id/txtAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="@drawable/custom_border"
+            android:ems="10"
+            android:inputType="textShortMessage"
+            android:text="96 Hồng Bàng, P.12, Q.6, TP.HCM."
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <TextView
+            android:id="@+id/lblPhoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:labelFor="@id/txtPhoneNumber"
+            android:text="Số điện thoại" />
+
+        <EditText
+            android:id="@+id/txtPhoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="phone"
+            android:background="@drawable/custom_border"
+            android:text="0904461762"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <TextView
+            android:id="@+id/lblWorkingHour"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:labelFor="@id/txtPhoneNumber"
+            android:text="Giờ hoạt động" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_border">
+
+            <TextView
+                android:id="@+id/openHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="21:00"
+                android:textSize="14sp"
+                android:textColor="#009e0f"/>
+            <TextView
+                android:paddingLeft="10dp"
+                android:id="@+id/closeHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23:55"
+                android:textSize="14sp"
+                android:textColor="#009e0f"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <TextView
+            android:id="@+id/lblDescription"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:labelFor="@id/txtDescription"
+            android:text="Mô tả ngắn" />
+
+        <EditText
+            android:id="@+id/txtDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:background="@drawable/custom_border"
+            android:text="Quán ăn bậc nhất Sài Gòn."
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

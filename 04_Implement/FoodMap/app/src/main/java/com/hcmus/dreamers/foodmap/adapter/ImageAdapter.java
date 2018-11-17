@@ -1,15 +1,18 @@
 package com.hcmus.dreamers.foodmap.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.R;
+import com.squareup.picasso.Callback;
 
 import java.util.List;
 
@@ -38,18 +41,11 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView dishImage;
-        if (convertView == null){
-            dishImage = new ImageView(mContext);
-            int grid_size = mContext.getResources().getDimensionPixelSize(R.dimen.gridview_size);
-            dishImage.setLayoutParams(new ViewGroup.LayoutParams(grid_size,grid_size));
-            dishImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            dishImage.setPadding(5,5,5,5);
-        }
-        else
-        {
-            dishImage = (ImageView) convertView;
-        }
+        LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+        View cell = inflater.inflate(R.layout.grid_cell, null);
+
+        ImageView dishImage = cell.findViewById(R.id.imageViewDish);
+        final ProgressBar progressBar = cell.findViewById(R.id.progressBar);
 
         String imageUri = imagesUri.get(position).toString();
 
@@ -57,9 +53,21 @@ public class ImageAdapter extends BaseAdapter {
         if (imageUri.matches("^(http|https)://.*"))
         {
             DownloadImageTask taskDownload = new DownloadImageTask(dishImage, mContext);
-            taskDownload.loadImageFromUrl(imageUri);
-        }
 
-        return dishImage;
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setIndeterminate(true);
+
+            taskDownload.loadImageFromUrl(imageUri, new Callback() {
+                @Override
+                public void onSuccess() {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                }
+            });
+        }
+        return cell;
     }
 }

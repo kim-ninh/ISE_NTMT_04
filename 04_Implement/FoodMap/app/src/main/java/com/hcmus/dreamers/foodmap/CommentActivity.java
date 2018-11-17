@@ -21,7 +21,7 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.CommentListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         lstComment = (RecyclerView)findViewById(R.id.lstComment);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        lstComment.scrollToPosition(comments.size() - 1);
         lstComment.setLayoutManager(mLayoutManager);
         lstComment.setAdapter(commentListAdapter);
 

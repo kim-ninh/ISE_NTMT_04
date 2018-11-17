@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,6 +17,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -25,59 +27,61 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
-                android:text="Tên quán"
-                android:layout_gravity="center_vertical"/>
+                android:text="Tên quán" />
+
             <EditText
                 android:id="@+id/edt_name_restaurant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Địa chỉ"
+                android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
-                android:layout_gravity="center_vertical"/>
+                android:text="Địa chỉ" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/edt_address_restaurant"
                     android:layout_width="wrap_content"
-                    android:maxLines="1"
                     android:layout_height="wrap_content"
-                    android:layout_weight="5" />
+                    android:layout_weight="5"
+                    android:singleLine="true" />
 
                 <Button
+                    android:id="@+id/btnLocation"
                     android:layout_width="10dp"
-                    android:layout_weight="1"
-                    android:layout_height="25dp"
-                    android:background="@drawable/icon_location_marker"
+                    android:layout_height="78dp"
                     android:layout_gravity="center"
-                    android:id="@+id/btnLocation"/>
+                    android:layout_weight="1"
+                    android:background="@drawable/icon_location_marker" />
 
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
-                android:text="Số điện thoại"
-                android:layout_gravity="center_vertical"/>
+                android:text="Số điện thoại" />
+
             <EditText
                 android:id="@+id/edt_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
+                android:layout_weight="1"
                 android:inputType="number"
-                android:layout_weight="1"/>
+                android:singleLine="true" />
 
 
             <LinearLayout
@@ -90,36 +94,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Giờ mở cửa:"/>
+                    android:text="Giờ mở cửa:" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="20dp"
-                    android:text="Từ"/>
+                    android:text="Từ" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
                     android:id="@+id/txvOpenTime"
-                    android:text="7:00"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:text="7 : 00" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="20dp"
-                    android:text="Đến"/>
+                    android:text="Đến" />
+
                 <TextView
+                    android:id="@+id/txvCloseTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="20dp"
-                    android:id="@+id/txvCloseTime"
-                    android:text="18:00"/>
+                    android:text="18 : 00" />
 
             </LinearLayout>
 
@@ -132,15 +137,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ảnh"/>
+                    android:text="Ảnh" />
 
                 <ImageView
+                    android:id="@+id/igv_upload"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
-                    android:src="@drawable/icon_upload"
-                    android:id="@+id/igv_upload"
-                    android:layout_weight="1">
-                </ImageView>
+                    android:layout_weight="1"
+                    android:src="@drawable/icon_upload"></ImageView>
 
             </LinearLayout>
 
@@ -148,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Mô tả"/>
+                android:text="Mô tả" />
 
             <EditText
                 android:id="@+id/edt_description_restaurant"
@@ -156,12 +160,12 @@
                 android:layout_height="wrap_content" />
 
             <Button
-                android:layout_marginTop="10dp"
+                android:id="@+id/btnRegister"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/background_button"
-                android:id="@+id/btnRegister"
                 android:text="Xác nhận" />
 
         </LinearLayout>

@@ -182,7 +182,7 @@ public class CheckInActivity extends AppCompatActivity {
         try {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }catch(Exception e){
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
     }
 

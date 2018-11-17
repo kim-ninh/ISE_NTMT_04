@@ -10,19 +10,19 @@ public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
 
     private Uri urlAvatar;
 
+    private List<Restaurant> favRestaurant;
+
+    private Guest() {
+        super();
+        favRestaurant = new ArrayList<Restaurant>();
+    }
+
     public List<Restaurant> getFavRestaurant() {
         return favRestaurant;
     }
 
     public void setFavRestaurant(List<Restaurant> favRestaurant) {
         this.favRestaurant = favRestaurant;
-    }
-
-    private List<com.hcmus.dreamers.foodmap.Model.Restaurant> favRestaurant;
-
-    private Guest() {
-        super();
-        favRestaurant = new ArrayList<Restaurant>();
     }
 
     private Guest(String name, String email) {
@@ -45,5 +45,26 @@ public class Guest extends com.hcmus.dreamers.foodmap.Model.User {
 
     public void setUrlAvatar(Uri urlAvatar) {
         this.urlAvatar = urlAvatar;
+    }
+
+    public boolean isFavoriteRestaurant(int restID) {
+        for(int i = 0; i < favRestaurant.size(); i++)
+        {
+            if(favRestaurant.get(i).getId() == restID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeFavoriteRestaurant(int restID){
+        for(int i = 0; i < favRestaurant.size(); i++)
+        {
+            if(favRestaurant.get(i).getId() == restID)
+            {
+                favRestaurant.remove(i);
+            }
+        }
     }
 }

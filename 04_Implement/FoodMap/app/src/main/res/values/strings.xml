@@ -9,4 +9,10 @@
     <string name="title_activity_manage_restaurant">Quản lý quán</string>
     <string name="title_activity_manage_account">Quản lý tài khoản</string>
     <string name="map_permission_denied">Bạn cần phải đồng ý cấp quyền truy cập.</string>
+    <string name="open_camera">Chụp ảnh</string>
+    <string name="open_galery">Chọn hình từ thư viện</string>
+    <string name="dialog_message">Bạn có muốn đặt làm hình mặc định cho món ăn không?</string>
+    <string name="dialog_title">Món ăn chưa có hình mặc định</string>
+    <string name="ok">Đồng ý</string>
+    <string name="cancel">Hủy</string>
 </resources>

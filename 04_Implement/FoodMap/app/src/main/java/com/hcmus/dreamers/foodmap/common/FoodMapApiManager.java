@@ -2,23 +2,28 @@ package com.hcmus.dreamers.foodmap.common;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.EditDishActivity;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.ParseException;
 
 import java.util.ArrayList;
@@ -315,7 +320,7 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
@@ -403,7 +408,7 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // not found on database
@@ -622,6 +627,41 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant()));
     }
 
+    // lấy danh sách catalog
+    public static void getCatalog(final Context context, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            FoodMapManager.setCatalogs(context, ParseJSON.parseCatalog(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getCatalog()));
+    }
+
     // dành cho guest
     public static void getDiscount(String id_rest, TaskCompleteCallBack onTaskCompleteCallBack){
 
@@ -676,6 +716,26 @@ public class FoodMapApiManager {
         uploadingTask.execute(new DoingTask(GenerateRequest.upload(restID, imageName, base64Data)));
     }
 
+    public static void uploadImage(Context context,
+                                   int restID,
+                                   Uri imageUri,
+                                   final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        File imageFile = new File(imageUri.getPath());
+        String encodedData = "";
+
+        // Mã hóa hình theo base64
+        try
+        {
+            encodedData = Base64Converter.encodeToBase64(context, imageUri);
+        }catch (Exception e)
+        {
+            Log.d("ConvertBase64",e.getMessage());
+        }
+
+        uploadImage(restID, imageFile.getName(),encodedData,taskCompleteCallBack);
+    }
+
     public static void deleteImage(String imageURL, final TaskCompleteCallBack taskCompleteCallBack)
     {
         TaskRequest deletingTask = new TaskRequest();
@@ -722,6 +782,134 @@ public class FoodMapApiManager {
 
         taskRequest.execute(new DoingTask(GenerateRequest.getOffer(id_rest)));
     }
+
+
+    public static void addDish(int id_rest, Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String jsonResponseString = response.toString();
+
+                if (jsonResponseString != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                    else {
+                        taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.addDish(id_rest, dish, Owner.getInstance().getToken())));
+    }
+
+    public static void addRank(String guestEmail, int restID, int star, final TaskCompleteCallBack taskCompleteCallBack)
+    {
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String JsonObjectString = response.toString();
+
+                if (JsonObjectString != null) {
+                    try {
+                        ResponseJSON responseJSON = ParseJSON.parseFromAllResponse(response.toString());
+
+                        if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.INVALIDREQUEST) {
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.INVALIDREQUEST);
+                        }
+                        else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                            taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else {
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.addRank(guestEmail, restID, star)));
+    }
+
+    public static void addCheckin(int id_rest, String guest_email, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.addCheckin(id_rest, guest_email)));
+    }
+
+
+    public static void addOrder(final Offer offer, int id_discount, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.addOffer(offer.getGuestEmail(), offer.getTotal(), id_discount)));
+    }
+
 
 }
 

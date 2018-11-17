@@ -9,7 +9,7 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
@@ -191,6 +191,7 @@ public class ParseJSON {
             rest.setRanks(parseRanks(o.getJSONArray("ranks")));
             rest.setComments(parseComment(o.getJSONArray("comments")));
             rest.setDishes(parseDish(o.getJSONArray("dishs")));
+            rest.setNum_checkin(o.getInt("num_checkin"));
             listRestaurants.add(rest);
         }
         return listRestaurants;
@@ -233,6 +234,12 @@ public class ParseJSON {
             list.add(offer);
         }
         return list;
+    }
+
+    public static Offer parseOfferObject(String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        Offer offer = gson.fromJson(object.getJSONObject("order").toString(), Offer.class);
+        return offer;
     }
 
 

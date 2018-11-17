@@ -140,6 +140,8 @@ class database
 
 	public function AddFavorite($id_rest, $guest_email)
 	{
+		$strQuery = 'DELETE FROM FAVORITE WHERE FAVORITE.ID_REST = '.$id_rest.' AND FAVORITE.GUEST_EMAIL = "'.$guest_email.'"';
+		$this->query($strQuery);
 		$strQuery = 'INSERT INTO FAVORITE (ID_REST, GUEST_EMAIL) VALUES ('.$id_rest.', "'.$guest_email.'")';
 		return $this->query($strQuery);
 	}
@@ -332,6 +334,19 @@ class database
 	public function GetOffer($id_rest)
 	{
 		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+
+	public function AddCheckin($id_rest, $guest_email)
+	{
+		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'")';
+		return $this->query($strQuery);
+	}
+
+	public function GetCheckin($id_rest)
+	{
+		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN';
 		return $this->query($strQuery);
 	}
 

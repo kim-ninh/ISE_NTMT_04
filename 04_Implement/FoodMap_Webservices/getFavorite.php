@@ -2,7 +2,7 @@
 include '../private/database.php';
 
 class Favorite{
-	Favorite($id_rest, $guest_email){
+	function Favorite($id_rest, $guest_email){
 		$this->id_rest = $id_rest;
 		$this->guest_email = $guest_email;
 	}
@@ -10,11 +10,11 @@ class Favorite{
 
 $response = array();
 
-if (isset($_GET["id_rest"]))
+if (isset($_POST["guest_email"]))
 {
 	$conn = new database();
 	$conn->connect();
-	$listFavorite = $conn->GetFavorite($_GET["id_rest"]);
+	$listFavorite = $conn->GetFavorite($_POST["guest_email"]);
 
 	if ($listFavorite != -1)
 	{

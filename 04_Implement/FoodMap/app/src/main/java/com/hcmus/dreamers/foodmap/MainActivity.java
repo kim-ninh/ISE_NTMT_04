@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,16 +28,14 @@ import android.support.v7.widget.Toolbar;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.View.NotificationBuilder;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
-import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
@@ -60,7 +60,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
-import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 
 import org.osmdroid.api.IMapController;
@@ -71,9 +70,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 
 import java.io.File;
 import java.io.Serializable;
@@ -138,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
 
         // thêm restaurant
         addMarkerRestaurant();
+
+        //Upload data to Guest or Owner If checkLogin() == true
+
     }
 
     @Override
@@ -178,13 +178,14 @@ public class MainActivity extends AppCompatActivity {
         markers = new ArrayList<OverlayItem>();
 
         // cài đặt marker vị trí
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MainActivity.this),mMap);
-        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
-        mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
-        // thêm marker vào
+        this.mLocationOverlay = new MyLocationNewOverlay(mMap);
         mMap.getOverlays().add(this.mLocationOverlay);
-
+        Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
+        this.mLocationOverlay.setPersonIcon(iconMyLocation);
+        this.mLocationOverlay.enableMyLocation();
+        this.mLocationOverlay.disableFollowLocation();
+        this.mLocationOverlay.setOptionsMenuEnabled(true);
+        mapController.animateTo(this.mLocationOverlay.getMyLocation());
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -229,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void moveCamera(GeoPoint point){
-        mapController.setCenter(point);
+        mapController.animateTo(point);
     }
 
     // navigation menu and toolbar init
@@ -277,6 +278,21 @@ public class MainActivity extends AppCompatActivity {
 
         Guest.getInstance().setUrlAvatar(user.getPhotoUrl());
 
+        FoodMapApiManager.getFavorite(Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                int code = (int) response;
+
+                if(code == ConstantCODE.SUCCESS)
+                {
+                    Log.i(TAG, "Upload data to Guest successfully");
+                }
+                else{
+                    Log.i(TAG, "Error: Can't upload data to Guest " + Integer.toString(code));
+                }
+            }
+        });
+
         DownloadImageTask taskDownload = new DownloadImageTask(imgAvatar, getApplicationContext());
         String avatar = user.getPhotoUrl().toString();
         taskDownload.loadImageFromUrl(avatar);
@@ -298,9 +314,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -362,9 +384,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -438,9 +466,15 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
+                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Updating");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
                         FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
+                                progressDialog.dismiss();
                                 int code = (int)response;
                                 if (code == FoodMapApiManager.SUCCESS){
                                     Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
@@ -528,40 +562,11 @@ public class MainActivity extends AppCompatActivity {
                 addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
         }
+    }
 
-        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch (id){
-                    case R.id.btnManager:
-                        Log.d(TAG, "onClick: btnManager");
-                        //Toast.makeText(MainActivity.this, "onClick: btnManager", Toast.LENGTH_SHORT).show();
-                        Intent main_manageRest = new Intent(MainActivity.this,
-                                EditRestaurantActivity.class);
-                        startActivity(main_manageRest);
-                        break;
-                    case  R.id.btnFeedBack:
-                        Log.d(TAG, "onClick: btnFeedBack");
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantURL.LINKFORM));
-                        startActivity(browserIntent);
-                        break;
-                    case  R.id.btnUpdate:
-                        Log.d(TAG, "onClick: btnUpdate");
-                        Toast.makeText(MainActivity.this, "onClick: btnUpdate", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.btnLogout:
-                        Log.d(TAG, "onClick: btnLogout");
-                        Owner.setInstance(null);
-                        initMenuNotLogin();
-                        break;
-                    case R.id.btnAbout:
-                        Log.d(TAG, "onClick: btnAbout");
-                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return true;
-            }
-        });
+    void uploadDataToAccount() {
+        if(FoodMapApiManager.isGuestLogin()){
+
+        }
     }
 }

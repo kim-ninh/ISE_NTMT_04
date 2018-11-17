@@ -2,6 +2,9 @@ package com.hcmus.dreamers.foodmap;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -16,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +39,9 @@ import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.adapter.ImageAdapter;
 import com.hcmus.dreamers.foodmap.common.Base64Converter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.define.ConstantURL;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,13 +58,12 @@ public class EditDishActivity extends AppCompatActivity {
     FloatingActionButton fab;
     Toolbar toolbar;
     ImageAdapter adapter;
-
+    ProgressBar progressBar;
 
     Intent manageRest_manageDish;
     Bundle transferData = new Bundle();
 
     int rest_id;
-    int row;
 
     int gridRow = -1;
     Dish dish;
@@ -74,7 +80,6 @@ public class EditDishActivity extends AppCompatActivity {
 
         takeReferenceFromResource();
         getTransferDataFromActivity();
-        putDataToViews();
 
 
         adapter = new ImageAdapter(this,imagesUri);
@@ -83,8 +88,10 @@ public class EditDishActivity extends AppCompatActivity {
         spnrDishType.setAdapter(new ArrayAdapter<String>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
-                Catalog.getDishTypes()
+                FoodMapManager.getCatalogsString()
         ));
+
+        putDataToViews();
 
         //Enable the Up button (Icon look like this: <- )
         setSupportActionBar(toolbar);
@@ -104,7 +111,10 @@ public class EditDishActivity extends AppCompatActivity {
                 Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                gridRow = -1;
+                gridRow = imagesUri.size();
+                imagesUri.add(Uri.parse(""));
+                adapter.notifyDataSetChanged();
+
                 startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
             }
         });
@@ -113,7 +123,8 @@ public class EditDishActivity extends AppCompatActivity {
         spnrDishType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dish.setCatalog(new Catalog(position + 1,Catalog.getDishTypes()[position]));
+                List<String> catalogsString = FoodMapManager.getCatalogsString();
+                dish.setCatalog(new Catalog(position + 1,catalogsString.get(position)));
             }
 
             @Override
@@ -158,15 +169,28 @@ public class EditDishActivity extends AppCompatActivity {
                         if (item.getItemId() == R.id.delete_dishImg)
                         {
                             // Xóa hình trên server
-                            String imagePath = imagesUri.get(position).toString();
-                            FoodMapApiManager.deleteImage(imagePath, new TaskCompleteCallBack() {
+                            String absolutePath = imagesUri.get(position).toString();
+                            String imageName = new File(absolutePath).getName();
+                            String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, rest_id, imageName);
+
+                            FoodMapApiManager.deleteImage(relativePath, new TaskCompleteCallBack() {
                                 @Override
                                 public void OnTaskComplete(Object response) {
-                                    if((int)response == FoodMapApiManager.SUCCESS){
+                                    if((int)response == ConstantCODE.SUCCESS){
 
                                         // Xóa thành công trên server, cập nhật lại grid view
+                                        if (dish.getUrlImage().equals(imagesUri.get(position).toString()))
+                                        {
+                                            dish.setUrlImage("");
+                                        }
+
                                         imagesUri.remove(position);
                                         adapter.notifyDataSetChanged();
+                                        Toast.makeText(EditDishActivity.this,
+                                                "Xóa thành công",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+
                                     }else if((int)response == ConstantCODE.NOTINTERNET){
                                         Toast.makeText(EditDishActivity.this,
                                                 "Không có kết nối INTERNET!",
@@ -210,7 +234,9 @@ public class EditDishActivity extends AppCompatActivity {
         txtDishName.setText(dish.getName());
         txtDishCost.setText(Integer.toString(dish.getPrice()));
 
-        spnrDishType.setSelection(dish.getCatalog().getId() - 1);
+        // cần tìm vị trí của catalog trong danh sách, ko phải ID của catalog!
+        int catalogPosition = FoodMapManager.getCatalogPosition(dish.getCatalog().getId());
+        spnrDishType.setSelection(catalogPosition);
 
     }
 
@@ -223,7 +249,6 @@ public class EditDishActivity extends AppCompatActivity {
         rest_id = transferData.getInt("restID");
         String dishJSON = transferData.getString("dishJSON");
         dish = gson.fromJson(dishJSON, Dish.class);
-        row = transferData.getInt("dishRow");
 
         // Check null pointer and shut down activity
         if (dish == null)
@@ -257,7 +282,7 @@ public class EditDishActivity extends AppCompatActivity {
                     public void OnTaskComplete(Object response) {
                         if((int)response == FoodMapApiManager.SUCCESS){
                             Intent intent = new Intent();
-                            intent.putExtra("delete", row);
+                            intent.putExtra("isDelete", true);
                             setResult(RESULT_OK, intent);
                             finish();
                         }else if((int)response == ConstantCODE.NOTINTERNET){
@@ -271,14 +296,19 @@ public class EditDishActivity extends AppCompatActivity {
 
             case R.id.action_done:
                 if(checkInputValid()){
+                    final ProgressDialog progressDialog = new ProgressDialog(EditDishActivity.this);
+                    progressDialog.setMessage("Updating dish");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
                     FoodMapApiManager.updateDish(rest_id, dish, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
+                            progressDialog.dismiss();
                             if((int)response == FoodMapApiManager.SUCCESS) {
+                                Toast.makeText(EditDishActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
                                 Gson gson = new Gson();
                                 Intent intent = new Intent();
                                 intent.putExtra("dishJSON", gson.toJson(dish));
-                                intent.putExtra("dishRow", row);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             }else if((int)response == ConstantCODE.NOTINTERNET){
@@ -295,6 +325,10 @@ public class EditDishActivity extends AppCompatActivity {
 
                 return true;
 
+            case android.R.id.home:
+                finish();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -304,6 +338,14 @@ public class EditDishActivity extends AppCompatActivity {
         if(txtDishName.length() > 0 && txtDishCost.length() > 0){
             dish.setName(txtDishName.getText().toString());
             dish.setPrice(Integer.parseInt(txtDishCost.getText().toString()));
+
+            String catalogString =(String) spnrDishType.getSelectedItem();
+            Catalog catalog = FoodMapManager.findCatalog(catalogString);
+            dish.setCatalog(catalog);
+
+            if (imagesUri.isEmpty())
+                dish.setUrlImage("");
+
             return true;
         }
         return false;
@@ -318,32 +360,24 @@ public class EditDishActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try{
 
-           if (requestCode == IPC_PICK_IMAGE_ID){
-               if (resultCode == Activity.RESULT_OK){
+        if (requestCode == IPC_PICK_IMAGE_ID && resultCode == Activity.RESULT_OK){
 
-                   // Chuỗi URI trả về có dạng content://<path>
-                   Uri imageUri = Uri.parse(data.getDataString());
-                   File imageFile = new File(imageUri.getPath());
-                   String encodedData = "";
+            // Chuỗi URI trả về có dạng content://<path>
+            Uri imageUri = Uri.parse(data.getDataString());
 
+            RelativeLayout cell =(RelativeLayout) gridView.getChildAt(gridRow);
+            progressBar = cell.findViewById(R.id.progressBar);
+            progressBar.setIndeterminate(true);
+            progressBar.setVisibility(View.VISIBLE);
 
-                   // Mã hóa hình theo Base64
-                   try
-                   {
-                       encodedData = Base64Converter.encodeToBase64(EditDishActivity.this,
-                               imageUri);
-                   }catch (Exception e)
-                   {
-                        Log.d("ConvertBase64",e.getMessage());
-                   }
-
-
-                   // Upload hình lên server
-                    FoodMapApiManager.uploadImage(rest_id, imageFile.getName(), encodedData, new TaskCompleteCallBack() {
+            // Upload hình lên server
+            FoodMapApiManager.uploadImage(EditDishActivity.this ,
+                    rest_id, imageUri,  new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
+
+                            progressBar.setVisibility(View.INVISIBLE);
 
                             // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
                             String strResponse = (String) response;
@@ -362,23 +396,45 @@ public class EditDishActivity extends AppCompatActivity {
                                 }
 
                                 adapter.notifyDataSetChanged();
+
+
+                                //Nếu danh sách chỉ có 1 hình, hỏi người dùng
+                                // có muốn làm hình mặc định hay không
+                                if (imagesUri.size() == 1)
+                                {
+                                    showConfirmDefaultImageDialog();
+                                }
+
                             }else{
 
                                 // Đã có lỗi trong quá trình upload, in thông báo
                                 Toast.makeText(EditDishActivity.this,
-                                        strResponse,
-                                        Toast.LENGTH_LONG)
-                                        .show();
+                                        strResponse, Toast.LENGTH_LONG).show();
                             }
                         }// OnTaskComplete
                     });
-               }// Activity.RESULT_OK
-           }// IPC_PICK_IMAGE_ID
+        }// IPC_PICK_IMAGE_ID
+    }
 
-        }catch (Exception e){
-            Toast.makeText(EditDishActivity.this,
-                    e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+    private void showConfirmDefaultImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditDishActivity.this);
+
+        builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dish.setUrlImage(imagesUri.get(gridRow).toString());
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

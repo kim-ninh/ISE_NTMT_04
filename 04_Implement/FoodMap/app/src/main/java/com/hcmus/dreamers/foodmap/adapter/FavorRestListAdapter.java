@@ -13,15 +13,16 @@ import android.widget.TextView;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
+import com.hcmus.dreamers.foodmap.View.GridViewItem;
 
 import java.util.List;
 
 public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
     private Context context;
-    private Restaurant[] restes;
+    private List<Restaurant> restes;
     private int resource;
 
-    public FavorRestListAdapter(@NonNull Context context, int resource, @NonNull Restaurant[] objects) {
+    public FavorRestListAdapter(@NonNull Context context, int resource, @NonNull List<Restaurant> objects) {
         super(context, resource, objects);
         this.context = context;
         this.restes = objects;
@@ -38,22 +39,22 @@ public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
         TextView txtFavorRestName = (TextView) cell.findViewById(R.id.txtFavorRestName);
 
         DownloadImageTask downloadImageTask = new DownloadImageTask( imgBackFavorRest, context);
-        downloadImageTask.loadImageFromUrl(restes[position].getUrlImage());
+        downloadImageTask.loadImageFromUrl(restes.get(position).getUrlImage());
 
-        txtFavorRestName.setText(restes[position].getName());
+        txtFavorRestName.setText(restes.get(position).getName());
 
         return cell;
     }
 
     @Override
     public int getCount() {
-        return restes.length;
+        return restes.size();
     }
 
     @Nullable
     @Override
     public Restaurant getItem(int position) {
-        return restes[position];
+        return restes.get(position);
     }
 
     @Override

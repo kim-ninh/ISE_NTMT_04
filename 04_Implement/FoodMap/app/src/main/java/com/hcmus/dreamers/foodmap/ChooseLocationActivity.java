@@ -19,25 +19,19 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-import com.hcmus.dreamers.foodmap.common.FoodMapManager;
-import com.hcmus.dreamers.foodmap.common.GenerateRequest;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
-import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
-import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -52,7 +46,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,7 +168,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ChooseLocationActivity.this),mMap);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        mLocationOverlay.disableFollowLocation();
+        mapController.animateTo(this.mLocationOverlay.getMyLocation());
+
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
 
@@ -248,7 +243,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         return mOverlay;
     }
     private void moveCamera(GeoPoint point){
-        mapController.setCenter(point);
+        mapController.animateTo(point);
     }
 
     //
