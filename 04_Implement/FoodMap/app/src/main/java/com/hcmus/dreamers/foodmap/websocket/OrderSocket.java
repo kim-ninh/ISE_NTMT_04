@@ -7,7 +7,7 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import java.net.URISyntaxException;
 
 public class OrderSocket {
-    private static Socket mSocket;
+    private static Socket mSocket = null;
 
     private OrderSocket() {
     }
@@ -25,4 +25,13 @@ public class OrderSocket {
             }
         return mSocket;
     }
+
+    public static boolean isNULL(){
+        return (mSocket == null);
+    }
+
+    public static void setSocket(Socket socket){
+        mSocket = socket;
+    }
+
 }
