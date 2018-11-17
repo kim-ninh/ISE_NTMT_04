@@ -2,6 +2,9 @@ package com.hcmus.dreamers.foodmap;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -16,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +58,7 @@ public class EditDishActivity extends AppCompatActivity {
     FloatingActionButton fab;
     Toolbar toolbar;
     ImageAdapter adapter;
-
+    ProgressBar progressBar;
 
     Intent manageRest_manageDish;
     Bundle transferData = new Bundle();
@@ -106,7 +111,10 @@ public class EditDishActivity extends AppCompatActivity {
                 Intent editDish_pickImage = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                gridRow = -1;
+                gridRow = imagesUri.size();
+                imagesUri.add(Uri.parse(""));
+                adapter.notifyDataSetChanged();
+
                 startActivityForResult(editDish_pickImage, IPC_PICK_IMAGE_ID);
             }
         });
@@ -288,10 +296,16 @@ public class EditDishActivity extends AppCompatActivity {
 
             case R.id.action_done:
                 if(checkInputValid()){
+                    final ProgressDialog progressDialog = new ProgressDialog(EditDishActivity.this);
+                    progressDialog.setMessage("Updating dish");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
                     FoodMapApiManager.updateDish(rest_id, dish, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
+                            progressDialog.dismiss();
                             if((int)response == FoodMapApiManager.SUCCESS) {
+                                Toast.makeText(EditDishActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
                                 Gson gson = new Gson();
                                 Intent intent = new Intent();
                                 intent.putExtra("dishJSON", gson.toJson(dish));
@@ -328,6 +342,10 @@ public class EditDishActivity extends AppCompatActivity {
             String catalogString =(String) spnrDishType.getSelectedItem();
             Catalog catalog = FoodMapManager.findCatalog(catalogString);
             dish.setCatalog(catalog);
+
+            if (imagesUri.isEmpty())
+                dish.setUrlImage("");
+
             return true;
         }
         return false;
@@ -342,19 +360,24 @@ public class EditDishActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try{
 
-           if (requestCode == IPC_PICK_IMAGE_ID){
-               if (resultCode == Activity.RESULT_OK){
+        if (requestCode == IPC_PICK_IMAGE_ID && resultCode == Activity.RESULT_OK){
 
-                   // Chuỗi URI trả về có dạng content://<path>
-                   Uri imageUri = Uri.parse(data.getDataString());
+            // Chuỗi URI trả về có dạng content://<path>
+            Uri imageUri = Uri.parse(data.getDataString());
 
-                   // Upload hình lên server
-                    FoodMapApiManager.uploadImage(EditDishActivity.this ,
-                            rest_id, imageUri,  new TaskCompleteCallBack() {
+            RelativeLayout cell =(RelativeLayout) gridView.getChildAt(gridRow);
+            progressBar = cell.findViewById(R.id.progressBar);
+            progressBar.setIndeterminate(true);
+            progressBar.setVisibility(View.VISIBLE);
+
+            // Upload hình lên server
+            FoodMapApiManager.uploadImage(EditDishActivity.this ,
+                    rest_id, imageUri,  new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
+
+                            progressBar.setVisibility(View.INVISIBLE);
 
                             // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
                             String strResponse = (String) response;
@@ -373,6 +396,15 @@ public class EditDishActivity extends AppCompatActivity {
                                 }
 
                                 adapter.notifyDataSetChanged();
+
+
+                                //Nếu danh sách chỉ có 1 hình, hỏi người dùng
+                                // có muốn làm hình mặc định hay không
+                                if (imagesUri.size() == 1)
+                                {
+                                    showConfirmDefaultImageDialog();
+                                }
+
                             }else{
 
                                 // Đã có lỗi trong quá trình upload, in thông báo
@@ -381,13 +413,28 @@ public class EditDishActivity extends AppCompatActivity {
                             }
                         }// OnTaskComplete
                     });
-               }// Activity.RESULT_OK
-           }// IPC_PICK_IMAGE_ID
+        }// IPC_PICK_IMAGE_ID
+    }
 
-        }catch (Exception e){
-            Toast.makeText(EditDishActivity.this,
-                    e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+    private void showConfirmDefaultImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditDishActivity.this);
+
+        builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dish.setUrlImage(imagesUri.get(gridRow).toString());
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
