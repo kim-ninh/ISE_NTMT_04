@@ -42,10 +42,10 @@ public class OrderService extends Service {
                         if((int)response == ConstantCODE.SUCCESS){
                             //NotificationBuilder.ShowNotification(OrderService.this, "Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
                             notification("Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
-                            String content = "{\"email_guest\":" + offer.getGuestEmail() + ", \"status\":200, \"message\":\"Đặt hàng thành công!\"";
+                            String content = "{\"email_guest\":\"" + offer.getGuestEmail() + "\", \"status\":200, \"message\":\"Đặt hàng thành công!\"}";
                             socket.emit("send_result", content);
                         }else{
-                            String content = "{\"email_guest\":" + offer.getGuestEmail() + ", \"status\":500, \"message\":\"Đặt hàng thất bại!\"";
+                            String content = "{\"email_guest\":\"" + offer.getGuestEmail() + "\", \"status\":500, \"message\":\"Đặt hàng thất bại!\"}";
                             socket.emit("send_result", content);
                         }
                     }
