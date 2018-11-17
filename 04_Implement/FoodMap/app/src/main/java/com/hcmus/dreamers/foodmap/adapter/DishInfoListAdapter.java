@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,11 +49,8 @@ public class DishInfoListAdapter extends ArrayAdapter<Dish>
 
 
         //Kiểm tra xem đã có hình chưa? Nếu chưa thì lấy 1 hình đc chỉ sẵn
-        if (!dish.getUrlImage().isEmpty())
-        {
-            DownloadImageTask taskDownload = new DownloadImageTask(icon, getContext());
-            taskDownload.loadImageFromUrl(dish.getUrlImage());
-        }
+        DownloadImageTask taskDownload = new DownloadImageTask(icon, getContext());
+        taskDownload.loadImageFromUrl(dish.getUrlImage());
 
         return row;
     }

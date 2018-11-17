@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public class ImageCheckInListAdapter extends ArrayAdapter<Bitmap> {
         View cell = LayoutInflater.from(context).inflate(R.layout.adapter_image_check_in_list, null);
 
         ImageView imgCheckIn = (ImageView) cell.findViewById(R.id.imgCheckIn);
+
+        imgCheckIn.setLayoutParams(new FrameLayout.LayoutParams(350,350));
 
         BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmapList.get(position));
         imgCheckIn.setBackgroundDrawable(bitmapDrawable);

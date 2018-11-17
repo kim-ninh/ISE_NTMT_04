@@ -350,11 +350,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                             restaurant.setnFavorites(restaurant.getnFavorites() + 1);
                             imgHeart.setImageResource(R.drawable.ic_red_heart);
 
-                            Log.i(TAG, "Add favorite restaurant successfully");
+                            Log.e(TAG, "Add favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
 
                         } else {
-                            Log.i(TAG, "Error transfer data");
+                            Log.e(TAG, "Error transfer data");
                             Toast.makeText(RestaurantInfoActivity.this, "Add error " + Integer.toString(code), Toast.LENGTH_LONG).show();
                         }
 
@@ -373,10 +373,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                             restaurant.setnFavorites(restaurant.getnFavorites() - 1);
                             imgHeart.setImageResource(R.drawable.ic_heart);
 
-                            Log.i(TAG, "Delete favorite restaurant successfully");
+                            Log.e(TAG, "Delete favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant was removed out your favorites", Toast.LENGTH_LONG).show();
                         } else {
-                            Log.i(TAG, "Error transfer data");
+                            Log.e(TAG, "Error transfer data");
                             Toast.makeText(RestaurantInfoActivity.this, "Delete error", Toast.LENGTH_LONG).show();
                         }
 
@@ -424,11 +424,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                         if(restaurant.getRanks().size() != 0) {
                                             txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
                                         }
-                                        Log.i(TAG, "Submit rate successfully");
+                                        Log.e(TAG, "Submit rate successfully");
                                         Toast.makeText(RestaurantInfoActivity.this, "Thank you for your submit", Toast.LENGTH_LONG).show();
 
                                     } else {
-                                        Log.i(TAG, "Error transfer data");
+                                        Log.e(TAG, "Error transfer data");
                                         Toast.makeText(RestaurantInfoActivity.this, "Submit error " + Integer.toString(code), Toast.LENGTH_LONG).show();
                                     }
                                 }

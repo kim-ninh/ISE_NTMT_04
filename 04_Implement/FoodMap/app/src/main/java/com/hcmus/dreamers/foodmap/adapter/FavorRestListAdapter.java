@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -47,8 +49,10 @@ public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
         DownloadImageTask downloadImageTask = new DownloadImageTask( imgBackFavorRest, context);
         downloadImageTask.loadImageFromUrl(restes.get(position).getUrlImage());
 
-
         txtFavorRestName.setText(restes.get(position).getName());
+
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.scale_list);
+        cell.startAnimation(animation);
         return cell;
     }
 
