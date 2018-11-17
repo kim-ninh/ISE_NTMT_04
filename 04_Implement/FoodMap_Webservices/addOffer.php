@@ -10,7 +10,7 @@ if (isset($_POST["guest_email"]) && isset($_POST["total"]) && isset($_POST["id_d
 	
 	$check = $conn->addOffer($_POST["guest_email"], $_POST["total"], $_POST["id_discount"]);
 
-	if ($check != -1 && $check != false)
+	if ($check != -1)
 	{
 		$response["status"] = 200;
 		$response["message"] = "Success";

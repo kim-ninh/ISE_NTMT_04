@@ -332,6 +332,9 @@ class database
 	{
 		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.') AS RESULT';
 		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
 
 		foreach($result as $row)
 		{
@@ -340,6 +343,7 @@ class database
 				return 0;
 			}
 		}
+		
 		return -1;
 	}
 
