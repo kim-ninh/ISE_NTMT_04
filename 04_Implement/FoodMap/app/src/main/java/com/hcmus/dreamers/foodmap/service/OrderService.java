@@ -52,6 +52,8 @@ public class OrderService extends Service {
     public void onCreate() {
         super.onCreate();
         socket = OrderSocket.getInstance();
+        socket.connect();
+        Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
     }
 
     @Override
