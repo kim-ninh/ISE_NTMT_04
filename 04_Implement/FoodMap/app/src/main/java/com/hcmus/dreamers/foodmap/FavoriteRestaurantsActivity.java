@@ -16,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
+import com.hcmus.dreamers.foodmap.Model.FavorRestInfo;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
+import com.hcmus.dreamers.foodmap.adapter.FavorRestNameAutocompleteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +33,17 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
     AutoCompleteTextView txtAutoComplete;
     GridViewItem grdFavorRest;
 
+    //storing guest's list of favorite restaurants
     List<Restaurant> favorRestaurant;
-    List<String> items = new ArrayList<>();
+    List<FavorRestInfo> items = new ArrayList<FavorRestInfo>();
+    private boolean isInitialize = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_restaurants);
 
+        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
         //set header toolbar in the layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.tlbRestInfo);
         setSupportActionBar(toolbar);
@@ -48,7 +53,6 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         txtAutoComplete = (AutoCompleteTextView) findViewById(R.id.txtAutoComplete);
         grdFavorRest = (GridViewItem) findViewById(R.id.grdFavorRest);
 
-        favorRestaurant = Guest.getInstance().getFavRestaurant();
         //debug
         //set Image background of favorite restaurant layout
         try {
@@ -61,42 +65,11 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         }
         //end debug
 
-        //get list of user's favorite restaurant
-        for (int i = 0; i < Guest.getInstance().getFavRestaurant().size(); i++)
-        {
-            items.add(Guest.getInstance().getFavRestaurant().get(i).getName());
-        }
+        initAdapter();
 
-
-        //auto complete
-        txtAutoComplete.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_single_choice,
-                items));
-
-        txtAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
-                intent.putExtra("rest", favorRestaurant.get(position));
-                startActivity(intent);
-            }
-        });
-
-
-        FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.adapter_favor_rest_list, Guest.getInstance().getFavRestaurant());
-
-        grdFavorRest.setAdapter(adapter);
-
-        grdFavorRest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
-                intent.putExtra("rest",favorRestaurant.get(position));
-                startActivity(intent);
-            }
-        });
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -116,11 +89,93 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        txtAutoComplete.setText(txtAutoComplete.getText());
     }
 
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    private void initAdapter(){
+        favorRestaurant = Guest.getInstance().getFavRestaurant();
+
+        //get list of user's favorite restaurant
+        for (int i = 0; i < Guest.getInstance().getFavRestaurant().size(); i++)
+        {
+            items.add(new FavorRestInfo(favorRestaurant.get(i).getName(), favorRestaurant.get(i).getUrlImage(), favorRestaurant.get(i).getId()));
+        }
+
+        //auto complete
+        FavorRestNameAutocompleteAdapter favorRestListAdapter = new FavorRestNameAutocompleteAdapter(FavoriteRestaurantsActivity.this,
+                R.layout.adapter_autocomplete_favor_rest_name,
+                items);
+
+        txtAutoComplete.setAdapter(favorRestListAdapter);
+
+        txtAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
+                FavorRestInfo info = (FavorRestInfo)parent.getItemAtPosition(position);
+                for(int i = 0; i < favorRestaurant.size(); i++) {
+                    if(favorRestaurant.get(i).getId() == info.getID())
+                    {
+                        intent.putExtra("rest", favorRestaurant.get(i));
+                        break;
+                    }
+                }
+                startActivity(intent);
+            }
+        });
+
+
+        FavorRestListAdapter adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.adapter_favor_rest_list, favorRestaurant);
+
+        grdFavorRest.setAdapter(adapter);
+
+        grdFavorRest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
+                intent.putExtra("rest",favorRestaurant.get(position));
+                startActivity(intent);
+            }
+        });
+    }
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        Toast.makeText(FavoriteRestaurantsActivity.this, "start", Toast.LENGTH_LONG).show();
+        if(isInitialize == false){
+            initAdapter();
+            isInitialize = false;
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(FavoriteRestaurantsActivity.this, "pause", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(FavoriteRestaurantsActivity.this, "stop", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(FavoriteRestaurantsActivity.this, "destroy", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(FavoriteRestaurantsActivity.this, "resume", Toast.LENGTH_SHORT).show();
     }
 }
