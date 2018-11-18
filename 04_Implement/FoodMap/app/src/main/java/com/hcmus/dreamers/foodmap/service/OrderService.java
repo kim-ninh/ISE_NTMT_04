@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 public class OrderService extends Service {
     private Socket socket;
+    private String name_rest;
     private int id_rest;
     private OrderEmitterListener receiceOrder = new OrderEmitterListener(new TaskCompleteCallBack() {
         @Override
@@ -40,13 +41,14 @@ public class OrderService extends Service {
             try {
                 final Offer offer = ParseJSON.parseOfferObject(response.toString());
                 JSONObject resp = new JSONObject(response.toString());
+                name_rest = resp.getString("name_rest");
                 id_rest = resp.getInt("id_rest");
                 FoodMapApiManager.addOrder(offer, resp.getInt("id_discount"), new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
                         if((int)response == ConstantCODE.SUCCESS){
                             //NotificationBuilder.ShowNotification(OrderService.this, "Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
-                            notification("Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
+                            notification("Quán ăn \"" + name_rest + "\"", offer.getGuestEmail() + " vừa mới đặt hàng.");
                             String content = "{\"email_guest\":\"" + offer.getGuestEmail() + "\", \"status\":200, \"message\":\"Đặt hàng thành công!\"}";
                             socket.emit("send_result", content);
                         }else{

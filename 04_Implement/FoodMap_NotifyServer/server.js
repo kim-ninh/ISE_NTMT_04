@@ -31,6 +31,7 @@ io.sockets.on('connection', function (socket) {
   //{
 //		email_owner
 //		email_guest
+//		name_rest
 //		id_rest
 //		id_discount
 //		order: {
