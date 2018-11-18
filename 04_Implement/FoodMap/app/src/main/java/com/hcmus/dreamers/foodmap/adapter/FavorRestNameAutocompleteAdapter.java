@@ -11,19 +11,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
-import com.hcmus.dreamers.foodmap.Model.FavorRestInfo;
+import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<FavorRestInfo> {
+public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<Restaurant> {
     private Context context;
     private int resource;
-    private List<FavorRestInfo> favorRestInfoList;
-    private List<FavorRestInfo> favorRestInfoListAll;
+    private List<Restaurant> favorRestInfoList;
+    private List<Restaurant> favorRestInfoListAll;
 
-    public FavorRestNameAutocompleteAdapter(@NonNull Context context, int resource, @NonNull List<FavorRestInfo> objects) {
+    public FavorRestNameAutocompleteAdapter(@NonNull Context context, int resource, @NonNull List<Restaurant> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
@@ -35,16 +35,16 @@ public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<FavorRestInfo
     Filter nameFilter = new Filter() {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((FavorRestInfo)resultValue).getName();
+            return ((Restaurant)resultValue).getName();
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<FavorRestInfo> suggestions = new ArrayList<>();
+            List<Restaurant> suggestions = new ArrayList<>();
             FilterResults filterResults = new FilterResults();
             if(constraint != null){
                 suggestions.clear();
-                for(FavorRestInfo item : favorRestInfoListAll){
+                for(Restaurant item : favorRestInfoListAll){
                     if(item.getName().toLowerCase().startsWith(constraint.toString().toLowerCase())){
                         suggestions.add(item);
                     }
@@ -60,7 +60,7 @@ public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<FavorRestInfo
         protected void publishResults(CharSequence constraint, FilterResults results) {
             clear();
             if(results != null && results.count > 0){
-                addAll((ArrayList<FavorRestInfo>)results.values);
+                addAll((ArrayList<Restaurant>)results.values);
             }
             else{
                 addAll(favorRestInfoList);
@@ -89,7 +89,7 @@ public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<FavorRestInfo
 
     @Nullable
     @Override
-    public FavorRestInfo getItem(int position) {
+    public Restaurant getItem(int position) {
         return favorRestInfoList.get(position);
     }
 
