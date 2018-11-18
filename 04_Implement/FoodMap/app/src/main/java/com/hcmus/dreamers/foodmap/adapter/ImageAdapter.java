@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.R;
@@ -42,11 +43,10 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-        View cell = inflater.inflate(R.layout.loading_image_cell, null);
+        RelativeLayout cell =(RelativeLayout) inflater.inflate(R.layout.loading_image_cell, null);
 
         ImageView dishImage = cell.findViewById(R.id.imageView);
         final ProgressBar progressBar = cell.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
         String imageUri = imagesUri.get(position).toString();
 
         // Đường dẫn luôn là public
