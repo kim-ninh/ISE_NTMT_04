@@ -43,26 +43,30 @@ public class OrderListFragment extends Fragment {
     private int id_rest;
 
     Context context = null;
-    EditRestaurantActivity editRestaurantActivity;
     LinearLayout rootLayout;
 
     public OrderListFragment() {
         // Required empty public constructor
     }
 
+    public void setId_rest(int id_rest) {
+        this.id_rest = id_rest;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        // Get host activity "EditRestaurant"
-        context = getActivity();
-        editRestaurantActivity = (EditRestaurantActivity) getActivity();
-
-        if (editRestaurantActivity != null)
-        {
-            restaurant = editRestaurantActivity.restaurant;
-        }
     }
 
     @Override
@@ -72,19 +76,6 @@ public class OrderListFragment extends Fragment {
         rootLayout =(LinearLayout) inflater.inflate(R.layout.fragment_order_list, container, false);
 
         refferences();
-        getItentFromActivity();
-        //must not remove
-        //refreshData();
-
-
-
-        offers = new ArrayList<>();
-        for (int i = 0; i < 20; i++)
-            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
-
-
-        adapter = new OrderListAdapter(context, R.layout.order_item_list, offers);
-        listOffer.setAdapter(adapter);
         return rootLayout;
     }
 
@@ -92,11 +83,6 @@ public class OrderListFragment extends Fragment {
         listOffer = rootLayout.findViewById(R.id.list_order);
     }
 
-
-    private void getItentFromActivity(){
-        //Intent intent = getIntent();
-        //id_rest = intent.getIntExtra("id_rest", -1);
-    }
 
     private void refreshData(){
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
@@ -109,6 +95,7 @@ public class OrderListFragment extends Fragment {
                         offers = ParseJSON.parseOffer(resp);
                         adapter = new OrderListAdapter(context, R.layout.order_item_list, offers);
                         listOffer.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(context, "NOT FOUND!", Toast.LENGTH_SHORT).show();
                     }else {

@@ -32,7 +32,6 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
         setContentView(R.layout.activity_edit_restaurant);
         //lấy dữ liệu từ Restaurant manager
         getTransferDataFromActivity();
-
         takeReferenceFromResource();
 
         //Enable the Up button
@@ -44,7 +43,10 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
 
         adapter.addFragment(new RestaurantInfoFragment(), "CHUNG");
         adapter.addFragment(new DishListFragment(), "MÓN ĂN");
-        adapter.addFragment(new OrderListFragment(), "ĐƠN ĐẶT HÀNG");
+        OrderListFragment orderListFragment = new OrderListFragment();
+        orderListFragment.setId_rest(restaurant.getId());
+        orderListFragment.setContext(EditRestaurantActivity.this);
+        adapter.addFragment(orderListFragment, "ĐƠN ĐẶT HÀNG");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -31,24 +31,31 @@ public class OrderListActivity extends AppCompatActivity {
     private int id_rest;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        getItentFromActivity();
+        refreshData();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_list);
         refferences();
-        getItentFromActivity();
+        //getItentFromActivity();
         //must not remove
         //refreshData();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        offers = new ArrayList<>();
-        for (int i = 0; i < 20; i++)
-            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
-
-
-        adapter = new OrderListAdapter(OrderListActivity.this, R.layout.order_item_list, offers);
-        listOffer.setAdapter(adapter);
+//        offers = new ArrayList<>();
+//        for (int i = 0; i < 20; i++)
+//            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
+//
+//
+//        adapter = new OrderListAdapter(OrderListActivity.this, R.layout.order_item_list, offers);
+//        listOffer.setAdapter(adapter);
 
     }
 
