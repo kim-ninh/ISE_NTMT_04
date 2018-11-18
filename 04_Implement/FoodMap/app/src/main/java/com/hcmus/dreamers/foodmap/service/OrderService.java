@@ -15,12 +15,15 @@ import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.MainActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
+import com.hcmus.dreamers.foodmap.OrderListActivity;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.View.NotificationBuilder;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.websocket.OrderEmitterListener;
 import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
@@ -30,18 +33,22 @@ import org.json.JSONObject;
 
 public class OrderService extends Service {
     private Socket socket;
+    private String name_rest;
+    private int id_rest;
     private OrderEmitterListener receiceOrder = new OrderEmitterListener(new TaskCompleteCallBack() {
         @Override
         public void OnTaskComplete(Object response) {
             try {
                 final Offer offer = ParseJSON.parseOfferObject(response.toString());
                 JSONObject resp = new JSONObject(response.toString());
+                name_rest = resp.getString("name_rest");
+                id_rest = resp.getInt("id_rest");
                 FoodMapApiManager.addOrder(offer, resp.getInt("id_discount"), new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
                         if((int)response == ConstantCODE.SUCCESS){
                             //NotificationBuilder.ShowNotification(OrderService.this, "Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
-                            notification("Thông báo", offer.getGuestEmail() + " vừa mới đặt hàng.");
+                            notification("Quán ăn \"" + name_rest + "\"", offer.getGuestEmail() + " vừa mới đặt hàng.");
                             String content = "{\"email_guest\":\"" + offer.getGuestEmail() + "\", \"status\":200, \"message\":\"Đặt hàng thành công!\"}";
                             socket.emit("send_result", content);
                         }else{
@@ -97,7 +104,8 @@ public class OrderService extends Service {
                         .setAutoCancel(true);;
         int NOTIFICATION_ID = 12345;
 
-        Intent targetIntent = new Intent(this, MainActivity.class);
+        Intent targetIntent = new Intent(this, OrderListActivity.class);
+        targetIntent.putExtra("id_rest", id_rest);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
