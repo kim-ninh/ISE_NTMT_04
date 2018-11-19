@@ -20,7 +20,6 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
-import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
 import org.json.JSONException;
 
@@ -341,7 +340,6 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addFavorite(id_rest, guest_email)));
     }
 
-
     public static void addComment(int id_rest, Comment comment, String token, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -369,7 +367,6 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.comment(id_rest, comment, token)));
     }
-
 
     public static void updateDish(int id_rest, final Dish dish, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
@@ -467,7 +464,6 @@ public class FoodMapApiManager {
 
         taskRequest.execute(new DoingTask(GenerateRequest.getFavorite(guest_email)));
     }
-
 
     public static void deleteRestaurant(final Restaurant restaurant, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
@@ -913,7 +909,6 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.addOffer(offer.getGuestEmail(), offer.getTotal(), id_discount)));
     }
-
 
 }
 

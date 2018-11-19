@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -81,7 +82,7 @@ public class RestaurantInfoFragment extends Fragment {
 
     Restaurant restaurant;
 
-    LinearLayout rootLayout;
+    ScrollView rootLayout;
     EditText txtResName;
     EditText txtAddress;
     EditText txtPhoneNumber;
@@ -137,7 +138,7 @@ public class RestaurantInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootLayout = (LinearLayout) inflater.inflate(
+        rootLayout = (ScrollView) inflater.inflate(
                 R.layout.fragment_restaurant_info, container, false);
 
         takeReferenceFromResource();
