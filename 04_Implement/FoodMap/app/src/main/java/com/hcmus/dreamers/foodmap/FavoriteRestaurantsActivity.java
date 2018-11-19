@@ -20,6 +20,7 @@ import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestNameAutocompleteAdapter;
 ;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,9 +32,9 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
     //storing guest's list of favorite restaurants
     private List<Restaurant> favorRestaurant;
-
-    private  FavorRestListAdapter adapter;
+    private FavorRestListAdapter adapter;
     private FavorRestNameAutocompleteAdapter favorRestListAdapter;
+    private int deletedRestID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +96,12 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
     private void initAdapter(){
         favorRestaurant = Guest.getInstance().getFavRestaurant();
-
         //auto complete
         favorRestListAdapter = new FavorRestNameAutocompleteAdapter(FavoriteRestaurantsActivity.this,
                 R.layout.adapter_autocomplete_favor_rest_name,
-                favorRestaurant);
+                new ArrayList<Restaurant>(favorRestaurant));
 
+        favorRestListAdapter.setFavorRestInfoListAll(favorRestaurant);
         txtAutoComplete.setAdapter(favorRestListAdapter);
 
         txtAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,7 +110,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
                 Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
                 Restaurant info = (Restaurant)parent.getItemAtPosition(position);
 
-
+                deletedRestID = info.getId();
                 for(int i = 0; i < favorRestaurant.size(); i++) {
                     if(favorRestaurant.get(i).getId() == info.getId())
                     {
@@ -121,7 +122,6 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             }
         });
 
-
         adapter = new FavorRestListAdapter(FavoriteRestaurantsActivity.this, R.layout.adapter_favor_rest_list, favorRestaurant);
 
         grdFavorRest.setAdapter(adapter);
@@ -131,6 +131,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
+                deletedRestID = favorRestaurant.get(position).getId();
                 intent.putExtra("rest",favorRestaurant.get(position));
                 startActivity(intent);
             }
@@ -139,7 +140,6 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
     @Override
     protected void onStart() {
         super.onStart();
-
         adapter.notifyDataSetChanged();
         favorRestListAdapter.notifyDataSetChanged();
     }

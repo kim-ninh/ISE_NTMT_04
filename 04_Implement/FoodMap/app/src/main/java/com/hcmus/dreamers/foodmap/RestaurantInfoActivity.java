@@ -321,6 +321,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
     private void clickOnCheckInEvent() {
         if(isGuestLogin) {
             startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+
+            //reset a number of check in
+            txtNCheckIn.setText(Integer.toString(restaurant.getNum_checkin()));
         }
         else{
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
@@ -331,6 +334,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
         intent.putExtra("rest", restaurant);
         startActivityForResult(intent, CM_ID);
+
+        //reset  a number of comments
+        txtNComment.setText(Integer.toString(restaurant.getComments().size()));
     }
 
     private void clickOnFavoriteEvent() {
@@ -347,8 +353,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
                         if (code == ConstantCODE.SUCCESS) {
                             Guest.getInstance().getFavRestaurant().add(restaurant);
-                            restaurant.setnFavorites(restaurant.getnFavorites() + 1);
                             imgHeart.setImageResource(R.drawable.ic_red_heart);
+                            //reset a number of favorites
+                            restaurant.setnFavorites(restaurant.getnFavorites() + 1);
+                            txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
                             Log.e(TAG, "Add favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
@@ -372,6 +380,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                             Guest.getInstance().removeFavoriteRestaurant(restaurant.getId());
                             restaurant.setnFavorites(restaurant.getnFavorites() - 1);
                             imgHeart.setImageResource(R.drawable.ic_heart);
+                            //set nFavorite
+                            txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
                             Log.e(TAG, "Delete favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant was removed out your favorites", Toast.LENGTH_LONG).show();
@@ -384,7 +394,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     }
                 });
             }
-
         } else {
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
         }
@@ -451,12 +460,13 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                 @Override
                 public void onSuccess(Sharer.Result result) {
-                    Toast.makeText(RestaurantInfoActivity.this, "success", Toast.LENGTH_LONG).show();
+                    //reset a number of shares
+                    restaurant.setnShare(restaurant.getnShare() + 1);
+                    txtNShare.setText(Integer.toString(restaurant.getnShare()));
                 }
 
                 @Override
                 public void onCancel() {
-                    Toast.makeText(RestaurantInfoActivity.this, "cancel", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
