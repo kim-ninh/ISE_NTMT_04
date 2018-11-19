@@ -29,9 +29,12 @@ public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<Restaurant> {
         this.resource = resource;
         //it will be modified when inputting text (it will contain the suggestion texts, it depends on objects)
         this.favorRestInfoList = objects;
-        this.favorRestInfoListAll = new ArrayList<>(objects);
     }
 
+    public void setFavorRestInfoListAll(List<Restaurant> favorRestInfoListAll)
+    {
+        this.favorRestInfoListAll = favorRestInfoListAll;
+    }
     Filter nameFilter = new Filter() {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
@@ -61,9 +64,6 @@ public class FavorRestNameAutocompleteAdapter extends ArrayAdapter<Restaurant> {
             clear();
             if(results != null && results.count > 0){
                 addAll((ArrayList<Restaurant>)results.values);
-            }
-            else{
-                addAll(favorRestInfoList);
             }
             notifyDataSetChanged();
         }
