@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.enter_animation, R.anim.exit_animation);
                 }
                 return false;
             }
