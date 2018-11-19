@@ -39,6 +39,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.define.ConstantValue;
 import com.squareup.picasso.Callback;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -320,30 +321,58 @@ public class RestaurantInfoFragment extends Fragment {
     }
 
     private boolean checkValid(){
-        if(txtResName.length() > 0 && txtAddress.length() > 0 && txtPhoneNumber.length() > 0){
-            // Get Date object
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
-            Date openHour = new Date();
-            Date closeHour = new Date();
 
-            try{
-                openHour = timeFormatter.parse(lblOpenHour.getText().toString());
-                closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
-            }catch (Exception e){
-                //This line should never run
-            }
+        boolean isValid = true;
 
-
-            restaurant.setName(txtResName.getText().toString());
-            restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
-            restaurant.setAddress(txtAddress.getText().toString());
-            restaurant.setTimeOpen(openHour);
-            restaurant.setTimeClose(closeHour);
-            restaurant.setDescription(txtDescription.getText().toString());
-
-            return true;
+        if (txtResName.length() == 0 && isValid)
+        {
+            Toast.makeText(getContext(),"Tên nhà hàng trống",Toast.LENGTH_LONG).show();
+            isValid = false;
         }
-        return false;
+
+        if (txtAddress.length() == 0 && isValid)
+        {
+            Toast.makeText(getContext(),"Địa chỉ nhà hàng trống",Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        if (txtPhoneNumber.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid)
+        {
+            Toast.makeText(getContext(),"Số điện thoại không đúng", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        String openHour = lblOpenHour.getText().toString();
+        String closeHour = lblCloseHour.getText().toString();
+        if (openHour.compareTo(closeHour) > 0 && isValid)
+        {
+            Toast.makeText(getContext(),"Giờ đóng cửa phải lớn hơn giờ mở cửa", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private void setDataFromView() {
+        // Get Date object
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+        Date openHour = new Date();
+        Date closeHour = new Date();
+
+        try{
+            openHour = timeFormatter.parse(lblOpenHour.getText().toString());
+            closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
+        }catch (Exception e){
+            //This line should never run
+        }
+
+
+        restaurant.setName(txtResName.getText().toString());
+        restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
+        restaurant.setAddress(txtAddress.getText().toString());
+        restaurant.setTimeOpen(openHour);
+        restaurant.setTimeClose(closeHour);
+        restaurant.setDescription(txtDescription.getText().toString());
     }
 
     @Override
@@ -383,6 +412,7 @@ public class RestaurantInfoFragment extends Fragment {
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
                 if(checkValid()){
+                    setDataFromView();
                     FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
@@ -404,7 +434,8 @@ public class RestaurantInfoFragment extends Fragment {
                         }
                     });
                 }else{
-                    Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                    //Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
                 }
                 return true;
             default:
