@@ -444,4 +444,21 @@
 		* message: Success	
 		* data:
 			** count // số lượng lần share tại nhà hàng
-
+- deleteDiscount:
+	+ url: deleteDiscount.php
+	+ type: POST
+	+ data_post:
+		* token
+		* id_discount
+	+ response:
+		* status: 200
+		* message: Success	
+	
+- deleteOffer:
+	+ url: deleteOffer.php
+	+ type: POST
+	+ data_post:
+		* id_offer
+	+ response:
+		* status: 200
+		* message: Success	

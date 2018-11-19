@@ -354,6 +354,13 @@ class database
 		return $this->query($strQuery);
 	}
 
+	// xóa discount
+	public function DeleteDiscount($id_discount)
+	{
+		$strQuery = 'DELETE FROM DISCOUNT WHERE ID = '.$id_discount;
+		return $this->query($strQuery);
+	}
+
 	// lấy discount của một nhà hàng
 	public function GetDiscount($id_rest)
 	{
@@ -361,10 +368,17 @@ class database
 		return $this->query($strQuery);
 	}
 
+
 	// lấy ofer của nhà hàng
 	public function GetOffer($id_rest)
 	{
 		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function DeleteOffer($id_offer)
+	{
+		$strQuery = 'DELETE FROM OFFER WHERE ID = '.$id_offer;
 		return $this->query($strQuery);
 	}
 
