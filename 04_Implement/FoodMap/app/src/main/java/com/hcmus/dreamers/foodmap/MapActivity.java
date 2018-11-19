@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,13 +31,14 @@ import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -49,7 +51,7 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity{
 
-    MapView mMap;
+    private ZoomLimitMapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -142,7 +144,7 @@ public class MapActivity extends AppCompatActivity{
 
 
         // cài đặt map
-        mMap = (MapView) findViewById(R.id.FindWayMap);
+        mMap = (ZoomLimitMapView) findViewById(R.id.FindWayMap);
         mMap.setBuiltInZoomControls(true);
         mMap.setMultiTouchControls(true);
         if (Build.VERSION.SDK_INT >= 16)
@@ -201,7 +203,24 @@ public class MapActivity extends AppCompatActivity{
         pointsList.add(endPoint);
 
         //Display the paths between 2 points
-        updateRoadTask = new UpdateRoadTask(getApplicationContext(), mMap);
+        final ProgressDialog progressDialog = new ProgressDialog(MapActivity.this);
+        progressDialog.setMessage("Roading");
+        progressDialog.show();
+
+        updateRoadTask = new UpdateRoadTask(getApplicationContext(), mMap, new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+
+                int code = (int)response;
+                if (code == ConstantCODE.NOTINTERNET){
+                    Toast.makeText(MapActivity.this, "Không thể tìm được đường đi", Toast.LENGTH_LONG);
+                }
+                else {
+                    moveCamera(mLocationOverlay.getMyLocation());
+                }
+            }
+        });
         updateRoadTask.execute(pointsList);
     }
 
@@ -313,4 +332,8 @@ public class MapActivity extends AppCompatActivity{
         });
     }
 
+
+    void moveCamera(GeoPoint geoPoint){
+        mapController.setCenter(geoPoint);
+    }
 }

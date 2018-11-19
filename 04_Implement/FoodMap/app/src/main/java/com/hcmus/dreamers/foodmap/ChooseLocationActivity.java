@@ -31,13 +31,13 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
@@ -60,7 +60,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
     Toolbar toolbar;
 
-    private MapView mMap;
+    private ZoomLimitMapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -75,7 +75,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_location);
 
-        mMap = (MapView)findViewById(R.id.map);
         mapInit();
 
         igvDone = (ImageView) findViewById(R.id.igv_done);
@@ -158,7 +157,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
         mapController = mMap.getController();
         mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
+        mMap = (ZoomLimitMapView) findViewById(R.id.map);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
         //list marker

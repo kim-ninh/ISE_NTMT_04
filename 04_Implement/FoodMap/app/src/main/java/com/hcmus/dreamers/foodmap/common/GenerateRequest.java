@@ -475,13 +475,13 @@ public class GenerateRequest {
 
     private static String buildCoordinates(final GeoPoint start, final GeoPoint end){
         StringBuffer data = new StringBuffer();
-        data.append(start.getLatitude());
-        data.append(",");
         data.append(start.getLongitude());
-        data.append("|");
-        data.append(end.getLatitude());
         data.append(",");
+        data.append(start.getLatitude());
+        data.append("|");
         data.append(end.getLongitude());
+        data.append(",");
+        data.append(end.getLatitude());
         return data.toString();
     }
 

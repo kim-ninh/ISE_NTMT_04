@@ -59,6 +59,7 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 import com.hcmus.dreamers.foodmap.service.OrderService;
 import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
-    private MapView mMap;
+    private ZoomLimitMapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -176,8 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private void mapInit()
     {
         //
-        mMap = (MapView) findViewById(R.id.map);
-
+        mMap = (ZoomLimitMapView) findViewById(R.id.map);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -194,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
 
         mapController = mMap.getController();
         mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
         //list marker

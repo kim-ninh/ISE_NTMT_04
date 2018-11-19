@@ -9,7 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/osmbonuspack_6.5.2" />
             <option value="$PROJECT_DIR$/osmdroid-android-6.0.0-20180111.031114-1-release" />
           </set>
         </option>
