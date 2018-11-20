@@ -21,24 +21,10 @@
         android:layout_marginTop="20dp">
 
         <pl.droidsonroids.gif.GifImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/gif_hamburger"
-            android:layout_gravity="center_vertical|left"/>
-
-        <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:src="@drawable/gif_ic_loading"
             android:layout_gravity="bottom"/>
-
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/gif_hamburger"
-            android:layout_gravity="center_vertical|right"/>
 
     </FrameLayout>
 

@@ -45,7 +45,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Địa chỉ" />
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -53,20 +53,19 @@
 
                 <EditText
                     android:id="@+id/edt_address_restaurant"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="5"
+                    android:layout_marginRight="30dp"
                     android:singleLine="true" />
 
                 <Button
                     android:id="@+id/btnLocation"
-                    android:layout_width="10dp"
-                    android:layout_height="78dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right|center_vertical"
                     android:background="@drawable/icon_location_marker" />
 
-            </LinearLayout>
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"

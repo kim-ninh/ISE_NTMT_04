@@ -193,8 +193,16 @@ class database
 
 	public function DeleteRestaurant($id_rest)
 	{
-		$strQuery = 'CALL SP_DELETE_REST('.$id_rest.')';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_DELETE_REST('.$id_rest.') AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+		
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		return -1;
 	}
 
 	public function GetComment($id_rest)

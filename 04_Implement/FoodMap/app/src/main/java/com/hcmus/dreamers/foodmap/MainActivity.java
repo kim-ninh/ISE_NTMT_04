@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         this.mLocationOverlay.enableMyLocation();
         this.mLocationOverlay.disableFollowLocation();
         this.mLocationOverlay.setOptionsMenuEnabled(true);
-        mapController.animateTo(this.mLocationOverlay.getMyLocation());
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

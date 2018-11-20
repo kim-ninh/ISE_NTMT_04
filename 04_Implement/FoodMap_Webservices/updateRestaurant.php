@@ -16,7 +16,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["token"]))
 	{
 		if ($key != "id_rest" && $key != "token" && $key != "lat" && $key != "lon")
 		{
-			$valueCol .= strtoupper($key) . '= "' . $value .'",';
+			$valueCol .= strtoupper($key) . ' = "' . $value .'",';
 		}
 	}
 
@@ -47,8 +47,8 @@ if (isset($_POST["id_rest"]) && isset($_POST["token"]))
 				}
 				else
 				{
-					$response["status"] = 200;
-					$response["message"] = "Success";
+					$response["status"] = 404;
+					$response["message"] = "Exec fail";
 				}
 			}
 			else

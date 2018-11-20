@@ -36,7 +36,6 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     private final int RRA_ID = 1234;
     private final int RMA_ID = 1111;
-    private final int ROA_ID = 6789;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +69,10 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rcvRestaurant.setLayoutManager(mLayoutManager);
 
-        // TODO Tại sao ở đây ko lấy tham chiếu trực tiếp?
-        // restaurantList = Owner.getInstance().getListRestaurant()
-
-        restaurantList = new ArrayList<>();
-        restaurantList.addAll(Owner.getInstance().getListRestaurant());
+        restaurantList= Owner.getInstance().getListRestaurant();
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);
-
     }
 
     @Override
@@ -114,10 +108,9 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     @Override
     public void onItemLongClick(int position, View v) {
-        Intent intent = new Intent(RestaurantManageActivity.this, OrderListActivity.class);
-        intent.putExtra("id_rest", restaurantList.get(position).getId());
-        startActivityForResult(intent, ROA_ID);
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -131,10 +124,6 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             }
         }
         else if (requestCode == RMA_ID && resultCode == Activity.RESULT_OK){
-            //TODO Đã tiết kiệm chi phí việc phải thêm lại toàn bộ danh sách
-            //List<Restaurant> temp = Owner.getInstance().getListRestaurant();
-            //restaurantList.addAll(temp);
-
             boolean isDelete = data.getBooleanExtra("isDelete",false);
 
             if (isDelete)
@@ -143,7 +132,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             }else
             {
                 String restJSON = data.getStringExtra("restJSON");
-                Restaurant restaurant = new Gson().fromJson(restJSON,Restaurant.class);
+                Restaurant restaurant = new Gson().fromJson(restJSON, Restaurant.class);
 
                 restaurantList.remove(selectedRow);
                 restaurantList.add(selectedRow, restaurant);

@@ -149,6 +149,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
     private void mapInit()
     {
+        mMap = (ZoomLimitMapView) findViewById(R.id.map);
         // cài đặt map
         mMap.setBuiltInZoomControls(true);
         mMap.setMultiTouchControls(true);
@@ -157,7 +158,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
         mapController = mMap.getController();
         mapController.setZoom(17.0);
-        mMap = (ZoomLimitMapView) findViewById(R.id.map);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
         //list marker
@@ -168,7 +168,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
         mLocationOverlay.disableFollowLocation();
-        mapController.animateTo(this.mLocationOverlay.getMyLocation());
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
 
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);

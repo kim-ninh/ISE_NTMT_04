@@ -134,14 +134,12 @@ public class MapActivity extends AppCompatActivity{
 
     private void mapInit(){
         //
-
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         Configuration.getInstance().setUserAgentValue(getPackageName());
 
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
-
 
         // cài đặt map
         mMap = (ZoomLimitMapView) findViewById(R.id.FindWayMap);
@@ -331,7 +329,6 @@ public class MapActivity extends AppCompatActivity{
             }
         });
     }
-
 
     void moveCamera(GeoPoint geoPoint){
         mapController.setCenter(geoPoint);
