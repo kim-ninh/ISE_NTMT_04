@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -81,5 +82,23 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home)
+        {
+            // Update restaurant layout when modify Dish item
+            Gson gson = new Gson();
+            Intent intent = new Intent();
+            intent.putExtra("restJSON", gson.toJson(restaurant));
+
+            setResult(RESULT_OK, intent);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
