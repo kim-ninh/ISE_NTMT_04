@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.Activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestListAdapter;
 import com.hcmus.dreamers.foodmap.adapter.FavorRestNameAutocompleteAdapter;

@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.Activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -47,6 +47,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;

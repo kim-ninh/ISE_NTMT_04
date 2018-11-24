@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.Activity;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -29,6 +29,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
 
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
+import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;

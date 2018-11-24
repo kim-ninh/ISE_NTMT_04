@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,9 +16,9 @@ import android.widget.Toast;
 
 
 import com.google.gson.Gson;
-import com.hcmus.dreamers.foodmap.AddDishActivity;
-import com.hcmus.dreamers.foodmap.EditDishActivity;
-import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
+import com.hcmus.dreamers.foodmap.Activity.AddDishActivity;
+import com.hcmus.dreamers.foodmap.Activity.EditDishActivity;
+import com.hcmus.dreamers.foodmap.Activity.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;

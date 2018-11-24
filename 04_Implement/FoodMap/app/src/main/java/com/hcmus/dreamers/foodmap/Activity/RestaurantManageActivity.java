@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap;
+package com.hcmus.dreamers.foodmap.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,13 +15,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
-import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.RestaurantListAdapter;
 import com.hcmus.dreamers.foodmap.event.ClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantManageActivity extends AppCompatActivity implements View.OnClickListener, ClickListener {

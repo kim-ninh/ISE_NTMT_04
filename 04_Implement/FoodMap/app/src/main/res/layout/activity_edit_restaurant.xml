@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".EditRestaurantActivity">
+    tools:context=".Activity.EditRestaurantActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
