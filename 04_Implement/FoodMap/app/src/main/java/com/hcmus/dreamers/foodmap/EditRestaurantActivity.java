@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,10 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.ViewPagerAdapter;
 import com.hcmus.dreamers.foodmap.fragment.DishListFragment;
+import com.hcmus.dreamers.foodmap.fragment.OneFragment;
 import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
 import com.hcmus.dreamers.foodmap.fragment.RestaurantInfoFragment;
 

@@ -1,5 +1,5 @@
 
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +19,6 @@ import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.CommentListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;

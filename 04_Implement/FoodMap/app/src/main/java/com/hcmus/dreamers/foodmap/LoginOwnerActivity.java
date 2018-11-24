@@ -1,8 +1,9 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,15 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.GenerateRequest;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.service.OrderService;
 
 
 public class LoginOwnerActivity extends AppCompatActivity {

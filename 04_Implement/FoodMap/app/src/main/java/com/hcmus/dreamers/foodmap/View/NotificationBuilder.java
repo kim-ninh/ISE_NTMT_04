@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.hcmus.dreamers.foodmap.Activity.MainActivity;
+import com.hcmus.dreamers.foodmap.MainActivity;
 import com.hcmus.dreamers.foodmap.R;
 
 public class NotificationBuilder {

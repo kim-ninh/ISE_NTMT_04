@@ -2,8 +2,10 @@ package com.hcmus.dreamers.foodmap.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
+import com.hcmus.dreamers.foodmap.OrderListActivity;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.OrderListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -23,6 +27,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**

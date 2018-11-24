@@ -44,42 +44,42 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".Activity.LoadingActivity">
+        <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.RestaurantInfoActivity" />
-        <activity android:name=".Activity.LoginOwnerActivity" />
-        <activity android:name=".Activity.LoginGuestActivity" />
-        <activity android:name=".Activity.MainActivity" />
-        <activity android:name=".Activity.CommentActivity" />
-        <activity android:name=".Activity.RegisterRestaurantActivity" />
-        <activity android:name=".Activity.AddDishActivity"/>
+        <activity android:name=".RestaurantInfoActivity" />
+        <activity android:name=".LoginOwnerActivity" />
+        <activity android:name=".LoginGuestActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".RegisterRestaurantActivity" />
+        <activity android:name=".AddDishActivity"/>
 
         <activity
-            android:name=".Activity.EditDishActivity"
+            android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"
-            android:parentActivityName=".Activity.EditRestaurantActivity" />
+            android:parentActivityName=".EditRestaurantActivity" />
         <activity
-            android:name=".Activity.EditRestaurantActivity"
+            android:name=".EditRestaurantActivity"
             android:label="@string/title_activity_manage_restaurant"
-            android:parentActivityName=".Activity.RestaurantManageActivity" />
+            android:parentActivityName=".RestaurantManageActivity" />
 
-        <activity android:name=".Activity.RegisterOwnerActivity" />
-        <activity android:name=".Activity.FavoriteRestaurantsActivity" />
+        <activity android:name=".RegisterOwnerActivity" />
+        <activity android:name=".FavoriteRestaurantsActivity" />
         <activity
-            android:name=".Activity.ManageAccountActivity"
+            android:name=".ManageAccountActivity"
             android:label="@string/title_activity_manage_account"
-            android:parentActivityName=".Activity.MainActivity" />
+            android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".Activity.ChooseLocationActivity" />
-        <activity android:name=".Activity.CheckInActivity" />
-        <activity android:name=".Activity.RestaurantManageActivity" />
-        <activity android:name=".Activity.MapActivity" />
-        <activity android:name=".Activity.OrderListActivity"></activity>
+        <activity android:name=".ChooseLocationActivity" />
+        <activity android:name=".CheckInActivity" />
+        <activity android:name=".RestaurantManageActivity" />
+        <activity android:name=".MapActivity" />
+        <activity android:name=".OrderListActivity"></activity>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
         <service android:name=".service.OrderService"/>

@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +8,9 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Offer;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.OrderListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
@@ -19,6 +19,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderListActivity extends AppCompatActivity {

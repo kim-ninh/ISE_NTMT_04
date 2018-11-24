@@ -1,7 +1,11 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,11 +23,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.Model.Owner;
-import com.hcmus.dreamers.foodmap.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;

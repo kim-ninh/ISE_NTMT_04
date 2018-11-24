@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 
-import com.hcmus.dreamers.foodmap.Activity.RestaurantInfoActivity;
+import com.hcmus.dreamers.foodmap.RestaurantInfoActivity;
 
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;

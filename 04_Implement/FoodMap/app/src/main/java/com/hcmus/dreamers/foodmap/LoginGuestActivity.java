@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -36,7 +36,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 
 import java.util.Arrays;

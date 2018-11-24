@@ -1,4 +1,4 @@
-package com.hcmus.dreamers.foodmap.Activity;
+package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 
