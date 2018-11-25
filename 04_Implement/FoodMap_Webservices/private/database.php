@@ -380,7 +380,7 @@ class database
 	// lấy ofer của nhà hàng
 	public function GetOffer($id_rest)
 	{
-		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
+		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.* FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
 		return $this->query($strQuery);
 	}
 
