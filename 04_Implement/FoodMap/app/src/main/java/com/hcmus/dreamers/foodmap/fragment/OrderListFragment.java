@@ -2,13 +2,16 @@ package com.hcmus.dreamers.foodmap.fragment;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,7 +36,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrderListFragment extends Fragment {
+public class OrderListFragment extends Fragment implements AdapterView.OnItemLongClickListener {
 
     Restaurant restaurant;
 
@@ -81,6 +84,7 @@ public class OrderListFragment extends Fragment {
 
     private void refferences(){
         listOffer = rootLayout.findViewById(R.id.list_order);
+        listOffer.setOnItemLongClickListener(this);
     }
 
 
@@ -106,5 +110,43 @@ public class OrderListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        showConfirmDialog(position);
+        return true;
+    }
+
+
+    private void showConfirmDialog(final int position){
+        new AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Xóa Đơn hàng")
+                .setMessage("Bạn có muốn xóa đơn hàng này?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final Offer offer = (Offer) offers.get(position);
+                        FoodMapApiManager.deleteOffer(offer.getId(), new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                if((int)response == ConstantCODE.SUCCESS){
+                                    offers.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(context, "Xóa Đơn hàng thành công!", Toast.LENGTH_SHORT).show();
+                                }else if((int) response == ConstantCODE.NOTFOUND){
+                                    Toast.makeText(context, "Lỗi xóa Đơn hàng không tồn tại, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(context, "Không có kết nối internet, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+
+                })
+                .setNegativeButton("Không", null)
+                .show();
     }
 }

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Offer implements Serializable{
+    @SerializedName("id")
+    private int id;
     @SerializedName("namedish")
     private String nameDish;
     @SerializedName("discount_percent")
@@ -16,6 +18,14 @@ public class Offer implements Serializable{
     private transient int status;
 
     public Offer() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Offer(String nameDish, int discountPercent, String guestEmail, int total, int status) {

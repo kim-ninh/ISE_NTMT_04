@@ -37,4 +37,5 @@ public interface ConstantURL {
     public static final String PHOTONAPIREVERSE            = "http://photon.komoot.de/reverse";
     public static final String IMAGE_RELATIVE_PATH         = "./images/%d/%s";              // %d: id_rest, %s: imageName
     public static final String URLWEBSOCKET                = "http://foodmap-notifyserver.herokuapp.com/";
+    public static final String DELETEOFFER                 = "deleteOffer.php";
 }
