@@ -103,7 +103,7 @@ public class FoodMapApiManager {
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                     }
-                    Log.w("WebService Response:", Sresponse);
+                    Log.w("deleteAccount", Sresponse);
                 }
             }
         });
@@ -753,7 +753,7 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
