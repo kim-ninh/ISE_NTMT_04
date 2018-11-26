@@ -299,7 +299,12 @@ public class ManageAccountActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
-                deleteAccount();
+                final ProgressDialog progressDialog = new ProgressDialog(ManageAccountActivity.this);
+                progressDialog.setMessage("Đang cập nhật...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+
+                deleteAccount(progressDialog);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -312,14 +317,14 @@ public class ManageAccountActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    private void deleteAccount() {
+    private void deleteAccount(final ProgressDialog progressDialog) {
         TaskCompleteCallBack deleteImageTaskCallBack;
         final TaskCompleteCallBack deleteAccountTaskCallBack;
 
         deleteAccountTaskCallBack = new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
-
+                progressDialog.dismiss();
                 if ((int) response == FoodMapApiManager.SUCCESS) {
                     Toast.makeText(ManageAccountActivity.this, "Xóa tài khoản thành công", Toast.LENGTH_LONG).show();
                     Owner.setInstance(null);
@@ -338,8 +343,10 @@ public class ManageAccountActivity extends AppCompatActivity {
                 if ((int) response == FoodMapApiManager.SUCCESS) {
                     FoodMapApiManager.deleteAcount(deleteAccountTaskCallBack);
                 } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
                     Toast.makeText(ManageAccountActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                 } else {
+                    progressDialog.dismiss();
                     Log.e("DeleteImageCallBack", "Can't delete image");
                 }
             }
@@ -382,7 +389,6 @@ public class ManageAccountActivity extends AppCompatActivity {
         uploadImageCallBack = new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
-
                 if (((String)response).matches("^(http|https)://.*"))
                 {
                     owner.setUrlImage((String) response);
@@ -390,6 +396,7 @@ public class ManageAccountActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    progressDialog.dismiss();
                     Toast.makeText(ManageAccountActivity.this, (String)response,Toast.LENGTH_SHORT).show();
                 }
             }
@@ -402,8 +409,10 @@ public class ManageAccountActivity extends AppCompatActivity {
                     owner.setUrlImage("");
                     FoodMapApiManager.uploadImage(ManageAccountActivity.this, 0, resultUri, uploadImageCallBack);
                 } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
                     Toast.makeText(ManageAccountActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_SHORT).show();
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(ManageAccountActivity.this, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_SHORT).show();
                 }
             }
