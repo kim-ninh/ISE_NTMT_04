@@ -82,6 +82,15 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.checkLogin(username, password)));
     }
 
+    /*
+     *  Hàm thực hiện việc xóa tài khoản owner, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *  Mã phản hồi gồm có SUCCESS, FAIL_INFO, NOTINTERNET
+     *
+     *  @taskCompleteCallBack: TaskCompleteCallBack  //callback-function chứa các việc cần làm sau khi thực hiện xóa tài khoản
+     *
+     *  @return void
+     * */
     public static void deleteAcount(final TaskCompleteCallBack taskCompleteCallBack)
     {
         Owner instance = Owner.getInstance();
@@ -109,8 +118,16 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.deleteAccount(instance.getUsername(), instance.getToken())));
     }
 
-    public static void createRestaurant(final Restaurant restaurant,final TaskCompleteCallBack taskCompleteCallBack)
-    {
+    /*  Hàm thực hiện việc tạo restaurant, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *   Mã phản hồi gồm có SUCCESS, FAIL_INFO, NOTINTERNET
+     *
+     *   @restaurant: Restaurant                             //Restaurant chứa thông tin về nhà hàng mới
+     *   @taskCompleteCallBack: TaskCompleteCallBack         //callback-function chứa các việc cần làm sau khi tạo nhà hàng
+     *
+     *   @return void
+     * */
+    public static void createRestaurant(final Restaurant restaurant,final TaskCompleteCallBack taskCompleteCallBack) {
         TaskRequest taskRequest = new TaskRequest();
 
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -201,6 +218,15 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.checkCode(email, code)));
     }
 
+    /*  Hàm thực hiện việc update thông tin tài khoản lên Host server, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *   Mã phản hồi gồm có SUCCESS, NOTFOUND, NOTINTERNET
+     *
+     *   @owner: Owner                                       //Owner chứa thông tin cần update của tài khoản
+     *   @taskCompleteCallBack: TaskCompleteCallBack         //callback-function chứa các việc cần làm sau khi update tài khoản
+     *
+     *   @return void
+     * */
     public static void updateAccount(final Owner owner, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -224,6 +250,19 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(owner)));
     }
 
+    /*  Hàm thực hiện việc tạo tài khoản onwer, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *   Mã phản hồi gồm có SUCCESS, NOTFOUND, NOTINTERNET
+     *
+     *   @username: String                                   //Username của account
+     *   @password: String                                   //Password của account
+     *   @name: String                                       //name của account
+     *   @phoneNumber: String                                //PhoneNumber của account
+     *   @email: String                                      //Email của account
+     *   @taskCompleteCallBack: TaskCompleteCallBack         //callback-function chứa các việc cần làm sau khi tạo Account
+     *
+     *   @return void
+     * */
     public static void createAccount(String username, String password, String name, String phoneNumber, String email, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
@@ -250,6 +289,15 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.createAccount(username,password,name, phoneNumber, email)));
     }
 
+    /*  Hàm thực hiện việc tạo tài khoản Guest khi người dùng đăng nhập bằng facebook, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *   Mã phản hồi gồm có SUCCESS, NOTFOUND, NOTINTERNET
+     *
+     *   @guest: Guest                                       //Guest chứa thông tin của user (name, email)
+     *   @taskCompleteCallBack: TaskCompleteCallBack         //callback-function chứa các việc cần làm sau khi thêm tài khoản Guest
+     *
+     *   @return void
+     * */
     public static void addGuest(Guest guest, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
@@ -280,6 +328,16 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addGuest(guest)));
     }
 
+    /*  Hàm thực hiện việc xóa Dish từ server, nhận phản hồi và gọi callback-function đính kèm theo phản hồi nhận được.
+     *
+     *   Mã phản hồi gồm có SUCCESS, NOTFOUND, NOTINTERNET
+     *
+     *   @id_rest: int                                       //ID của nhà hàng chứa Dish.
+     *   @dishName: String                                   //Tên Dish
+     *   @taskCompleteCallBack: TaskCompleteCallBack         //callback-function chứa các việc cần làm sau khi xóa Dish
+     *
+     *   @return void
+     * */
     public static void deleteDish(int id_rest, final String dishName, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
@@ -852,7 +910,7 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addRank(guestEmail, restID, star)));
     }
 
-    public static void addCheckin(int id_rest, String guest_email, final TaskCompleteCallBack taskCompleteCallBack){
+    public static void addCheckIn(int id_rest, String guest_email, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
 
         taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -864,9 +922,6 @@ public class FoodMapApiManager {
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
-                    }
-                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
-                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
@@ -880,6 +935,32 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addCheckin(id_rest, guest_email)));
     }
 
+    public static void addShare(int id_rest, String guest_email, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if(resp != null)
+                {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.addShare(id_rest, guest_email)));
+    }
 
     public static void addOrder(final Offer offer, int id_discount, final TaskCompleteCallBack taskCompleteCallBack){
         TaskRequest taskRequest = new TaskRequest();
