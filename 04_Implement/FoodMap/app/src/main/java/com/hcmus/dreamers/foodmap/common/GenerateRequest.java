@@ -19,7 +19,7 @@ import okhttp3.RequestBody;
 
 public class GenerateRequest {
 
-    public static okhttp3.Request checkLogin(String username, String password){ //if login is successful then result is not equals null
+    public static okhttp3.Request checkLogin(String username, String password) { //if login is successful then result is not equals null
 
         String url = ConstantURL.BASEURL + ConstantURL.LOGIN;
         Map<String, String> params = new HashMap<>();
@@ -34,7 +34,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createAccount(String username, String password, String name, String phoneNumber, String email){
+    public static okhttp3.Request createAccount(String username, String password, String name, String phoneNumber, String email) {
         String url = ConstantURL.BASEURL + ConstantURL.CREATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
@@ -52,7 +52,7 @@ public class GenerateRequest {
 
     }
 
-    public static okhttp3.Request addGuest(final Guest owner){
+    public static okhttp3.Request addGuest(final Guest owner) {
         String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
         Map<String, String> params = new HashMap<>();
         params.put("name", owner.getName());
@@ -66,15 +66,15 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request comment(final int id_rest, final Comment comment, final String token){
+    public static okhttp3.Request comment(final int id_rest, final Comment comment, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.COMMENT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("comment", comment.getComment());
 
-        if(comment.getEmailGuest()!= null && !comment.getEmailGuest().equals(""))
+        if (comment.getEmailGuest() != null && !comment.getEmailGuest().equals(""))
             params.put("guest_email", comment.getEmailGuest());
-        else{
+        else {
             params.put("owner_email", comment.getEmailOwner());
             params.put("token", token);
         }
@@ -88,7 +88,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addDish(final int id_rest, final Dish dish, final String token){
+    public static okhttp3.Request addDish(final int id_rest, final Dish dish, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.CREATEDISH;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -106,7 +106,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request createRestaurant(final Restaurant restaurant,final String token){
+    public static okhttp3.Request createRestaurant(final Restaurant restaurant, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.CREATERESTAURANT;
         Map<String, String> params = new HashMap<>();
 
@@ -130,7 +130,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deleteDish(final int id_rest, final String name, final String token){
+    public static okhttp3.Request deleteDish(final int id_rest, final String name, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.DELETEDISH;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -145,7 +145,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addFavorite(final int id_rest, final String guest_email){
+    public static okhttp3.Request addFavorite(final int id_rest, final String guest_email) {
         String url = ConstantURL.BASEURL + ConstantURL.ADDFAVORITE;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -159,7 +159,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deleteFavorite(final int id_rest, final String guest_email){
+    public static okhttp3.Request deleteFavorite(final int id_rest, final String guest_email) {
         String url = ConstantURL.BASEURL + ConstantURL.DELETEFAVORITE;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -173,7 +173,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getFavorite(final String guest_email){
+    public static okhttp3.Request getFavorite(final String guest_email) {
         String url = ConstantURL.BASEURL + ConstantURL.GETFAVORITE;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guest_email);
@@ -187,7 +187,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deleteAccount(final String username, final String token){
+    public static okhttp3.Request deleteAccount(final String username, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.DELETEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
@@ -201,7 +201,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateAccount(final Owner owner){
+    public static okhttp3.Request updateAccount(final Owner owner) {
         String url = ConstantURL.BASEURL + ConstantURL.UPDATEACCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("username", owner.getUsername());
@@ -210,6 +210,7 @@ public class GenerateRequest {
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
         params.put("email", owner.getEmail());
+        params.put("url_image", owner.getUrlImage());
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -219,7 +220,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateDish(final int id_rest, final Dish dish, final String token){
+    public static okhttp3.Request updateDish(final int id_rest, final Dish dish, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.UPDATEDISH;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -237,7 +238,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateLocation(final int id_rest, final Location location, final String token){
+    public static okhttp3.Request updateLocation(final int id_rest, final Location location, final String token) {
 
         String url = ConstantURL.BASEURL + ConstantURL.UPDATELOCAION;
         Map<String, String> params = new HashMap<>();
@@ -254,7 +255,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addCheckin(final int id_rest, final String guest_email){
+    public static okhttp3.Request addCheckin(final int id_rest, final String guest_email) {
 
         String url = ConstantURL.BASEURL + ConstantURL.ADDCHECKIN;
         Map<String, String> params = new HashMap<>();
@@ -270,12 +271,12 @@ public class GenerateRequest {
         return request;
     }
 
-    private static String transferDateToTime(Date date){
+    private static String transferDateToTime(Date date) {
         String result = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         return result;
     }
 
-    public static okhttp3.Request updateRestaurant(final Restaurant restaurant, final String token){
+    public static okhttp3.Request updateRestaurant(final Restaurant restaurant, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.UPDATERESTAURANT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(restaurant.getId()));
@@ -284,11 +285,11 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()) );
+        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()));
         params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
 
         params.put("url_image", restaurant.getUrlImage());
-        if (restaurant.getLocation() != null){
+        if (restaurant.getLocation() != null) {
             params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
             params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         }
@@ -302,7 +303,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request upload(final int id_rest, final String name, final String data){
+    public static okhttp3.Request upload(final int id_rest, final String name, final String data) {
         String url = ConstantURL.BASEURL + ConstantURL.UPLOAD;
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
@@ -317,7 +318,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deletePicture(final String urlImage){
+    public static okhttp3.Request deletePicture(final String urlImage) {
         String url = ConstantURL.BASEURL + ConstantURL.DELETEPICTURE;
         Map<String, String> params = new HashMap<>();
         params.put("url", urlImage);
@@ -330,7 +331,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request resetPassword(final String email){
+    public static okhttp3.Request resetPassword(final String email) {
         String url = ConstantURL.BASEURL + ConstantURL.RESETPASSWORD;
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -343,7 +344,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request checkCode(final String email, final String codeCheck){
+    public static okhttp3.Request checkCode(final String email, final String codeCheck) {
         String url = ConstantURL.BASEURL + ConstantURL.CHECKCODE;
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -357,7 +358,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getComment(final int id_rest){
+    public static okhttp3.Request getComment(final int id_rest) {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCOMMENT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -371,7 +372,7 @@ public class GenerateRequest {
     }
 
 
-    public static okhttp3.Request getLocation(final int id_rest){
+    public static okhttp3.Request getLocation(final int id_rest) {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETLOCATION;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -384,7 +385,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getRestaurant(){
+    public static okhttp3.Request getRestaurant() {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETRESTAURANT;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
@@ -394,7 +395,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getCatalog(){
+    public static okhttp3.Request getCatalog() {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETCATALOG;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
@@ -402,7 +403,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getOffer(int id_rest){
+    public static okhttp3.Request getOffer(int id_rest) {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETOFFER;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -415,7 +416,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getDiscount(int id_rest){
+    public static okhttp3.Request getDiscount(int id_rest) {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETDISCOUNT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
@@ -428,7 +429,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addOffer(final String guest_email, int total, int id_discount){
+    public static okhttp3.Request addOffer(final String guest_email, int total, int id_discount) {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.ADDOFFER;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guest_email);
@@ -443,7 +444,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addGuest(final String email, final String name){
+    public static okhttp3.Request addGuest(final String email, final String name) {
         String url = ConstantURL.BASEURL + ConstantURL.ADDGUEST;
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -457,7 +458,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request directionMap(final GeoPoint start, final GeoPoint end){
+    public static okhttp3.Request directionMap(final GeoPoint start, final GeoPoint end) {
         String baseUrl = ConstantURL.URLOSM;
         Map<String, String> params = new HashMap<>();
         params.put("api_key", ConstantURL.KEY);
@@ -473,7 +474,7 @@ public class GenerateRequest {
         return request;
     }
 
-    private static String buildCoordinates(final GeoPoint start, final GeoPoint end){
+    private static String buildCoordinates(final GeoPoint start, final GeoPoint end) {
         StringBuffer data = new StringBuffer();
         data.append(start.getLongitude());
         data.append(",");
@@ -485,7 +486,7 @@ public class GenerateRequest {
         return data.toString();
     }
 
-    public static okhttp3.Request addRank(final String guestEmail, int idRest, int star){
+    public static okhttp3.Request addRank(final String guestEmail, int idRest, int star) {
         String url = ConstantURL.BASEURL + ConstantURL.ADDRANK;
         Map<String, String> params = new HashMap<>();
         params.put("guest_email", guestEmail);
@@ -500,7 +501,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request deleteRestaurant(int idRest, final String token){
+    public static okhttp3.Request deleteRestaurant(int idRest, final String token) {
         String url = ConstantURL.BASEURL + ConstantURL.DELETERESTAURANT;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(idRest));
@@ -515,7 +516,7 @@ public class GenerateRequest {
     }
 
 
-    public static okhttp3.Request getAddressFromString(String address){
+    public static okhttp3.Request getAddressFromString(String address) {
         String baseUrl = ConstantURL.PHOTONAPI;
         Map<String, String> params = new HashMap<>();
         params.put("q", address);
@@ -530,7 +531,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getAddressFromPoint(GeoPoint point){
+    public static okhttp3.Request getAddressFromPoint(GeoPoint point) {
         String baseUrl = ConstantURL.PHOTONAPIREVERSE;
         Map<String, String> params = new HashMap<>();
         params.put("lat", String.valueOf(point.getLatitude()));
@@ -544,13 +545,12 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request addShare(final int id_rest, final String guest_email){
+    public static okhttp3.Request addShare(final int id_rest, final String guest_email) {
 
         String url = ConstantURL.BASEURL + ConstantURL.ADDSHARE;
         Map<String, String> params = new HashMap<>();
         params.put("id_rest", String.valueOf(id_rest));
         params.put("guest_email", guest_email);
-
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -560,4 +560,16 @@ public class GenerateRequest {
         return request;
     }
 
+    public static okhttp3.Request deleteOffer(int idOffer) {
+        String url = ConstantURL.BASEURL + ConstantURL.DELETEOFFER;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_offer", String.valueOf(idOffer));
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
 }

@@ -9,6 +9,7 @@ import com.facebook.AccessToken;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.LoadingActivity;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -111,6 +112,7 @@ public class FoodMapApiManager {
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                     }
+                    Log.w("deleteAccount", Sresponse);
                 }
             }
         });
@@ -234,6 +236,7 @@ public class FoodMapApiManager {
             public void OnTaskComplete(Object response) {
                 String data = response.toString();
                 if (data != null){
+                    Log.w("Update Account",data);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(data);
                     if (responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
@@ -738,6 +741,7 @@ public class FoodMapApiManager {
                 String jsonResponseString = response.toString();
 
                 if (jsonResponseString != null) {
+                    Log.w("UploadImage", jsonResponseString);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
@@ -750,7 +754,7 @@ public class FoodMapApiManager {
                         }catch (Exception e)
                         {
                             // This line should never be run
-                            Log.d("ParseJSON", e.getMessage());
+                            Log.e("ParseJSON", e.getMessage());
                         }
 
                         // Send back to caller
@@ -786,7 +790,7 @@ public class FoodMapApiManager {
             encodedData = Base64Converter.encodeToBase64(context, imageUri);
         }catch (Exception e)
         {
-            Log.d("ConvertBase64",e.getMessage());
+            Log.e("ConvertBase64",e.getMessage());
         }
         Date date = Calendar.getInstance().getTime();
         String imageName = String.format("%tF_%tT_%s",date.getTime(), date.getTime(), imageFile.getName());
@@ -803,10 +807,11 @@ public class FoodMapApiManager {
                 String jsonResponseString = response.toString();
 
                 if (jsonResponseString != null) {
+                    Log.w("deleteImage", jsonResponseString);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
-                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
                     }
                     else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND);
@@ -990,5 +995,32 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.addOffer(offer.getGuestEmail(), offer.getTotal(), id_discount)));
     }
 
+    public static void deleteOffer(int idOffer, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteOffer(idOffer)));
+    }
 }
 

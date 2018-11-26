@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -127,10 +128,9 @@ public class RestaurantInfoFragment extends Fragment {
         }
 
         context = getActivity();
-        editRestaurantActivity =(EditRestaurantActivity) getActivity();
+        editRestaurantActivity = (EditRestaurantActivity) getActivity();
 
-        if (editRestaurantActivity != null)
-        {
+        if (editRestaurantActivity != null) {
             restaurant = editRestaurantActivity.restaurant;
         }
     }
@@ -164,7 +164,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -190,7 +190,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -215,7 +215,7 @@ public class RestaurantInfoFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
 
                         int itemID = item.getItemId();
-                        switch (itemID){
+                        switch (itemID) {
                             case R.id.open_camera:
                                 dispatchTakePictureIntent();
                                 break;
@@ -254,7 +254,7 @@ public class RestaurantInfoFragment extends Fragment {
         else
             progressBar.setVisibility(View.INVISIBLE);
 
-        DownloadImageTask task = new DownloadImageTask(imgDescription,context);
+        DownloadImageTask task = new DownloadImageTask(imgDescription, context);
         task.loadImageFromUrl(restaurant.getUrlImage(), new Callback() {
             @Override
             public void onSuccess() {
@@ -320,33 +320,29 @@ public class RestaurantInfoFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private boolean checkValid(){
+    private boolean checkValid() {
 
         boolean isValid = true;
 
-        if (txtResName.length() == 0 && isValid)
-        {
-            Toast.makeText(getContext(),"Tên nhà hàng trống",Toast.LENGTH_LONG).show();
+        if (txtResName.length() == 0 && isValid) {
+            Toast.makeText(getContext(), "Tên nhà hàng trống", Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
-        if (txtAddress.length() == 0 && isValid)
-        {
-            Toast.makeText(getContext(),"Địa chỉ nhà hàng trống",Toast.LENGTH_LONG).show();
+        if (txtAddress.length() == 0 && isValid) {
+            Toast.makeText(getContext(), "Địa chỉ nhà hàng trống", Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
-        if (txtPhoneNumber.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid)
-        {
-            Toast.makeText(getContext(),"Số điện thoại không đúng", Toast.LENGTH_LONG).show();
+        if (txtPhoneNumber.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid) {
+            Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
         String openHour = lblOpenHour.getText().toString();
         String closeHour = lblCloseHour.getText().toString();
-        if (openHour.compareTo(closeHour) > 0 && isValid)
-        {
-            Toast.makeText(getContext(),"Giờ đóng cửa phải lớn hơn giờ mở cửa", Toast.LENGTH_LONG).show();
+        if (openHour.compareTo(closeHour) > 0 && isValid) {
+            Toast.makeText(getContext(), "Giờ đóng cửa phải lớn hơn giờ mở cửa", Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
@@ -359,10 +355,10 @@ public class RestaurantInfoFragment extends Fragment {
         Date openHour = new Date();
         Date closeHour = new Date();
 
-        try{
+        try {
             openHour = timeFormatter.parse(lblOpenHour.getText().toString());
             closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             //This line should never run
         }
 
@@ -383,20 +379,19 @@ public class RestaurantInfoFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_delete:
                 //Toast.makeText(context,"Delete button hit",Toast.LENGTH_LONG).show();
                 FoodMapApiManager.deleteRestaurant(restaurant, new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {
-                        if((int)response == FoodMapApiManager.SUCCESS){
+                        if ((int) response == FoodMapApiManager.SUCCESS) {
                             Intent intent = new Intent();
 
-                            intent.putExtra("isDelete",true);
+                            intent.putExtra("isDelete", true);
                             editRestaurantActivity.setResult(RESULT_OK, intent);
                             editRestaurantActivity.finish();
-                        }else if((int)response == ConstantCODE.NOTINTERNET){
+                        } else if ((int) response == ConstantCODE.NOTINTERNET) {
                             Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(context, "Xóa quán thất bại!", Toast.LENGTH_LONG).show();
@@ -411,14 +406,14 @@ public class RestaurantInfoFragment extends Fragment {
                 progressDialog.setMessage("Updating restaurant");
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
-                if(checkValid()){
+                if (checkValid()) {
                     setDataFromView();
                     FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
                             progressDialog.dismiss();
 
-                            if((int)response == FoodMapApiManager.SUCCESS) {
+                            if ((int) response == FoodMapApiManager.SUCCESS) {
                                 Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_LONG).show();
                                 Gson gson = new Gson();
                                 Intent intent = new Intent();
@@ -426,14 +421,14 @@ public class RestaurantInfoFragment extends Fragment {
 
                                 editRestaurantActivity.setResult(RESULT_OK, intent);
                                 editRestaurantActivity.finish();
-                            }else if((int)response == ConstantCODE.NOTINTERNET){
+                            } else if ((int) response == ConstantCODE.NOTINTERNET) {
                                 Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(context, "Cập nhật nhà hàng thất bại!", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
-                }else{
+                } else {
                     progressDialog.dismiss();
                     //Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
                 }
@@ -460,7 +455,9 @@ public class RestaurantInfoFragment extends Fragment {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     Uri photoURI;
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -492,8 +489,7 @@ public class RestaurantInfoFragment extends Fragment {
             startCropImageActivity(photoURI);
         }
 
-        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK)
-        {
+        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK) {
             // Chuỗi URI trả về có dạng content://<path>
             Uri imageUri = Uri.parse(data.getDataString());
             String str = imageUri.getPath();
@@ -516,28 +512,23 @@ public class RestaurantInfoFragment extends Fragment {
 
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
-                .start(getContext(),this);
+                .start(getContext(), this);
     }
 
-    private void uploadImageToServer(Uri imageUri)
-    {
-        if (imageUri != null)
-        {
+    private void uploadImageToServer(Uri imageUri) {
+        if (imageUri != null) {
             progressBar.setVisibility(View.VISIBLE);
             // Upload hình lên Server
             FoodMapApiManager.uploadImage(getContext(),
                     restaurant.getId(), imageUri, new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
-                           progressBar.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
 
                             String strResponse = (String) response;
-                            if (strResponse.matches("^(http|https)://.*"))
-                            {
+                            if (strResponse.matches("^(http|https)://.*")) {
                                 restaurant.setUrlImage(strResponse);
-                            }
-                            else
-                            {
+                            } else {
                                 Toast.makeText(getContext(), strResponse, Toast.LENGTH_LONG).show();
                             }
                         }

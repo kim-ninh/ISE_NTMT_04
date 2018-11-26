@@ -301,7 +301,10 @@
 				namedish,
 				discount_percent,
 				guest_email,
-				total
+				total,
+				status,
+				id,
+				date_order
 			] // mảng
 			
 - getDiscount:

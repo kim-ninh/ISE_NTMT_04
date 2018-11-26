@@ -96,7 +96,7 @@ public class OrderService extends Service {
     private void notification(String title, String content){
         Uri soundNotify = Uri.parse("android.resource://com.hcmus.dreamers.foodmap/" + R.raw.messenger_sound);;
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(this, "notifyfoodmapservice")
                         .setSmallIcon(R.drawable.ic_notifications)
                         .setContentTitle(title)
                         .setContentText(content)

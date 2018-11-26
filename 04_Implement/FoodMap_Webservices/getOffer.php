@@ -2,11 +2,14 @@
 include '../private/database.php';
 
 class Offer{
-	function Offer($namedish, $discount_percent, $guest_email, $total){
+	function Offer($namedish, $discount_percent, $guest_email, $total, $status, $id, $date_order){
 		$this->namedish = $namedish;
 		$this->discount_percent = $discount_percent;
 		$this->guest_email = $guest_email;
 		$this->total = $total;
+		$this->status = $status;
+		$this->id = $id;
+		$this->date_order = $date_order;
 	}
 }
 
@@ -22,7 +25,7 @@ if (isset($_GET["id_rest"]))
 	{
 		$offers = array();
 		foreach ($listOffer as $row) {
-			array_push($offers, new Offer($row["NAMEDISH"], $row["DISCOUNT_PERCENT"], $row["GUEST_EMAIL"], $row["TOTAL"]));
+			array_push($offers, new Offer($row["NAMEDISH"], $row["DISCOUNT_PERCENT"], $row["GUEST_EMAIL"], $row["TOTAL"], $row["STATUS"],$row["ID"] , $row["DATEORDER"]));
 		}
 		
 		$response["status"] = 200;
