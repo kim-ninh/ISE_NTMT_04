@@ -210,6 +210,7 @@ public class GenerateRequest {
         params.put("name", owner.getName());
         params.put("phone_number", owner.getPhoneNumber());
         params.put("email", owner.getEmail());
+        params.put("url_image",owner.getUrlImage());
         RequestBody bodyRequest = Utils.buildParameter(params);
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
