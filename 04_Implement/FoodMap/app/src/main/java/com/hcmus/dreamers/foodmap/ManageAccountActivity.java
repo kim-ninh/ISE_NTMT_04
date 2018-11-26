@@ -1,11 +1,9 @@
 package com.hcmus.dreamers.foodmap;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,11 +21,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Owner;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -146,8 +146,9 @@ public class ManageAccountActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                Toast.makeText(ManageAccountActivity.this, "action delete selected",
-                        Toast.LENGTH_LONG).show();
+
+                AlertDialog alertDeleteAccountDialog = createAlertDialog();
+                alertDeleteAccountDialog.show();
                 return true;
 
             case R.id.action_done:
@@ -252,5 +253,67 @@ public class ManageAccountActivity extends AppCompatActivity {
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
                 .start(this);
+    }
+
+    private AlertDialog createAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ManageAccountActivity.this);
+
+        builder.setMessage(R.string.confirmDeleteAccount).setTitle(R.string.title_confirmDeleteAccount);
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                deleteAccount();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the alertDeleteAccountDialog
+                Toast.makeText(ManageAccountActivity.this, "Đã hủy thao tác xóa tài khoản", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return builder.create();
+    }
+
+    private void deleteAccount() {
+        TaskCompleteCallBack deleteImageTaskCallBack;
+        final TaskCompleteCallBack deleteAccountTaskCallBack;
+
+        deleteAccountTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    Toast.makeText(ManageAccountActivity.this, "Xóa tài khoản thành công", Toast.LENGTH_SHORT);
+                    Owner.setInstance(null);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(ManageAccountActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("DeleteAccountCallBack", "Can't delete account");
+                }
+            }
+        };
+
+        deleteImageTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    FoodMapApiManager.deleteAcount(deleteAccountTaskCallBack);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(ManageAccountActivity.this, "Không có kết nối INTERNET!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("DeleteImageCallBack", "Can't delete image");
+                }
+            }
+        };
+
+        //deleteImage first, then delete account in callback function
+        if (owner.getUrlImage() != null && owner.getUrlImage().matches("^(http|https)://foodmapserver.000webhostapp.com/.*")) {
+            FoodMapApiManager.deleteImage(owner.getUrlImage(), deleteImageTaskCallBack);
+        } else {
+            FoodMapApiManager.deleteAcount(deleteAccountTaskCallBack);
+        }
     }
 }

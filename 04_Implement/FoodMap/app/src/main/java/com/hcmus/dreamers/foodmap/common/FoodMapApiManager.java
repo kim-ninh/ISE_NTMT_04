@@ -102,6 +102,7 @@ public class FoodMapApiManager {
                     else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
                         taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
                     }
+                    Log.w("WebService Response:", Sresponse);
                 }
             }
         });
