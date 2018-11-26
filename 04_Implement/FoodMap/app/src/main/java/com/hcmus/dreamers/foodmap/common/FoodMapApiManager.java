@@ -9,6 +9,7 @@ import com.facebook.AccessToken;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
+import com.hcmus.dreamers.foodmap.LoadingActivity;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -209,6 +210,7 @@ public class FoodMapApiManager {
             public void OnTaskComplete(Object response) {
                 String data = response.toString();
                 if (data != null){
+                    Log.w("Update Account",data);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(data);
                     if (responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);
@@ -681,6 +683,7 @@ public class FoodMapApiManager {
                 String jsonResponseString = response.toString();
 
                 if (jsonResponseString != null) {
+                    Log.w("UploadImage", jsonResponseString);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
@@ -693,7 +696,7 @@ public class FoodMapApiManager {
                         }catch (Exception e)
                         {
                             // This line should never be run
-                            Log.d("ParseJSON", e.getMessage());
+                            Log.e("ParseJSON", e.getMessage());
                         }
 
                         // Send back to caller
@@ -729,7 +732,7 @@ public class FoodMapApiManager {
             encodedData = Base64Converter.encodeToBase64(context, imageUri);
         }catch (Exception e)
         {
-            Log.d("ConvertBase64",e.getMessage());
+            Log.e("ConvertBase64",e.getMessage());
         }
         Date date = Calendar.getInstance().getTime();
         String imageName = String.format("%tF_%tT_%s",date.getTime(), date.getTime(), imageFile.getName());
@@ -746,6 +749,7 @@ public class FoodMapApiManager {
                 String jsonResponseString = response.toString();
 
                 if (jsonResponseString != null) {
+                    Log.w("deleteImage", jsonResponseString);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(jsonResponseString);
 
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
