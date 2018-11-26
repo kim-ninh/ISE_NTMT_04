@@ -1,6 +1,7 @@
 <?php 
 include '../private/database.php';
 
+
 $response = array();
 
 if (isset($_POST["id_rest"]) && isset($_POST["guest_email"]))

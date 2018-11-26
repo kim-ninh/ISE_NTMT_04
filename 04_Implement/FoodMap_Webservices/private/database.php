@@ -401,8 +401,18 @@ class database
 
 	public function AddCheckin($id_rest, $guest_email)
 	{
-		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'")';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'") AS RESULT';
+		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		
+		return -1;
 	}
 
 	public function GetCheckin($id_rest)
@@ -413,8 +423,18 @@ class database
 
 	public function AddShare($id_rest, $guest_email)
 	{
-		$strQuery = 'SELECT FC_ADDSHARE('.$id_rest.', "'.$guest_email.'")';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_ADDSHARE('.$id_rest.', "'.$guest_email.'") AS RESULT';
+		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		
+		return -1;
 	}
 
 	public function GetShare($id_rest)
