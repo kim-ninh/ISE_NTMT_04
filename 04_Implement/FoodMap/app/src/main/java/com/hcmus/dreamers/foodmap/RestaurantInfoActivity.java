@@ -132,7 +132,8 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         fabLocation = (FloatingActionButton) findViewById(R.id.fabLocation);
         //get Restaurant
         Intent intent = this.getIntent();
-        restaurant = (Restaurant) intent.getSerializableExtra("rest");
+        restaurant = FoodMapManager.findRestaurant(((Restaurant) intent.getSerializableExtra("rest")).getId());
+
         if(restaurant == null)
         {
             Log.i(TAG,"can't get restaurant data");
@@ -320,10 +321,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private void clickOnCheckInEvent() {
         if(isGuestLogin) {
-            startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
-
-            //reset a number of check in
-            txtNCheckIn.setText(Integer.toString(restaurant.getNum_checkin()));
+            Intent intent = new Intent(RestaurantInfoActivity.this, CheckInActivity.class);
+            intent.putExtra("restID", restaurant.getId());
+            startActivity(intent);
         }
         else{
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
@@ -334,9 +334,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         Intent intent = new Intent(RestaurantInfoActivity.this, CommentActivity.class);
         intent.putExtra("rest", restaurant);
         startActivityForResult(intent, CM_ID);
-
-        //reset  a number of comments
-        txtNComment.setText(Integer.toString(restaurant.getComments().size()));
     }
 
     private void clickOnFavoriteEvent() {
@@ -463,6 +460,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     //reset a number of shares
                     restaurant.setnShare(restaurant.getnShare() + 1);
                     txtNShare.setText(Integer.toString(restaurant.getnShare()));
+                    FoodMapApiManager.addShare(restaurant.getId(), Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            int code = (int)response;
+                            if(code == FoodMapApiManager.SUCCESS){
+                                FoodMapManager.addShare(restaurant.getId());
+                            }
+                        }
+                    });
                 }
 
                 @Override
@@ -579,5 +585,17 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //reset a number of check in
+        txtNCheckIn.setText(Integer.toString(restaurant.getNum_checkin()));
+
+        //reset  a number of comments
+        txtNComment.setText(Integer.toString(restaurant.getComments().size()));
+
     }
 }

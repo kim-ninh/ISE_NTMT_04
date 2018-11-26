@@ -103,6 +103,29 @@ public class FoodMapManager {
         }
     }
 
+    public static void addCheckIn(int id_rest){
+        int n = restaurants.size();
+        for (int i = 0; i< n; i++)
+        {
+            if (restaurants.get(i).getId() == id_rest)
+            {
+                restaurants.get(i).setNum_checkin(restaurants.get(i).getNum_checkin() + 1);
+                return;
+            }
+        }
+    }
+    public static void addShare(int id_rest){
+        int n = restaurants.size();
+        for (int i = 0; i< n; i++)
+        {
+            if (restaurants.get(i).getId() == id_rest)
+            {
+                restaurants.get(i).setnShare(restaurants.get(i).getNum_checkin() + 1);
+                return;
+            }
+        }
+    }
+
     public static List<String> getCatalogsString(){
         List<String> list = new ArrayList<>();
         int size = catalogs.size();

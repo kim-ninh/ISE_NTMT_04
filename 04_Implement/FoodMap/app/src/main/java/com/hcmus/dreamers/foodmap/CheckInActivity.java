@@ -3,11 +3,13 @@ package com.hcmus.dreamers.foodmap;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,16 +26,22 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.View.GridViewItem;
 import com.hcmus.dreamers.foodmap.adapter.ImageCheckInListAdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CheckInActivity extends AppCompatActivity {
 
+    static final String TAG = "CheckInActivity";
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int MAX_SELECTED_IMAGE = 3;
+    int restID;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -46,6 +54,13 @@ public class CheckInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get restID moved from RestaurantInfoActivity
+        Intent intent = getIntent();
+        restID = intent.getIntExtra("restID", 0);
+        if(restID == 0){
+            Log.e(TAG, "Fail to get restID");
+        }
+
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_check_in);
 
@@ -62,6 +77,8 @@ public class CheckInActivity extends AppCompatActivity {
         final ImageCheckInListAdapter adapter = new ImageCheckInListAdapter(CheckInActivity.this,
                 R.layout.adapter_image_check_in_list,
                 bitmapList);
+
+        grdCheckInImage.setAdapter(adapter);
 
         grdCheckInImage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -86,11 +103,12 @@ public class CheckInActivity extends AppCompatActivity {
             }
         });
 
+
         imgCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                     dispatchTakePictureIntent();
-                    grdCheckInImage.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
             }
         });
 
@@ -108,6 +126,18 @@ public class CheckInActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Sharer.Result result) {
                             Toast.makeText(CheckInActivity.this, "success", Toast.LENGTH_LONG).show();
+                            if(restID != 0)
+                            {
+                                FoodMapApiManager.addCheckIn(restID, Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
+                                    @Override
+                                    public void OnTaskComplete(Object response) {
+                                        int code = (int) response;
+                                        if(code == FoodMapApiManager.SUCCESS) {
+                                            FoodMapManager.addCheckIn(restID);
+                                        }
+                                    }
+                                });
+                            }
                         }
 
                         @Override
@@ -164,6 +194,7 @@ public class CheckInActivity extends AppCompatActivity {
         });
 
     }
+    //Take phato function
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(takePictureIntent.resolveActivity(getPackageManager()) != null){
