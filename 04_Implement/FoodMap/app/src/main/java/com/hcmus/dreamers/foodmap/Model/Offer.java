@@ -15,7 +15,8 @@ public class Offer implements Serializable{
     private String guestEmail;
     @SerializedName("total")
     private int total;
-    private transient int status;
+    @SerializedName("status")
+    private int status;
 
     public Offer() {
     }
