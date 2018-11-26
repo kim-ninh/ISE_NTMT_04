@@ -459,12 +459,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 public void onSuccess(Sharer.Result result) {
                     //reset a number of shares
                     restaurant.setnShare(restaurant.getnShare() + 1);
-                    txtNShare.setText(Integer.toString(restaurant.getnShare()));
                     FoodMapApiManager.addShare(restaurant.getId(), Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
                         @Override
                         public void OnTaskComplete(Object response) {
                             int code = (int)response;
                             if(code == FoodMapApiManager.SUCCESS){
+                                txtNShare.setText(Integer.toString(restaurant.getnShare()));
                                 FoodMapManager.addShare(restaurant.getId());
                             }
                         }
