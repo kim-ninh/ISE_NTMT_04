@@ -98,7 +98,7 @@ public class ManageAccountActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
 
                         int itemID = item.getItemId();
-                        switch (itemID){
+                        switch (itemID) {
                             case R.id.open_camera:
                                 dispatchTakePictureIntent();
                                 break;
@@ -121,7 +121,7 @@ public class ManageAccountActivity extends AppCompatActivity {
     }
 
     private void putDataToViews() {
-        DownloadImageTask task = new DownloadImageTask(ic_avatar,ManageAccountActivity.this);
+        DownloadImageTask task = new DownloadImageTask(ic_avatar, ManageAccountActivity.this);
         task.loadImageFromUrl(owner.getUrlImage());
         txtUserName.setText(owner.getUsername());
         txtRealName.setText(owner.getName());
@@ -144,8 +144,7 @@ public class ManageAccountActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_delete:
                 Toast.makeText(ManageAccountActivity.this, "action delete selected",
                         Toast.LENGTH_LONG).show();
@@ -155,8 +154,7 @@ public class ManageAccountActivity extends AppCompatActivity {
                 Toast.makeText(ManageAccountActivity.this, "action done selected",
                         Toast.LENGTH_LONG).show();
 
-                if (checkInputValid() == false)
-                {
+                if (checkInputValid() == false) {
                     Toast.makeText(ManageAccountActivity.this, "There's something wrong",
                             Toast.LENGTH_LONG).show();
                     return true;
@@ -171,7 +169,7 @@ public class ManageAccountActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_item_menu,menu);
+        getMenuInflater().inflate(R.menu.edit_item_menu, menu);
         return true;
     }
 
@@ -196,7 +194,9 @@ public class ManageAccountActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     Uri photoURI;
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -228,8 +228,7 @@ public class ManageAccountActivity extends AppCompatActivity {
             startCropImageActivity(photoURI);
         }
 
-        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK)
-        {
+        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK) {
             // Chuỗi URI trả về có dạng content://<path>
             Uri imageUri = Uri.parse(data.getDataString());
             String str = imageUri.getPath();

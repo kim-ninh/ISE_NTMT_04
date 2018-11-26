@@ -61,8 +61,7 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
         restaurant = (Restaurant) data.getSerializableExtra("rest");
 
         //restaurant should not be null
-        if (restaurant == null)
-        {
+        if (restaurant == null) {
             Toast.makeText(EditRestaurantActivity.this,
                     "Restaurant is null",
                     Toast.LENGTH_LONG).show();
@@ -87,8 +86,7 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             // Update restaurant layout when modify Dish item
             Gson gson = new Gson();
             Intent intent = new Intent();
