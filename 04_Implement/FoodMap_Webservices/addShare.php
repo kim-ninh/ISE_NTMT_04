@@ -1,5 +1,5 @@
 <?php 
-include "../private/database.php"
+include "../private/database.php";
 
 $response = array();
 
