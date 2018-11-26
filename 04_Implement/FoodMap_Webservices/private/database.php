@@ -187,8 +187,16 @@ class database
 
 	public function DeleteOwner($username)
 	{
-		$strQuery = 'CALL SP_DELETE_OWNER("'.$username.'")';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_DELETE_OWNER("'.$username.'") AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+		
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		return -1;
 	}
 
 	public function DeleteRestaurant($id_rest)

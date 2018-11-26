@@ -7,7 +7,7 @@ if (isset($_POST["id_offer"]))
 {
 	$conn = new database();
 	$conn->connect();
-	if ($conn->DeteleOffer($_POST["id_offer"]) != -1)
+	if ($conn->DeleteOffer($_POST["id_offer"]) != -1)
 	{
 		$response["status"] = 200;
 		$response["message"] = "Success";
