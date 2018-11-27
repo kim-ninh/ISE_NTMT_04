@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @JsonAdapter(OrderDeserializer.class)
 public class Offer implements Serializable{
@@ -118,6 +119,24 @@ public class Offer implements Serializable{
         this.status = status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Offer)) return false;
+        Offer offer = (Offer) o;
+        return getId() == offer.getId();
+    }
 
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    public boolean compareDateOrder(Date date){
+        if(this.dateOrder.getYear() == date.getYear() && this.dateOrder.getMonth() == date.getMonth() && this.dateOrder.getDate() == date.getDate()){
+            return true;
+        }
+        return false;
+    }
 }
 

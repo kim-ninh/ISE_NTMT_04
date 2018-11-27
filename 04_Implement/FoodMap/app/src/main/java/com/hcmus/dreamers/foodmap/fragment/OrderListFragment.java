@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -41,6 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,8 +53,9 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
 
     private ListView listOffer;
     private OrderListAdapter adapter;
-    private List<Offer> offers;
+    private List<Offer> offers, offersAdapter;
     private int id_rest;
+    private Calendar c = Calendar.getInstance();
 
     Context context = null;
     LinearLayout rootLayout;
@@ -106,7 +109,8 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                     ResponseJSON responseJSON = ParseJSON.parseFromAllResponse(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         offers = ParseJSON.parseOffer(resp);
-                        adapter = new OrderListAdapter(context, R.layout.order_item_list, offers);
+                        offersAdapter = new ArrayList<>(offers);
+                        adapter = new OrderListAdapter(context, R.layout.order_item_list, offersAdapter);
                         listOffer.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
@@ -142,7 +146,10 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                             @Override
                             public void OnTaskComplete(Object response) {
                                 if((int)response == ConstantCODE.SUCCESS){
-                                    offers.remove(position);
+                                    Offer o = offersAdapter.get(position);
+                                    int index = offers.indexOf(o);
+                                    offers.remove(index);
+                                    offersAdapter.remove(position);
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(context, "Xóa Đơn hàng thành công!", Toast.LENGTH_SHORT).show();
                                 }else if((int) response == ConstantCODE.NOTFOUND){
@@ -170,11 +177,13 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
         int id = item.getItemId();
         switch (id){
             case R.id.action_GroupByNone:
-                Toast.makeText(getContext(),"Group by None clicked", Toast.LENGTH_LONG).show();
-                return true;
+                c = Calendar.getInstance();
+                offersAdapter = offers;
+                adapter.setOffers(offersAdapter);
+                adapter.notifyDataSetChanged();
+            return true;
 
             case R.id.action_GroupByDate:
-                final Calendar c = Calendar.getInstance();
                 int mYear, mMonth, mDay;
                 mYear = c.get(Calendar.YEAR);
                 mMonth = c.get(Calendar.MONTH);
@@ -188,7 +197,11 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                                                   int monthOfYear, int dayOfMonth) {
                                 Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
                                 c.set(year, monthOfYear, dayOfMonth);
-                                Toast.makeText(context, date.toString(), Toast.LENGTH_SHORT).show();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    offersAdapter = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
+                                    adapter.setOffers(offersAdapter);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
