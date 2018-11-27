@@ -120,6 +120,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtPrice = (TextView) findViewById(R.id.txtPrice);
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
+        lstDish.setFocusable(false);
         lnrCheckIn = (LinearLayout) findViewById(R.id.lnrCheckIn);
         lnrComment = (LinearLayout) findViewById(R.id.lnrComment);
         lnrFavorite = (LinearLayout)findViewById(R.id.lnrFavourite);

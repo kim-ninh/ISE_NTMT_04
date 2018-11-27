@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -219,10 +220,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // thêm một marker vào map
-    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-
+    private void addMarker(String title, String description, GeoPoint point){
         markers.clear();
-        markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
+
+        OverlayItem marker = new OverlayItem(title, description, point);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+        marker.setMarker(drawable);
+        markers.add(marker); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
@@ -248,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
-        return mOverlay;
     }
 
     private void moveCamera(GeoPoint point){
@@ -583,12 +586,6 @@ public class MainActivity extends AppCompatActivity {
             for (Restaurant rest : restaurants) {
                 addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
-        }
-    }
-
-    void uploadDataToAccount() {
-        if(FoodMapApiManager.isGuestLogin()){
-
         }
     }
 }
