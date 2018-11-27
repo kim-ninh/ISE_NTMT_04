@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap.jsonapi;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
@@ -11,6 +12,7 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
+import com.hcmus.dreamers.foodmap.deserializer.OrderDeserializer;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
 
 import org.json.JSONArray;
@@ -231,6 +233,9 @@ public class ParseJSON {
         JSONObject object = new JSONObject(response);
         JSONArray array = object.getJSONArray("data");
         int length = array.length();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(OrderDeserializer.class, new OrderDeserializer());
+        Gson gson = gsonBuilder.create();
         for(int i = 0; i < length; i++){
             Offer offer = gson.fromJson(array.getJSONObject(i).toString(), Offer.class);
             list.add(offer);

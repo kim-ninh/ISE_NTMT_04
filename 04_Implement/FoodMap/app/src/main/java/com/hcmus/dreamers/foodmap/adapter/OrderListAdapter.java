@@ -69,4 +69,8 @@ public class OrderListAdapter extends ArrayAdapter<Offer>{
         }
         return view;
     }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
 }
