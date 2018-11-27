@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap.fragment;
 
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,7 +35,11 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -168,7 +174,25 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                 return true;
 
             case R.id.action_GroupByDate:
-                Toast.makeText(getContext(),"Group by Date clicked", Toast.LENGTH_LONG).show();
+                final Calendar c = Calendar.getInstance();
+                int mYear, mMonth, mDay;
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+                                c.set(year, monthOfYear, dayOfMonth);
+                                Toast.makeText(context, date.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
                 return true;
 
             default:

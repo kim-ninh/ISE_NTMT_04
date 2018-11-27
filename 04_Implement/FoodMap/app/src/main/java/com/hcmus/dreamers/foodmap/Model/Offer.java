@@ -1,9 +1,23 @@
 package com.hcmus.dreamers.foodmap.Model;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.hcmus.dreamers.foodmap.deserializer.OrderDeserializer;
+
+import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+@JsonAdapter(OrderDeserializer.class)
 public class Offer implements Serializable{
     @SerializedName("id")
     private int id;
@@ -17,6 +31,8 @@ public class Offer implements Serializable{
     private int total;
     @SerializedName("status")
     private int status;
+    @SerializedName("date_order")
+    private Date dateOrder;
 
     public Offer() {
     }
@@ -35,6 +51,24 @@ public class Offer implements Serializable{
         this.guestEmail = guestEmail;
         this.total = total;
         this.status = status;
+    }
+
+    public Date getDateOrder() {
+        return dateOrder;
+    }
+
+    public Offer(int id, String nameDish, int discountPercent, String guestEmail, int total, int status, Date dateOrder) {
+        this.id = id;
+        this.nameDish = nameDish;
+        this.discountPercent = discountPercent;
+        this.guestEmail = guestEmail;
+        this.total = total;
+        this.status = status;
+        this.dateOrder = dateOrder;
+    }
+
+    public void setDateOrder(Date dateOrder) {
+        this.dateOrder = dateOrder;
     }
 
     public Offer(String nameDish, int discountPercent, String guestEmail, int total) {
@@ -83,4 +117,7 @@ public class Offer implements Serializable{
     public void setStatus(int status) {
         this.status = status;
     }
+
+
 }
+
