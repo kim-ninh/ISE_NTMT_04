@@ -9,7 +9,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["lat"]) && isset($_POST["lon"]) && 
 	$lon = $_POST["lon"];
 	$token = $_POST["token"];
 
-	$check = checkToken($token);
+	$check = checkTokenForRestaurant($id_rest, $token);
 
 	if ($check == true)
 	{

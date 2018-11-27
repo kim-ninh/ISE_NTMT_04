@@ -3,9 +3,9 @@ include '../private/checkToken.php';
 
 $response = array();
 
-if (isset($_POST["token"]) && isset($_POST["id_rest"] && isset($_POST["namedish"] && isset($_POST["discount_percent"]) && isset($_POST["timestart"] && isset($_POST["timeend"]) )
+if (isset($_POST["token"]) && isset($_POST["id_rest"]) && isset($_POST["namedish"]) && isset($_POST["discount_percent"]) && isset($_POST["timestart"] && isset($_POST["timeend"]))
 {
-	$check = checkToken($_POST["token"]);
+	$check = checkTokenForRestaurant($_POST["id_rest"], $_POST["token"]);
 
 	if ($check == true)
 	{
