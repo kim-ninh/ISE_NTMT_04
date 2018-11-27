@@ -534,6 +534,7 @@ public class FoodMapApiManager {
                 String resp = response.toString();
 
                 if (resp != null) {
+                    Log.w("deleteRestaurant", resp);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         Owner.getInstance().getListRestaurant().remove(restaurant);
@@ -563,6 +564,7 @@ public class FoodMapApiManager {
                 String resp = response.toString();
 
                 if (resp != null) {
+                    Log.w("updateRestaurant",resp);
                     ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         taskCompleteCallBack.OnTaskComplete(SUCCESS);

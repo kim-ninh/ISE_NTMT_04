@@ -17,4 +17,6 @@
     <string name="cancel">Hủy</string>
     <string name="confirmDeleteAccount">Bạn có muốn xóa tài khoản không? Sau khi xóa sẽ không thể khôi phục.</string>
     <string name="title_confirmDeleteAccount">Cảnh báo xóa tài khoản</string>
+    <string name="confirmDeleteRestaurant">Bạn có muốn xóa quán ăn này không? Sau khi xóa sẽ không thể khôi phục</string>
+    <string name="title_confirmDeleteRestaurant">Cảnh báo xóa quán ăn</string>
 </resources>

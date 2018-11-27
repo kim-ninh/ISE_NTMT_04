@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap.fragment;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,10 +38,12 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.EditDishActivity;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.ManageAccountActivity;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.define.ConstantValue;
 import com.squareup.picasso.Callback;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -94,6 +98,7 @@ public class RestaurantInfoFragment extends Fragment {
     EditText txtDescription;
     ProgressBar progressBar;
 
+    Uri resultUri;
 
     public RestaurantInfoFragment() {
         // Required empty public constructor
@@ -381,60 +386,167 @@ public class RestaurantInfoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                //Toast.makeText(context,"Delete button hit",Toast.LENGTH_LONG).show();
-                FoodMapApiManager.deleteRestaurant(restaurant, new TaskCompleteCallBack() {
-                    @Override
-                    public void OnTaskComplete(Object response) {
-                        if ((int) response == FoodMapApiManager.SUCCESS) {
-                            Intent intent = new Intent();
-
-                            intent.putExtra("isDelete", true);
-                            editRestaurantActivity.setResult(RESULT_OK, intent);
-                            editRestaurantActivity.finish();
-                        } else if ((int) response == ConstantCODE.NOTINTERNET) {
-                            Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(context, "Xóa quán thất bại!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                showAlertDialog();
                 return true;
 
             case R.id.action_done:
-                //Toast.makeText(context,"Done button hit",Toast.LENGTH_LONG).show();
                 final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                progressDialog.setMessage("Updating restaurant");
+                progressDialog.setMessage("Đang cập nhật");
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
+
                 if (checkValid()) {
                     setDataFromView();
-                    FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
-                        @Override
-                        public void OnTaskComplete(Object response) {
-                            progressDialog.dismiss();
-
-                            if ((int) response == FoodMapApiManager.SUCCESS) {
-                                Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_LONG).show();
-                                Gson gson = new Gson();
-                                Intent intent = new Intent();
-                                intent.putExtra("restJSON", gson.toJson(restaurant));
-
-                                editRestaurantActivity.setResult(RESULT_OK, intent);
-                                editRestaurantActivity.finish();
-                            } else if ((int) response == ConstantCODE.NOTINTERNET) {
-                                Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context, "Cập nhật nhà hàng thất bại!", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+                    updateRestaurant(progressDialog);
                 } else {
                     progressDialog.dismiss();
-                    //Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateRestaurant(final ProgressDialog progressDialog) {
+        final TaskCompleteCallBack updateRestaurantCallBack;
+        TaskCompleteCallBack deleteImageCallBack;
+        final TaskCompleteCallBack uploadImageCallBack;
+
+        updateRestaurantCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                    Gson gson = new Gson();
+                    Intent intent = new Intent();
+                    intent.putExtra("restJSON", gson.toJson(restaurant));
+
+                    editRestaurantActivity.setResult(RESULT_OK, intent);
+                    editRestaurantActivity.finish();
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        uploadImageCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if (((String) response).matches("^(http|https)://.*")) {
+                    restaurant.setUrlImage((String) response);
+                    FoodMapApiManager.updateRestaurant(restaurant, updateRestaurantCallBack);
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, (String) response, Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        deleteImageCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    restaurant.setUrlImage("");
+                    FoodMapApiManager.uploadImage(context, restaurant.getId(), resultUri, uploadImageCallBack);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_SHORT).show();
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        // Nếu chưa chọn hình thì cập nhật trực tiếp tài khoản
+        if (resultUri == null) {
+            FoodMapApiManager.updateRestaurant(restaurant, updateRestaurantCallBack);
+        } else {
+            // Nếu tài khoản chưa có hình hoặc hình ko thuộc foodmapserver thì upload trực tiếp
+            // Ngược lại thì xóa hình cũ -> up hình mới lên
+            if (restaurant.getUrlImage() == null || !restaurant.getUrlImage().matches("^(http|https)://foodmapserver.000webhostapp.com/.*")) {
+                FoodMapApiManager.uploadImage(context, restaurant.getId(), resultUri, uploadImageCallBack);
+            } else {
+                // Tài khoản đã có hình thuộc foodmapserver
+                String absolutePath = restaurant.getUrlImage();
+                String imageName = new File(absolutePath).getName();
+                String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, restaurant.getId(), imageName);
+                FoodMapApiManager.deleteImage(relativePath, deleteImageCallBack);
+            }
+        }
+    }
+
+    private void showAlertDialog() {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.title_confirmDeleteRestaurant)
+                .setMessage(R.string.confirmDeleteRestaurant)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final ProgressDialog progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Đang xóa...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        deleteRestaurant(progressDialog);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void deleteRestaurant(final ProgressDialog progressDialog) {
+        TaskCompleteCallBack deleteImageTaskCallBack;
+        final TaskCompleteCallBack deleteRestaurantTaskCallBack;
+
+        deleteRestaurantTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    Toast.makeText(context, "Xóa nhà hàng thành công", Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("isDelete", true);
+                    editRestaurantActivity.setResult(RESULT_OK, intent);
+                    editRestaurantActivity.finish();
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.e("DeleteRestCallBack", "Can't delete restaurant");
+                }
+            }
+        };
+
+        deleteImageTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    FoodMapApiManager.deleteRestaurant(restaurant, deleteRestaurantTaskCallBack);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    progressDialog.dismiss();
+                    Log.e("DeleteImageCallBack", "Can't delete image");
+                }
+            }
+        };
+
+        // Nếu hình đang lưu thuộc foodmapserver thì xóa hình trước, xóa nhà hàng sau
+        if (restaurant.getUrlImage() != null && restaurant.getUrlImage().matches("^(http|https)://foodmapserver.000webhostapp.com/.*")) {
+
+            String absolutePath = restaurant.getUrlImage();
+            String imageName = new File(absolutePath).getName();
+            String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, restaurant.getId(), imageName);
+
+            FoodMapApiManager.deleteImage(relativePath, deleteImageTaskCallBack);
+        } else {
+            FoodMapApiManager.deleteRestaurant(restaurant, deleteRestaurantTaskCallBack);
         }
     }
 
@@ -499,9 +611,9 @@ public class RestaurantInfoFragment extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
+                resultUri = result.getUri();
                 imgDescription.setImageURI(resultUri);
-                uploadImageToServer(resultUri);
+                //uploadImageToServer(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(context,
