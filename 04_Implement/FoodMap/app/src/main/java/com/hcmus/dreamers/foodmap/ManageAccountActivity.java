@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -53,11 +55,11 @@ public class ManageAccountActivity extends AppCompatActivity {
     EditText txtRealName;
     EditText txtPhoneNumber1;
     EditText txtEmail;
-    Button buttonChangePass;
-    EditText txtCurrentPass;
-    EditText txtNewPass;
+    TextInputEditText txtCurrentPass;
+    TextInputEditText txtNewPass;
     LinearLayout passwordSection;
     LinearLayout avatarSection;
+    AppCompatCheckBox checkBoxChangePassword;
 
     Owner owner;
     Uri resultUri;
@@ -79,16 +81,6 @@ public class ManageAccountActivity extends AppCompatActivity {
     }
 
     private void handleClickEvent() {
-        buttonChangePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int isVisible = passwordSection.getVisibility();
-                if (isVisible == View.VISIBLE)
-                    passwordSection.setVisibility(View.INVISIBLE);
-                else
-                    passwordSection.setVisibility(View.VISIBLE);
-            }
-        });
 
         avatarSection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +117,16 @@ public class ManageAccountActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
+
+        checkBoxChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkBoxChangePassword.isChecked())
+                    passwordSection.setVisibility(View.VISIBLE);
+                else
+                    passwordSection.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void putDataToViews() {
@@ -142,11 +144,11 @@ public class ManageAccountActivity extends AppCompatActivity {
         txtRealName = (EditText) findViewById(R.id.txtRealName);
         txtPhoneNumber1 = (EditText) findViewById(R.id.txtPhoneNumber1);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
-        buttonChangePass = (Button) findViewById(R.id.buttonChangePass);
-        txtCurrentPass = (EditText) findViewById(R.id.txtCurrentPass);
-        txtNewPass = (EditText) findViewById(R.id.txtNewPass);
+        txtCurrentPass = (TextInputEditText) findViewById(R.id.txtCurrentPass);
+        txtNewPass = (TextInputEditText) findViewById(R.id.txtNewPass);
         passwordSection = (LinearLayout) findViewById(R.id.passwordSection);
         avatarSection = (LinearLayout) findViewById(R.id.avatarSection);
+        checkBoxChangePassword = findViewById(R.id.checkBoxChangePassword);
     }
 
     @Override
@@ -166,8 +168,6 @@ public class ManageAccountActivity extends AppCompatActivity {
 
                 if (checkInputValid() == false) {
                     progressDialog.dismiss();
-                    Toast.makeText(ManageAccountActivity.this, "There's something wrong",
-                            Toast.LENGTH_LONG).show();
                     return true;
                 }
                 setDataFromView();
@@ -183,6 +183,10 @@ public class ManageAccountActivity extends AppCompatActivity {
         owner.setName(txtRealName.getText().toString());
         owner.setEmail(txtEmail.getText().toString());
         owner.setPhoneNumber(txtPhoneNumber1.getText().toString());
+        if (checkBoxChangePassword.isChecked())
+        {
+            owner.setPassword(txtNewPass.getText().toString());
+        }
     }
 
     @Override
@@ -209,6 +213,23 @@ public class ManageAccountActivity extends AppCompatActivity {
         if (!ownerMail.matches(emailPattern) && isValid) {
             Toast.makeText(ManageAccountActivity.this, "Email chưa chính xác", Toast.LENGTH_SHORT).show();
             isValid = false;
+        }
+
+        if (checkBoxChangePassword.isChecked())
+        {
+            if (! owner.getPassword().equals(txtCurrentPass.getText().toString()) && isValid)
+            {
+                Toast.makeText(ManageAccountActivity.this,
+                        "Mật khẩu hiện tại không trùng khớp, hãy thử lại",Toast.LENGTH_LONG).show();
+                isValid = false;
+            }
+
+            if (txtNewPass.getText().toString().isEmpty() && isValid)
+            {
+                Toast.makeText(ManageAccountActivity.this,
+                        "Mật khẩu mới đang trống. Hãy điền mật khẩu mới vào.", Toast.LENGTH_LONG).show();
+                isValid = false;
+            }
         }
         return isValid;
     }
