@@ -1,101 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@null">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/add_dish_toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:background="?attr/colorAccent"
-        android:elevation="4dp"
-        app:title="Thêm món ăn"/>
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/add_dish_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tên món ăn"
-                android:textSize="20dp"/>
-            <EditText
-                android:layout_margin="10dp"
-                android:id="@+id/edtName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:textColorHint="#afb1bf"
-                android:textSize="20dp"
-                android:padding="10dp"
-                android:maxLines="1"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorAccent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Thêm món ăn" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Giá"
-                android:textSize="20dp"/>
-            <EditText
-                android:layout_margin="10dp"
-                android:id="@+id/edtPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="numberSigned"
-                android:textColorHint="#a6a8b6"
-                android:maxLines="1"
-                android:textSize="20dp"
-                android:padding="10dp" />
+    </android.support.design.widget.AppBarLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Loại món ăn"
-                android:textSize="20dp"/>
+    <include layout="@layout/content_add_dish"/>
 
-            <Spinner
-                android:id="@+id/spnCatalog"
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#009e0f"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:text ="Thêm"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"/>
 
-            <ImageView
-                android:id="@+id/imgImage"
-                android:layout_width="150dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="fitXY"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_upload"
-                android:background="@null"/>
-
-            <Button
-                android:id="@+id/btnSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/com_facebook_button_send_background_color"
-                android:scaleType="fitCenter"
-                android:textAllCaps="false"
-                android:textSize="20dp"
-                android:layout_marginTop="40dp"
-                android:text ="Thêm"
-                android:layout_gravity="center_horizontal"/>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
