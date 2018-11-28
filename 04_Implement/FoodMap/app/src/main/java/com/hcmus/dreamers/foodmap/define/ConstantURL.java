@@ -1,7 +1,7 @@
 package com.hcmus.dreamers.foodmap.define;
 
 public interface ConstantURL {
-    public static final String BASEURL                     = "https://foodmapserver.000webhostapp.com/";
+    public static final String BASEURL                     = "https://foodmapserver.000webhostapp.com/api/";
     public static final String LOGIN                       = "login.php";
     public static final String CREATEACCOUNT               = "createAccount.php";
     public static final String COMMENT                     = "comment.php";
