@@ -1,101 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--https://stackoverflow.com/questions/9326299/android-scrollview-and-buttons-at-bottom-of-the-screen-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@null">
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/add_dish_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
+        android:background="?attr/colorAccent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:background="?attr/colorAccent"
-        android:elevation="4dp"
-        app:title="Thêm món ăn"/>
+        app:title="Thêm món ăn" />
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
+            android:id="@+id/dockPanel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tên món ăn"
-                android:textSize="20dp"/>
-            <EditText
-                android:layout_margin="10dp"
-                android:id="@+id/edtName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:textColorHint="#afb1bf"
-                android:textSize="20dp"
-                android:padding="10dp"
-                android:maxLines="1"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Giá"
-                android:textSize="20dp"/>
-            <EditText
-                android:layout_margin="10dp"
-                android:id="@+id/edtPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:inputType="numberSigned"
-                android:textColorHint="#a6a8b6"
-                android:maxLines="1"
-                android:textSize="20dp"
-                android:padding="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Loại món ăn"
-                android:textSize="20dp"/>
-
-            <Spinner
-                android:id="@+id/spnCatalog"
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
-
-            <ImageView
-                android:id="@+id/imgImage"
-                android:layout_width="150dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="fitXY"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_upload"
-                android:background="@null"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/custom_border"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/btnSubmit"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/com_facebook_button_send_background_color"
-                android:scaleType="fitCenter"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="#009e0f"
+                android:text="Thêm"
                 android:textAllCaps="false"
-                android:textSize="20dp"
-                android:layout_marginTop="40dp"
-                android:text ="Thêm"
-                android:layout_gravity="center_horizontal"/>
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
         </LinearLayout>
-    </ScrollView>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/dockPanel">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Thông tin bắt buộc"
+                    android:textSize="18sp" />
+
+                <EditText
+
+                    android:id="@+id/edtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_border"
+                    android:drawableLeft="@drawable/ic_restaurant_menu_48dp"
+                    android:hint="Tên món ăn *"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_border"
+                    android:drawableLeft="@drawable/ic_attach_money_48dp"
+                    android:hint="Giá tiền"
+                    android:inputType="numberSigned"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/custom_border">
+
+                    <ImageView
+                        android:id="@+id/category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_category_48dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/category"
+                        android:text="Loại món ăn"
+                        android:textSize="14sp" />
+
+                    <Spinner
+                        android:id="@+id/spnCatalog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Hình ảnh"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/imgImage"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/default_image" />
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
 </LinearLayout>

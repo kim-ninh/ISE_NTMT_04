@@ -9,7 +9,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["token"]) && isset($_POST["id_disco
 	$id_rest = $_POST["id_rest"];
 	$id_discount = $_POST["id_discount"];
 
-	$check = checkToken($token);
+	$check = checkTokenForRestaurant($id_rest, $token);
 	if ($check)
 	{
 		$conn = new database();

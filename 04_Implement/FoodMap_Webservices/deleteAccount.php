@@ -8,7 +8,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 	$username = $_POST["username"];
 	$token = $_POST["token"];
 	
-	$check = checkToken($token);
+	$check = checkTokenForUsername($username, $token);
 
 	if ($check == true)
 	{

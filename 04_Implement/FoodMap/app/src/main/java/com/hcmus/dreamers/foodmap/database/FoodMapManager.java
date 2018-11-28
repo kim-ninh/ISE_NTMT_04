@@ -71,6 +71,9 @@ public class FoodMapManager {
         FoodMapManager.restaurants = restaurants;
 
         DBManager dbManager = new DBManager(context);
+        // xóa dữ liệu cũ
+        dbManager.clearDB();
+
         for (Restaurant rest: FoodMapManager.restaurants) {
             dbManager.addRestaurant(rest);
         }

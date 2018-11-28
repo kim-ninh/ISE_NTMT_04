@@ -640,5 +640,18 @@ public class DBManager extends SQLiteOpenHelper {
 
         return restaurants;
     }
+
+    public void clearDB(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_RANK, null, null);
+        db.delete(TABLE_COMMENTS, null, null);
+        db.delete(TABLE_LOCATION, null, null);
+        db.delete(TABLE_DISH, null, null);
+        db.delete(TABLE_CATALOGS, null, null);
+        db.delete(TABLE_RESTAURANT, null, null);
+
+        db.close();
+    }
 }
 

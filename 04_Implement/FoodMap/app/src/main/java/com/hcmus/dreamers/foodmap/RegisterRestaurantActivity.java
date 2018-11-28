@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,19 +46,21 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
     private final int CLA_ID = 1008;
     private static final int REQUEST_OPEN_GALERY = 12345;
     private static final int REQUEST_TAKE_PHOTO = 11111;
+    private final String LAT_LONG_FORMAT = "Lat %f - Long %f";
 
+    private RelativeLayout selectLocationSection;
     private EditText edtName;
     private EditText edtAddress;
     private EditText edtDesciption;
     private EditText edtPhoneNumber;
 
     private Button btnRegister;
-    private Button btnLocation;
 
     private ImageView igvUpload;
 
     private TextView txvOpen;
     private TextView txvClose;
+    private TextView txvLatLongInfo;
 
     private Toolbar toolbar;
 
@@ -87,8 +90,10 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         edtDesciption = (EditText) findViewById(R.id.edt_description_restaurant);
         edtPhoneNumber = (EditText) findViewById(R.id.edt_phone_number);
 
-        btnLocation = (Button) findViewById(R.id.btnLocation);
-        btnLocation.setOnClickListener(this);
+        selectLocationSection = (RelativeLayout) findViewById(R.id.selectLocationSection);
+        selectLocationSection.setOnClickListener(this);
+
+        txvLatLongInfo = (TextView) findViewById(R.id.latLongInfo);
 
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
@@ -254,7 +259,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                     }
                 });
             }
-        } else if (id == R.id.btnLocation) {
+        } else if (id == R.id.selectLocationSection) {
 
             String address = edtAddress.getText().toString();
 
@@ -277,9 +282,10 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                 String address = data.getStringExtra("address");
                 if (lat != -1000.0 && lon != -1000.0) {
                     restaurant.setLocation(new GeoPoint(lat, lon));
+                    txvLatLongInfo.setText(String.format(LAT_LONG_FORMAT, lat,lon));
                 }
                 if (address != null) {
-                    edtAddress.setText(address);
+                    //edtAddress.setText(address);
                 }
             }
         }

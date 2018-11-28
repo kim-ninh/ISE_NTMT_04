@@ -24,7 +24,7 @@ if (isset($_POST["username"]) && isset($_POST["token"]))
 	}
 	$valueCol[strlen($valueCol) - 1] = ' ';
 
-	$check = checkToken($token);
+	$check = checkTokenForUsername($username, $token);
 
 	if ($check == true)
 	{

@@ -26,7 +26,7 @@ if (isset($_POST["id_rest"]) && isset($_POST["name"]) && isset($_POST["token"]))
 		}
 	}
 	//check token
-	$check = checkToken($token);
+	$check = checkTokenForRestaurant($id_rest, $token);
 
 	if ($check == true)
 	{

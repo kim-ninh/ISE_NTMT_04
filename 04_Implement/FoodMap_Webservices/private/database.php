@@ -208,7 +208,7 @@ class database
 		
 		foreach($result as $row)
 		{
-			return $row["RESULT"];
+			return 1;
 		}
 		return -1;
 	}
@@ -442,6 +442,17 @@ class database
 		$strQuery = 'SELECT SUM(TOTAL_SHARE) COUNT FROM SHARE WHERE ID_REST = '.$id_rest;
 		return $this->query($strQuery);
 	}
+
+
+	public function CheckExitsRestaurant($id_rest, $username)
+	{
+		$strQuery = 'SELECT ID FROM RESTAURANT WHERE ID ='.$id_rest.' AND OWNER_USERNAME="'.$username.'"';
+		$check = $this->query($strQuery);
+		if ($check == -1 || $check == null)
+			return false;
+		return true;		
+	}
+
 
 	// close connection
 	public function disconnect()
