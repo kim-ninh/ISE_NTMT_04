@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="10dp">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tlbDishDetail"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:background="?attr/colorAccent"
+        android:elevation="4dp"
+        app:title="Dish detail"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,7 +44,7 @@
                 android:textSize="25sp"/>
 
             <TextView
-                android:id="@+id/dish_price"
+                android:id="@+id/txt_dish_price"
                 android:layout_toEndOf="@+id/txt_dish_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +92,7 @@
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mô tả ở đây bla bla"/>
+        android:text="Mô tả đang được cập nhật"/>
 
     <View
         android:layout_width="match_parent"

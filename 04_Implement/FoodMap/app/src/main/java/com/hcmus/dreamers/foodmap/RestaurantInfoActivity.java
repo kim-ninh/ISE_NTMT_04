@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -132,8 +133,10 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         fabOffer= (FloatingActionButton) findViewById(R.id.fabOffer);
         fabLocation = (FloatingActionButton) findViewById(R.id.fabLocation);
         //get Restaurant
+        int restID;
         Intent intent = this.getIntent();
-        restaurant = FoodMapManager.findRestaurant(((Restaurant) intent.getSerializableExtra("rest")).getId());
+        restID = intent.getIntExtra("restID", -1);
+        restaurant = FoodMapManager.findRestaurant(restID);
 
         if(restaurant == null)
         {
@@ -266,6 +269,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             lstDish.setAdapter(dishInfoList);
             //make the list view don't have scroll
             justifyListViewHeightBasedOnChildren(lstDish);
+
+            lstDish.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(RestaurantInfoActivity.this, DishDetailActivity.class);
+                    intent.putExtra("dish", restaurant.getDishes().get(position));
+                    startActivity(intent);
+                }
+            });
 
         }catch (Exception e)
         {
