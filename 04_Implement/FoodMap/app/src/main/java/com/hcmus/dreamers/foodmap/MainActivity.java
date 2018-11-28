@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (restaurant != null){
                     Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                    intent.putExtra("rest", (Serializable) restaurant);
+                    intent.putExtra("restID", restaurant.getId());
                     startActivity(intent);
                 }
                 return false;

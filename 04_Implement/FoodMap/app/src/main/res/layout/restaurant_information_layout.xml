@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginTop="?attr/actionBarSize"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <!--1-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#50a4a1a1"
+        android:background="#90797575"
         android:paddingTop="3dp"
-        android:paddingBottom="3dp">
+        android:paddingBottom="3dp"
+        android:translationZ="10dp">
 
         <!--1.1-->
         <LinearLayout
@@ -141,8 +141,6 @@
 
         </LinearLayout><!--1.5-->
 
-
-
     </LinearLayout>
 
     <!--2-->
@@ -154,6 +152,7 @@
 
         <!--2-->
         <LinearLayout
+            android:layout_marginTop="43dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -162,7 +161,7 @@
                 android:id="@+id/imgDescription"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:background="#c02d2d" />
+                android:background="#c02d2d"/>
 
             <!--2.2-->
             <TextView
@@ -473,4 +472,4 @@
 
     </ScrollView><!--2-->
 
-</LinearLayout>
+</FrameLayout>
