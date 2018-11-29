@@ -141,7 +141,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final Offer offer = (Offer) offers.get(position);
+                        final Offer offer = (Offer) offersAdapter.get(position);
                         FoodMapApiManager.deleteOffer(offer.getId(), new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
