@@ -26,6 +26,7 @@ public class DownloadImageTask {
         if (url != null && !url.equals("")){
             Picasso.get()
                     .load(url)
+                    .noFade()
                     .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
                     .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
                     .into(imageView, new Callback() {
