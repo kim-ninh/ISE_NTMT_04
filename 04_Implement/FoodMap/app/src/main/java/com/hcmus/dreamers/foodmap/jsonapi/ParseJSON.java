@@ -2,6 +2,9 @@ package com.hcmus.dreamers.foodmap.jsonapi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
@@ -245,7 +248,7 @@ public class ParseJSON {
 
     public static Offer parseOfferObject(String response) throws JSONException {
         JSONObject object = new JSONObject(response);
-        Offer offer = gson.fromJson(object.getJSONObject("order").toString(), Offer.class);
+        Offer offer = gson.fromJson(object.getString("order"), Offer.class);
         return offer;
     }
 
