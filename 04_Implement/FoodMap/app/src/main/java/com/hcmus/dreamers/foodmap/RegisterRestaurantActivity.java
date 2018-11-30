@@ -212,8 +212,11 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                         final int code = (int) response;
                         if (code > 0) {
                             restaurant.setId(code);
-                            // upload ảnh
-                            FoodMapApiManager.uploadImage(RegisterRestaurantActivity.this, code, "avatarRes", imageURI, new TaskCompleteCallBack() {
+                            // upload ảnh, tránh trùng tên
+                            Date date = Calendar.getInstance().getTime();
+                            String imageName = String.format("%tF_%tT_%s",date.getTime(), date.getTime(), "avatarRes");
+
+                            FoodMapApiManager.uploadImage(RegisterRestaurantActivity.this, code, imageName, imageURI, new TaskCompleteCallBack() {
                                 @Override
                                 public void OnTaskComplete(Object response) {
                                     String url = (String) response;
@@ -307,6 +310,9 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                 Uri resultUri = result.getUri();
 
                 igvUpload.setImageURI(resultUri);
+                Log.w("EncodedPath", resultUri.getEncodedPath());
+                Log.w("Path",resultUri.getPath());
+                imageURI = resultUri.getPath();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Log.e("CropImageResult: ", error.getMessage());

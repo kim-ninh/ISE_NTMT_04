@@ -222,6 +222,8 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
                 Uri resultUri = result.getUri();
 
                 imgImage.setImageURI(resultUri);
+                urlImage = resultUri.getPath();
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(AddDishActivity.this,

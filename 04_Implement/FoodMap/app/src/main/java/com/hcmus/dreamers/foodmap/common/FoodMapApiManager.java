@@ -9,7 +9,6 @@ import com.facebook.AccessToken;
 import com.hcmus.dreamers.foodmap.AsyncTask.DoingTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
-import com.hcmus.dreamers.foodmap.LoadingActivity;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -616,7 +615,7 @@ public class FoodMapApiManager {
     public static void uploadImage(Context context, int id_rest, String name, String url, final TaskCompleteCallBack taskCompleteCallBack){
 
         try {
-            String convert = Base64Converter.binary2Base64(context, url);
+            String convert = Base64Converter.binary2Base64(url);
 
             TaskRequest taskRequest = new TaskRequest();
             taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
@@ -624,6 +623,7 @@ public class FoodMapApiManager {
                 public void OnTaskComplete(Object response) {
                     String sResponse = response.toString();
                     if (response != null){
+                        Log.w("Upload Image", sResponse);
                         ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(sResponse);
                         if (responseJSON.getCode() == ConstantCODE.SUCCESS){
                             try {
