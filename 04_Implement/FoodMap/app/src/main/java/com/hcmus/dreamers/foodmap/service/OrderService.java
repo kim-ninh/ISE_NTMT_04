@@ -1,12 +1,15 @@
 package com.hcmus.dreamers.foodmap.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -32,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OrderService extends Service {
+    private static final String CHANNEL_ID = "notifyfoodmapservice";
     private Socket socket;
     private String name_rest;
     private int id_rest;
@@ -94,14 +98,16 @@ public class OrderService extends Service {
 
 
     private void notification(String title, String content){
-        Uri soundNotify = Uri.parse("android.resource://com.hcmus.dreamers.foodmap/" + R.raw.messenger_sound);;
+        Uri soundNotify = Uri.parse("android.resource://com.hcmus.dreamers.foodmap/" + R.raw.messenger_sound);
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, "notifyfoodmapservice")
                         .setSmallIcon(R.drawable.ic_notifications)
                         .setContentTitle(title)
                         .setContentText(content)
                         .setSound(soundNotify)
-                        .setAutoCancel(true);;
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        createNotificationChannel();
         int NOTIFICATION_ID = 12345;
 
         Intent targetIntent = new Intent(this, OrderListActivity.class);
@@ -110,6 +116,27 @@ public class OrderService extends Service {
         builder.setContentIntent(contentIntent);
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            Uri soundNotify = Uri.parse("android.resource://com.hcmus.dreamers.foodmap/" + R.raw.messenger_sound);
+            AudioAttributes audioAttribute = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+                    .build();
+            channel.setSound(soundNotify, audioAttribute);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }
