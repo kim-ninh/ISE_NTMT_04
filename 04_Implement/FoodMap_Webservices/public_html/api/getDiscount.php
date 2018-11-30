@@ -2,7 +2,7 @@
 include '../../private/database.php';
 
 class Discount{
-	Discount($id, $id_rest, $namedish, $discount_percent, $timestart, $timeend){
+	function Discount($id, $id_rest, $namedish, $discount_percent, $timestart, $timeend){
 		$this->id = $id;
 		$this->id_rest = $id_rest;
 		$this->namedish = $namedish;

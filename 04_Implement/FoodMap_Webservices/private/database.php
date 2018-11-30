@@ -108,7 +108,17 @@ class database
 
     			if ($this->query($queryAddLocation) != -1)
     			{
-    				return $id;
+    				$queryAddToPreRestaurant = 'INSERT INTO PRE_RESTAURANT (ID_REST) VALUES ('.$id.')';
+    				if ($this->query($queryAddToPreRestaurant) != -1)
+    				{
+    					return $id;
+    				}
+    				else
+    				{
+    					$queryDeleteRest = 'DELETE FROM RESTAURANT WHERE RESTAURANT.ID = '.$id;
+	    				$this->query($queryDeleteRest);
+	    				return -1;
+    				}
     			}
     			else
     			{
@@ -453,6 +463,26 @@ class database
 		return true;		
 	}
 
+	// admin control
+	public function LoginAdmin($username, $password)
+	{
+		$strQuery = 'SELECT FC_LOGIN_ADMIN("'.$username.'","'.$password.'") AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			if ($row["RESULT"] == 1)
+				return 1;
+			break;
+		}
+
+		return -1;
+	}
+
+
+	
 
 	// close connection
 	public function disconnect()
