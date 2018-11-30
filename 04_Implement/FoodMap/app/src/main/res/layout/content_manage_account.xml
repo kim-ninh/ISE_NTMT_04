@@ -32,14 +32,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_border">
-                <ImageView
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/ic_avatar"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginRight="10dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/app_name"
-                    app:srcCompat="@drawable/avatar_boss" />
+                    android:src="@drawable/avatar_boss"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@android:color/white"
+                    android:layout_marginRight="10dp"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
