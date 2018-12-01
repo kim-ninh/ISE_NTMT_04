@@ -17,11 +17,17 @@ io.sockets.on('connection', function (socket) {
 	//io.sockets.emit('serverguitinnhan', { noidung: "okbaby" });
   socket.on('register', function (email) {//email of user ---------- send from user when connect
 	if(email){
-			if (users.findIndex(soc => soc.email === email) == -1){
+		index = users.findIndex(soc => soc.email === email);
+			if (index == -1){
 				socket.email = email;
 				users.push(socket);
 				console.log("Email: " + socket.email);
-				console.log("ID: " + socket.id);
+				console.log("Device ID: " + socket.id);
+			}else{
+				socket.email = email;
+				users[index] = socket;
+				console.log("Email: " + socket.email);
+				console.log("Device ID: " + socket.id);
 			}
 	}
   });
