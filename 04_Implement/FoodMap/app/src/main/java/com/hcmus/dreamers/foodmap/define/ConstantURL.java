@@ -41,4 +41,5 @@ public interface ConstantURL {
     public static final String ADDSHARE                    = "addShare.php";
 	public static final String CREATEDISCOUNT              = "createDiscount.php";
     public static final String DELETEDISCOUNT              = "deleteDiscount.php";
+	public static final String DELETEOFFER                 = "deleteOffer.php";
 }
