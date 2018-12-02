@@ -102,6 +102,11 @@ public class DiscountListInfoActivity extends AppCompatActivity implements Adapt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (!FoodMapApiManager.isGuestLogin()) {
+            Toast.makeText(DiscountListInfoActivity.this, "Bạn phải đăng nhập mới được đặt món", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(DiscountListInfoActivity.this, AddOrderActivity.class);
         intent.putExtra("id_discount", discounts.get(position).getId());
         startActivity(intent);

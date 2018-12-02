@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DiscountListAdapter;
@@ -32,7 +33,6 @@ import java.util.regex.Pattern;
 public class AddOrderActivity extends AppCompatActivity {
 
     private Toolbar tlbAddOrder;
-    private EditText edtEmail;
     private EditText edtTotal;
     private Button btnSubmit;
 
@@ -65,25 +65,20 @@ public class AddOrderActivity extends AppCompatActivity {
         setSupportActionBar(tlbAddOrder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        edtEmail = (EditText) findViewById(R.id.txtEmail);
         edtTotal = (EditText) findViewById(R.id.txtTotal);
 
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtEmail.getText().length() == 0 || edtTotal.getText().length() == 0) {
-                    Toast.makeText(AddOrderActivity.this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                if (edtTotal.getText().length() == 0) {
+                    Toast.makeText(AddOrderActivity.this, "Vui lòng nhập số lượng", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (!isEmailValid(edtEmail.getText().toString())) {
-                    Toast.makeText(AddOrderActivity.this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 Offer offer = new Offer();
-                offer.setGuestEmail(edtEmail.getText().toString());
+                offer.setGuestEmail(Guest.getInstance().getEmail());
                 offer.setTotal(Integer.parseInt(edtTotal.getText().toString()));
 
                 final ProgressDialog progressDialog = new ProgressDialog(AddOrderActivity.this);
@@ -102,7 +97,7 @@ public class AddOrderActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), "Đặt món thành công", Toast.LENGTH_LONG).show();
                             return;
                         } else if (code == FoodMapApiManager.FAIL_INFO) {
-                            Toast.makeText(AddOrderActivity.this, "Kiểm tra lại thông tin vừa nhập", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddOrderActivity.this, "Xin lỗi, Discount này đã hết hạn", Toast.LENGTH_LONG).show();
                         } else if (code == ConstantCODE.NOTINTERNET) {
                             Toast.makeText(AddOrderActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
                         }
@@ -122,12 +117,5 @@ public class AddOrderActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 }
