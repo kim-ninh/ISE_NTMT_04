@@ -364,7 +364,7 @@ class database
 
 		foreach($result as $row)
 		{
-			if ($row["RESULT"] === "1")
+			if ($row["RESULT"] == 1)
 			{
 				return 0;
 			}

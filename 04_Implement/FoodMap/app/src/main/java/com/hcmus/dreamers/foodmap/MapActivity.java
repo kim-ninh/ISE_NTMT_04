@@ -179,8 +179,7 @@ public class MapActivity extends AppCompatActivity{
 
     }
 
-    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-
+    private void addMarker(String title, String description, GeoPoint point){
         markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
@@ -200,7 +199,6 @@ public class MapActivity extends AppCompatActivity{
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
-        return mOverlay;
     }
 
     private void showingPath(){

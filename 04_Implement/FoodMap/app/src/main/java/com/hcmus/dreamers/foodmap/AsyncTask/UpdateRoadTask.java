@@ -56,12 +56,6 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Locatio
             roadOverlay.setWidth(10);
             roadOverlay.setColor(Color.BLUE);
             roadOverlay.setGeodesic(true);
-            roadOverlay.setOnClickListener(new Polyline.OnClickListener() {
-                @Override
-                public boolean onClick(Polyline polyline, MapView mapView, GeoPoint geoPoint) {
-                    return false;
-                }
-            });
             mapView.getOverlays().add(roadOverlay);
             mapView.invalidate();
             onTaskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
@@ -74,6 +68,5 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Locatio
 
     public void removePolyline() {
        mapView.getOverlays().clear();
-
     }
 }
