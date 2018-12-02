@@ -20,11 +20,11 @@ if (isset($_POST["name"]) && isset($_POST["data"]) && isset($_POST["id"]))
     $data = $_POST["data"];
     $data_decode = base64_decode($data);
 
-    $upload_dir = "./images/".$id."/".$img_name;
+    $upload_dir = "../images/".$id."/".$img_name;
     $path = url()."/images/".$id."/".$img_name;
 
-    if (!file_exists("./images/".$id)) {
-        mkdir("./images/".$id, 0777, true);
+    if (!file_exists("../images/".$id)) {
+        mkdir("../images/".$id, 0777, true);
     }
     
     if (file_exists($upload_dir)){

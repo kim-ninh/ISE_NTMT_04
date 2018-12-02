@@ -35,7 +35,7 @@ public interface ConstantURL {
     public static final String GETFAVORITE                 = "getFavorite.php";
     public static final String PHOTONAPI                   = "http://photon.komoot.de/api/";
     public static final String PHOTONAPIREVERSE            = "http://photon.komoot.de/reverse";
-    public static final String IMAGE_RELATIVE_PATH         = "./images/%d/%s";              // %d: id_rest, %s: imageName
+    public static final String IMAGE_RELATIVE_PATH         = "../images/%d/%s";              // %d: id_rest, %s: imageName
     public static final String URLWEBSOCKET                = "http://foodmap-notifyserver.herokuapp.com/";
     public static final String ADDCHECKIN                  = "addCheckin.php";
     public static final String ADDSHARE                    = "addShare.php";
