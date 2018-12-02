@@ -322,9 +322,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.fabOffer:
                 //add offer here
-                Intent intent = new Intent(RestaurantInfoActivity.this, DiscountListInfoActivity.class);
-                intent.putExtra("rest", (Serializable) restaurant);
-                startActivity(intent);
+                Intent intentOfferAct = new Intent(RestaurantInfoActivity.this, DiscountListInfoActivity.class);
+                intentOfferAct.putExtra("rest", (Serializable) restaurant);
+                startActivity(intentOfferAct);
                 break;
             case R.id.fabLocation:
                 Intent intent = new Intent(RestaurantInfoActivity.this, MapActivity.class);
