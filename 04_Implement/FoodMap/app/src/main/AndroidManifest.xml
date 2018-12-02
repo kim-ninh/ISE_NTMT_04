@@ -58,6 +58,7 @@
         <activity android:name=".CommentActivity" />
         <activity android:name=".RegisterRestaurantActivity" />
         <activity android:name=".AddDishActivity" />
+		<activity android:name=".AddDiscountActivity"/>
         <activity
             android:name=".EditDishActivity"
             android:label="@string/title_activity_manage_dish"
