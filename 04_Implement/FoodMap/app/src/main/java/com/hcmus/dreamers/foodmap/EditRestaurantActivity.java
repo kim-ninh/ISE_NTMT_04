@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.ViewPagerAdapter;
 import com.hcmus.dreamers.foodmap.fragment.DishListFragment;
+import com.hcmus.dreamers.foodmap.fragment.DiscountListFragment;
 import com.hcmus.dreamers.foodmap.fragment.OneFragment;
 import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
 import com.hcmus.dreamers.foodmap.fragment.RestaurantInfoFragment;
@@ -49,6 +50,12 @@ public class EditRestaurantActivity extends AppCompatActivity implements Restaur
         orderListFragment.setId_rest(restaurant.getId());
         orderListFragment.setContext(EditRestaurantActivity.this);
         adapter.addFragment(orderListFragment, "ĐƠN ĐẶT HÀNG");
+		
+		DiscountListFragment discountListFragment = new DiscountListFragment();
+        discountListFragment.setId_rest(restaurant.getId());
+        discountListFragment.setRestaurant(restaurant);
+        discountListFragment.setContext(EditRestaurantActivity.this);
+        adapter.addFragment(discountListFragment, "DISCOUNT");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

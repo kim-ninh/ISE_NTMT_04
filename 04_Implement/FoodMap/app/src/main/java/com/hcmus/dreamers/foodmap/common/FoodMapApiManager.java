@@ -12,6 +12,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Dish;
+import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
@@ -724,8 +725,17 @@ public class FoodMapApiManager {
     }
 
     // dành cho guest
-    public static void getDiscount(String id_rest, TaskCompleteCallBack onTaskCompleteCallBack){
+    public static void getDiscount(int id_rest, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
 
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                taskCompleteCallBack.OnTaskComplete(response.toString());
+            }
+        });
+
+        taskRequest.execute(new DoingTask(GenerateRequest.getDiscount(id_rest)));
     }
 
 
@@ -1023,6 +1033,62 @@ public class FoodMapApiManager {
             }
         });
         taskRequest.execute(new DoingTask(GenerateRequest.deleteOffer(idOffer)));
+    }
+	
+	    public static void createDiscount(final Discount discount, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.createDiscount(discount, Owner.getInstance().getToken())));
+    }
+	
+	public static void deleteDiscount(int id_rest, int id_discount, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.deleteDiscount(id_rest, id_discount, Owner.getInstance().getToken())));
     }
 }
 
