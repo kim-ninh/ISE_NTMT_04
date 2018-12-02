@@ -119,6 +119,10 @@ public class DiscountListFragment extends Fragment implements AdapterView.OnItem
         fabAddDiscount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+				if (discounts == null || discounts.isEmpty()) {
+                    Toast.makeText(context, "Quán chưa có món ăn nào, không thể tạo Discount!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(context, AddDiscountActivity.class);
                 intent.putExtra("rest", (Serializable) restaurant);
                 startActivity(intent);
