@@ -572,4 +572,37 @@ public class GenerateRequest {
                 .build();
         return request;
     }
+	
+	    public static okhttp3.Request createDiscount(final Discount discount, final String token) {
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.CREATEDISCOUNT;
+        Map<String, String> params = new HashMap<>();
+        params.put("id_rest", String.valueOf(discount.getId_rest()));
+        params.put("namedish", discount.getNameDish());
+        params.put("discount_percent", String.valueOf(discount.getDiscountPercent()));
+        params.put("timestart", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(discount.getTimeStart()));
+        params.put("timeend", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(discount.getTimeEnd()));
+        params.put("token", token);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(baseUrl)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+	
+	    public static okhttp3.Request deleteDiscount(final int id_rest, final int id_discount, final String token) {
+        String url = ConstantURL.BASEURL + ConstantURL.DELETEDISCOUNT;
+        Map<String, String> params = new HashMap<>();
+        params.put("token", token);
+        params.put("id_rest", String.valueOf(id_rest));
+        params.put("id_discount", String.valueOf(id_discount));
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
 }
