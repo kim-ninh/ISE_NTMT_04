@@ -39,5 +39,6 @@ public interface ConstantURL {
     public static final String URLWEBSOCKET                = "http://foodmap-notifyserver.herokuapp.com/";
     public static final String ADDCHECKIN                  = "addCheckin.php";
     public static final String ADDSHARE                    = "addShare.php";
-    public static final String DELETEOFFER                 = "deleteOffer.php";
+	public static final String CREATEDISCOUNT              = "createDiscount.php";
+    public static final String DELETEDISCOUNT              = "deleteDiscount.php";
 }
