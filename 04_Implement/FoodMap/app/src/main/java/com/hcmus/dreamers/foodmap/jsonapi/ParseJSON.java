@@ -262,10 +262,11 @@ public class ParseJSON {
             JSONObject o = array.getJSONObject(i);
             Discount discount = new Discount();
             discount.setId(o.getInt("id"));
+            discount.setNameDish(o.getString("namedish"));
             discount.setId_rest(o.getInt("id_rest"));
             discount.setDiscountPercent(o.getInt("discount_percent"));
-            discount.setTimeStart(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timestart")));
-            discount.setTimeEnd(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timeend")));
+            discount.setTimeStart(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o.getString("timestart")));
+            discount.setTimeEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o.getString("timeend")));
             list.add(discount);
         }
         return list;
