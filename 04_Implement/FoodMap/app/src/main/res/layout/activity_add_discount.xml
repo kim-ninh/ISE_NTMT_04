@@ -41,7 +41,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Tên món"
-                    android:textSize="14sp"/>
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"/>
 
                 <Spinner
                     android:id="@+id/spnDishName"
@@ -62,6 +63,8 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:paddingLeft="10dp"
                     android:text="Chiết khấu" />
 
                 <EditText
@@ -72,7 +75,7 @@
                     android:ems="10"
                     android:inputType="number"
                     android:background="@drawable/custom_border"
-                    android:textSize="14sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -85,7 +88,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:text="Kết thúc" />
+                    android:textSize="18sp"
+                    android:paddingLeft="10dp"
+                    android:text="Bắt đầu" />
 
                 <LinearLayout
                     android:layout_weight="4"
@@ -131,7 +136,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:text="Bắt đầu" />
+                    android:textSize="18sp"
+                    android:paddingLeft="10dp"
+                    android:text="Kết thúc" />
 
                 <LinearLayout
                     android:layout_weight="4"
