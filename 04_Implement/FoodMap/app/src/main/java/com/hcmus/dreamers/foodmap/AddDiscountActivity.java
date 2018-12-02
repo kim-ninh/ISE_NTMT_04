@@ -182,7 +182,7 @@ public class AddDiscountActivity extends AppCompatActivity implements View.OnCli
                 return;
             }
 
-            if (edtDiscountPercent.getText().toString() == null) {
+            if (edtDiscountPercent.getText().length() == 0) {
                 Toast.makeText(AddDiscountActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
                 return;
             }
