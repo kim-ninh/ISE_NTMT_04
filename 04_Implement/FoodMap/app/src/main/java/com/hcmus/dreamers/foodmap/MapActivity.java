@@ -64,6 +64,14 @@ public class MapActivity extends AppCompatActivity{
 
     FloatingActionButton fabSearch;
 
+
+    private GeoPoint startPointEx;
+    private GeoPoint endPointEx;
+    private String startName;
+    private String endName;
+    private String startAddress;
+    private String endAddress;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -109,6 +117,9 @@ public class MapActivity extends AppCompatActivity{
             double lat = location.getLatitude();
             double lon = location.getLongitude();
             startPoint = new GeoPoint(lat, lon);
+
+            //add marker of end point
+            addMarker("title","description",endPoint);
 
             showingPath();
         }
@@ -193,8 +204,8 @@ public class MapActivity extends AppCompatActivity{
     }
 
     private void showingPath(){
-        //add marker of end point
-        addMarker("title","description",endPoint);
+        //moving camera to the start point
+        moveCamera(startPoint);
 
         ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
         pointsList.add(startPoint);
@@ -223,6 +234,7 @@ public class MapActivity extends AppCompatActivity{
     }
 
     void searchAutoCompleteSupportInit(){
+
         final Dialog dialog = new Dialog(MapActivity.this);
         dialog.setContentView(R.layout.dialog_input_location);
         dialog.setCanceledOnTouchOutside(true);
@@ -280,32 +292,34 @@ public class MapActivity extends AppCompatActivity{
         atclStart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = detailAddresses.get(position).getName();
-                String address = detailAddresses.get(position).toString();
-                GeoPoint point = detailAddresses.get(position).getPoint();
-                startPoint = point;
-                atclStart.setText(address);
-                addMarker(name, address, point);
+                startName = detailAddresses.get(position).getName();
+                startAddress = detailAddresses.get(position).toString();
+                startPointEx = detailAddresses.get(position).getPoint();
+                atclStart.setText( startAddress);
+
             }
         });
         atclDestination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = detailAddresses.get(position).getName();
-                String address = detailAddresses.get(position).toString();
-                GeoPoint point = detailAddresses.get(position).getPoint();
-                endPoint = point;
-                atclDestination.setText(address);
-                addMarker(name, address, point);
-                mapController.setCenter(point);
+                endName = detailAddresses.get(position).getName();
+                endAddress = detailAddresses.get(position).toString();
+                endPointEx = detailAddresses.get(position).getPoint();
+                atclDestination.setText(endAddress);
+
+                mapController.setCenter(endPointEx);
             }
         });
 
         btnFindWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(startPoint != null && endPoint != null) {
+                if(startPointEx != null && endPointEx != null) {
                     updateRoadTask.removePolyline();
+                    startPoint = startPointEx;
+                    endPoint = endPointEx;
+                    addMarker(startName, startAddress, startPointEx);
+                    addMarker(endName, endAddress, endPointEx);
                     showingPath();
                 }
 

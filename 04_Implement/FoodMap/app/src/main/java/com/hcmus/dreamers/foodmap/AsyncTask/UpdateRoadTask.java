@@ -73,6 +73,7 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Locatio
     }
 
     public void removePolyline() {
-        roadOverlay.onDestroy();
+       mapView.getOverlays().clear();
+
     }
 }
