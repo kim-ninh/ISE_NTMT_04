@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         if((Owner.getInstance() != null) && !Owner.getInstance().getEmail().equals("")  && OrderSocket.isNULL()){
             //start service
             Intent myIntent = new Intent(MainActivity.this, OrderService.class);
-            myIntent.putExtra("email", Owner.getInstance().getEmail());
+            myIntent.putExtra("email", Owner.getInstance().getUsername());
             // Gọi phương thức startService (Truyền vào đối tượng Intent)
             startService(myIntent);
         }

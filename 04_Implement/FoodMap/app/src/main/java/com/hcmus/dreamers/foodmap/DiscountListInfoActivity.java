@@ -25,6 +25,7 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,8 @@ public class DiscountListInfoActivity extends AppCompatActivity implements Adapt
 
         Intent intent = new Intent(DiscountListInfoActivity.this, AddOrderActivity.class);
         intent.putExtra("id_discount", discounts.get(position).getId());
+        intent.putExtra("restaurant", (Serializable) restaurant);
+        intent.putExtra("discount_percent", discounts.get(position).getDiscountPercent());
         startActivity(intent);
     }
 

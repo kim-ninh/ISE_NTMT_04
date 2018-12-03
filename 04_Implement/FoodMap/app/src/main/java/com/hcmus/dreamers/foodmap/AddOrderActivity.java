@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,27 +46,41 @@ public class AddOrderActivity extends AppCompatActivity {
     private EditText edtTotal;
     private Button btnSubmit;
     private Socket socket;
-    final ProgressDialog progressDialog = new ProgressDialog(AddOrderActivity.this);
-    private int id_discount;
+    private ProgressDialog progressDialog;
+    private int id_discount, discount_percent;
+    private Restaurant restaurant;
 
-
-    private OrderEmitterListener receiveResult = new OrderEmitterListener(new TaskCompleteCallBack() {
+    Emitter.Listener receiveResult = new Emitter.Listener() {
         @Override
-        public void OnTaskComplete(Object response) {
-            try {
-                JSONObject resp = new JSONObject(response.toString());
-                if(resp.getInt("status") == ConstantCODE.SUCCESS){
-                    Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
-                }
-                progressDialog.dismiss();
-            } catch (JSONException e) {
-                progressDialog.dismiss();
-            }
-        }
-    });
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressDialog.dismiss();
+                    JSONObject resp = null;
+                    try {
+                        resp = new JSONObject(args[0].toString());
+                        if(resp.getInt("status") == ConstantCODE.SUCCESS){
+                            Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+            });
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        socket.disconnect();
+        Toast.makeText(this, "Disconnect", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void onResume() {
@@ -77,11 +93,13 @@ public class AddOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_order);
         socket = OrderSocket.getInstance();
         socket.connect();
+        socket.emit("register", Guest.getInstance().getEmail());
         socket.on("receive_result", receiveResult);
         Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
         Intent data = getIntent();
         id_discount = (int) data.getIntExtra("id_discount", -1);
-
+        restaurant = (Restaurant) data.getSerializableExtra("restaurant");
+        discount_percent = data.getIntExtra("discount_percent", 0);
         if (id_discount == -1) {
             finish();
         }
@@ -108,17 +126,20 @@ public class AddOrderActivity extends AppCompatActivity {
 
 
                 Offer offer = new Offer();
+                offer.setStatus(0);
+                offer.setDiscountPercent(discount_percent);
                 offer.setGuestEmail(Guest.getInstance().getEmail());
                 offer.setTotal(Integer.parseInt(edtTotal.getText().toString()));
+                offer.setDateOrder(Calendar.getInstance().getTime());
 
-
+                progressDialog = new ProgressDialog(AddOrderActivity.this);
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage("Creating Order");
                 progressDialog.show();
 
-                //String orderRequest = createOrder(email_owner, offer.getGuestEmail(), name_rest, id_rest, id_discount, offer);
-               // socket.emit("send_order", orderRequest);
-
+                String orderRequest = createOrder(restaurant.getOwnerUsername(), offer.getGuestEmail(), restaurant.getName(), restaurant.getId(), id_discount, offer);
+                socket.emit("send_order", orderRequest);
+                Toast.makeText(AddOrderActivity.this, orderRequest, Toast.LENGTH_LONG).show();
 
 //                // tạo Discount
 //                FoodMapApiManager.addOrder(offer, id_discount, new TaskCompleteCallBack() {
