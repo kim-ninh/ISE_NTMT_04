@@ -132,7 +132,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
 
                 Intent intent = new Intent(FavoriteRestaurantsActivity.this, RestaurantInfoActivity.class);
                 deletedRestID = favorRestaurant.get(position).getId();
-                intent.putExtra("rest",favorRestaurant.get(position));
+                intent.putExtra("restID",favorRestaurant.get(position).getId());
                 startActivity(intent);
             }
         });
