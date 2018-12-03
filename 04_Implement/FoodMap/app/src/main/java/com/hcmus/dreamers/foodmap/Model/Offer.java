@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.hcmus.dreamers.foodmap.deserializer.OrderDeserializer;
+import com.hcmus.dreamers.foodmap.serializer.OrderSerializer;
 
 import org.json.JSONObject;
 
@@ -18,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-@JsonAdapter(OrderDeserializer.class)
+@JsonAdapter(OrderSerializer.class)
 public class Offer implements Serializable{
     @SerializedName("id")
     private int id;
@@ -130,6 +131,10 @@ public class Offer implements Serializable{
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public String getDateString(){
+        return dateOrder.getYear() + "-" + dateOrder.getMonth() + "-" + dateOrder.getDate() + " " + dateOrder.getHours() + ":" + dateOrder.getMinutes() + ":" + dateOrder.getSeconds();
     }
 
     public boolean compareDateOrder(Date date){
