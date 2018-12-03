@@ -13,6 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
@@ -22,8 +26,12 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
+import com.hcmus.dreamers.foodmap.serializer.OrderSerializer;
+import com.hcmus.dreamers.foodmap.websocket.OrderEmitterListener;
+import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -35,8 +43,27 @@ public class AddOrderActivity extends AppCompatActivity {
     private Toolbar tlbAddOrder;
     private EditText edtTotal;
     private Button btnSubmit;
-
+    private Socket socket;
+    final ProgressDialog progressDialog = new ProgressDialog(AddOrderActivity.this);
     private int id_discount;
+
+
+    private OrderEmitterListener receiveResult = new OrderEmitterListener(new TaskCompleteCallBack() {
+        @Override
+        public void OnTaskComplete(Object response) {
+            try {
+                JSONObject resp = new JSONObject(response.toString());
+                if(resp.getInt("status") == ConstantCODE.SUCCESS){
+                    Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(AddOrderActivity.this, resp.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+                progressDialog.dismiss();
+            } catch (JSONException e) {
+                progressDialog.dismiss();
+            }
+        }
+    });
 
 
     @Override
@@ -48,7 +75,10 @@ public class AddOrderActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_order);
-
+        socket = OrderSocket.getInstance();
+        socket.connect();
+        socket.on("receive_result", receiveResult);
+        Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
         Intent data = getIntent();
         id_discount = (int) data.getIntExtra("id_discount", -1);
 
@@ -81,28 +111,34 @@ public class AddOrderActivity extends AppCompatActivity {
                 offer.setGuestEmail(Guest.getInstance().getEmail());
                 offer.setTotal(Integer.parseInt(edtTotal.getText().toString()));
 
-                final ProgressDialog progressDialog = new ProgressDialog(AddOrderActivity.this);
+
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage("Creating Order");
                 progressDialog.show();
 
-                // tạo Discount
-                FoodMapApiManager.addOrder(offer, id_discount, new TaskCompleteCallBack() {
-                    @Override
-                    public void OnTaskComplete(Object response) {
-                        int code = (int) response;
-                        progressDialog.dismiss();
-                        if (code == ConstantCODE.SUCCESS) {
-                            AddOrderActivity.this.finish();
-                            Toast.makeText(getBaseContext(), "Đặt món thành công", Toast.LENGTH_LONG).show();
-                            return;
-                        } else if (code == FoodMapApiManager.FAIL_INFO) {
-                            Toast.makeText(AddOrderActivity.this, "Xin lỗi, Discount này đã hết hạn", Toast.LENGTH_LONG).show();
-                        } else if (code == ConstantCODE.NOTINTERNET) {
-                            Toast.makeText(AddOrderActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                //String orderRequest = createOrder(email_owner, offer.getGuestEmail(), name_rest, id_rest, id_discount, offer);
+               // socket.emit("send_order", orderRequest);
+
+
+//                // tạo Discount
+//                FoodMapApiManager.addOrder(offer, id_discount, new TaskCompleteCallBack() {
+//                    @Override
+//                    public void OnTaskComplete(Object response) {
+//                        int code = (int) response;
+//                        progressDialog.dismiss();
+//                        if (code == ConstantCODE.SUCCESS) {
+//                            AddOrderActivity.this.finish();
+//                            Toast.makeText(getBaseContext(), "Đặt món thành công", Toast.LENGTH_LONG).show();
+//                            return;
+//                        } else if (code == FoodMapApiManager.FAIL_INFO) {
+//                            Toast.makeText(AddOrderActivity.this, "Xin lỗi, Discount này đã hết hạn", Toast.LENGTH_LONG).show();
+//                        } else if (code == ConstantCODE.NOTINTERNET) {
+//                            Toast.makeText(AddOrderActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
+
+
             }
         });
     }
@@ -118,4 +154,20 @@ public class AddOrderActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private String createOrder(String email_owner, String email_guest, String name_rest, int id_rest, int id_discount, Offer offer){
+        JsonObject order = new JsonObject();
+        order.addProperty("email_owner", email_owner);
+        order.addProperty("email_guest", email_guest);
+        order.addProperty("name_rest", name_rest);
+        order.addProperty("id_rest", id_rest);
+        order.addProperty("id_discount", id_discount);
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeHierarchyAdapter(OrderSerializer.class, new OrderSerializer());
+        Gson gson = builder.create();
+        String orderContent = gson.toJson(offer, Offer.class);
+        order.addProperty("order", orderContent);
+        return order.toString();
+    }
+
 }
