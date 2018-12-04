@@ -15,7 +15,6 @@ import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
-import com.hcmus.dreamers.foodmap.deserializer.OrderDeserializer;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
 import com.hcmus.dreamers.foodmap.serializer.OrderSerializer;
 
@@ -249,6 +248,9 @@ public class ParseJSON {
 
     public static Offer parseOfferObject(String response) throws JSONException {
         JSONObject object = new JSONObject(response);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(OrderSerializer.class, new OrderSerializer());
+        Gson gson = gsonBuilder.create();
         Offer offer = gson.fromJson(object.getString("order"), Offer.class);
         return offer;
     }

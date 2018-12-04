@@ -109,9 +109,8 @@ public class DiscountListInfoActivity extends AppCompatActivity implements Adapt
         }
 
         Intent intent = new Intent(DiscountListInfoActivity.this, AddOrderActivity.class);
-        intent.putExtra("id_discount", discounts.get(position).getId());
         intent.putExtra("restaurant", (Serializable) restaurant);
-        intent.putExtra("discount_percent", discounts.get(position).getDiscountPercent());
+        intent.putExtra("discount", (Serializable) discounts.get(position));
         startActivity(intent);
     }
 

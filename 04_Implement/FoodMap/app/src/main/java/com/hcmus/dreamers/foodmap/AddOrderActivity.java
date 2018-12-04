@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
@@ -47,7 +48,7 @@ public class AddOrderActivity extends AppCompatActivity {
     private Button btnSubmit;
     private Socket socket;
     private ProgressDialog progressDialog;
-    private int id_discount, discount_percent;
+    private Discount discount;
     private Restaurant restaurant;
 
     Emitter.Listener receiveResult = new Emitter.Listener() {
@@ -97,10 +98,9 @@ public class AddOrderActivity extends AppCompatActivity {
         socket.on("receive_result", receiveResult);
         Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
         Intent data = getIntent();
-        id_discount = (int) data.getIntExtra("id_discount", -1);
+        discount = (Discount) data.getSerializableExtra("discount");
         restaurant = (Restaurant) data.getSerializableExtra("restaurant");
-        discount_percent = data.getIntExtra("discount_percent", 0);
-        if (id_discount == -1) {
+        if (discount.getId() == -1) {
             finish();
         }
 
@@ -126,8 +126,9 @@ public class AddOrderActivity extends AppCompatActivity {
 
 
                 Offer offer = new Offer();
+                offer.setNameDish(discount.getNameDish());
                 offer.setStatus(0);
-                offer.setDiscountPercent(discount_percent);
+                offer.setDiscountPercent(discount.getDiscountPercent());
                 offer.setGuestEmail(Guest.getInstance().getEmail());
                 offer.setTotal(Integer.parseInt(edtTotal.getText().toString()));
                 offer.setDateOrder(Calendar.getInstance().getTime());
@@ -137,7 +138,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 progressDialog.setMessage("Creating Order");
                 progressDialog.show();
 
-                String orderRequest = createOrder(restaurant.getOwnerUsername(), offer.getGuestEmail(), restaurant.getName(), restaurant.getId(), id_discount, offer);
+                String orderRequest = createOrder(restaurant.getOwnerUsername(), offer.getGuestEmail(), restaurant.getName(), restaurant.getId(), discount.getId(), offer);
                 socket.emit("send_order", orderRequest);
                 Toast.makeText(AddOrderActivity.this, orderRequest, Toast.LENGTH_LONG).show();
 

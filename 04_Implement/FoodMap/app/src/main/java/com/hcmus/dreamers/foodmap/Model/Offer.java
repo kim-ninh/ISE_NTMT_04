@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.hcmus.dreamers.foodmap.deserializer.OrderDeserializer;
 import com.hcmus.dreamers.foodmap.serializer.OrderSerializer;
 
 import org.json.JSONObject;
