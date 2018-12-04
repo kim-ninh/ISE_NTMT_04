@@ -236,6 +236,9 @@ public class MapActivity extends AppCompatActivity{
         final Dialog dialog = new Dialog(MapActivity.this);
         dialog.setContentView(R.layout.dialog_input_location);
         dialog.setCanceledOnTouchOutside(true);
+        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.90);
+        int height = (int)(getResources().getDisplayMetrics().heightPixels*0.40);
+        dialog.getWindow().setLayout(width, height);
         dialog.show();
 
         final AutoCompleteTextView atclStart = (AutoCompleteTextView) dialog.findViewById(R.id.atclStart);
