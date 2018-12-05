@@ -53,100 +53,124 @@ class Dish
 	}
 }
 
-//create connection
-$conn = new database();
-//connect
-$conn->connect();
-//get result
-$listRestaurants = $conn->GetAllRestaurant();
 $response = array();
 
-if ($listRestaurants != -1)
+if (isset($_POST["owner_username"]) && isset($_POST["token"]))
 {
-	$res = array();
-	foreach ($listRestaurants as $row) 
+	$owner_username = $_POST["owner_username"];
+	$token = $_POST["token"];
+
+	//create connection
+	$conn = new database();
+	//connect
+	$conn->connect();
+
+	$check = $conn->checkTokenForUsername($owner_username, $token);
+	if ($check)
 	{
-		$id_rest = $row['ID'];
+		//get result
+		$restaurant = $conn->GetRestaurant($owner_username);		
 
-		$comments = array();
-		$dishs = array();
-		$ranks = array();
-		// get comment
-		$listComments = $conn->GetComment($id_rest);
-		if ($listComments != -1)
+		if ($restaurant != -1)
 		{
-			foreach ($listComments as $comment) {
-				array_push($comments, new Comment($comment["DATE_TIME"], $comment["GUEST_EMAIL"], $comment["OWNER_EMAIL"], $comment["COMMENT"]));
-			}
-		}
-	
-		// get dishs
-		$listDishs = $conn->GetDish($id_rest);
-		if ($listDishs != -1)
-		{
-			foreach ($listDishs as $dish) 
+			$res = "";
+			foreach ($restaurant as $row) 
 			{
-				array_push($dishs, new Dish($dish["NAME"], $dish["PRICE"], $dish["URL_IMAGE"], $dish["ID_CATALOG"]));
-			}
-		}
-		
-		// get ranks
-		$listRanks = $conn->GetRank($id_rest);
-		if ($listRanks != -1)
-		{
-			foreach ($listRanks as $rank) {
-				array_push($ranks, new Rank($rank["EMAIL_GUEST"], $rank["STAR"]));
-			}
-		}
-		
-		// get number checkin
-		$countCheckin = $conn->GetCheckin($id_rest);
-		$checkin = 0;
-		if ($countCheckin != -1)
-		{
-			foreach ($countCheckin as $rowCheckin) {
-				$checkin = $rowCheckin["COUNT"];
-				if (is_null($checkin))
-					$checkin = 0;
-				break;
-			}
-		}
+				$id_rest = $row['ID'];		
 
-		// get number share
-		$countShare = $conn->GetShare($id_rest);
-		$share = 0;
-		if ($countShare != -1)
-		{
-			foreach ($countShare as $rowShare) {
-				$share = $rowShare["COUNT"];
-				if (is_null($share))
-					$share = 0;
-				break;
-			}
+				$comments = array();
+				$dishs = array();
+				$ranks = array();
+				// get comment
+				$listComments = $conn->GetComment($id_rest);
+				if ($listComments != -1)
+				{
+					foreach ($listComments as $comment) {
+						array_push($comments, new Comment($comment["DATE_TIME"], $comment["GUEST_EMAIL"], $comment["OWNER_EMAIL"], $comment["COMMENT"]));
+					}
+				}
+			
+				// get dishs
+				$listDishs = $conn->GetDish($id_rest);
+				if ($listDishs != -1)
+				{
+					foreach ($listDishs as $dish) 
+					{
+						array_push($dishs, new Dish($dish["NAME"], $dish["PRICE"], $dish["URL_IMAGE"], $dish["ID_CATALOG"]));
+					}
+				}
+				
+				// get ranks
+				$listRanks = $conn->GetRank($id_rest);
+				if ($listRanks != -1)
+				{
+					foreach ($listRanks as $rank) {
+						array_push($ranks, new Rank($rank["EMAIL_GUEST"], $rank["STAR"]));
+					}
+				}
+				
+				// get number checkin
+				$countCheckin = $conn->GetCheckin($id_rest);
+				$checkin = 0;
+				if ($countCheckin != -1)
+				{
+					foreach ($countCheckin as $rowCheckin) {
+						$checkin = $rowCheckin["COUNT"];
+						if (is_null($checkin))
+							$checkin = 0;
+						break;
+					}
+				}		
+
+				// get number share
+				$countShare = $conn->GetShare($id_rest);
+				$share = 0;
+				if ($countShare != -1)
+				{
+					foreach ($countShare as $rowShare) {
+						$share = $rowShare["COUNT"];
+						if (is_null($share))
+							$share = 0;
+						break;
+					}
+				}		
+
+				// get number favortie
+				$favorite = $conn->GetSumFavorite($id_rest);
+				if ($favorite == -1 || is_null($favorite))
+					$favorite = 0;		
+
+				//
+				$res = new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
+					$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
+					$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $favorite, $checkin, $share);
+			}		
+
+			$response["status"] = 200;
+			$response["message"] = "Success";
+			$response["data"] = $res;
 		}
-
-		// get number favortie
-		$favorite = $conn->GetSumFavorite($id_rest);
-		if ($favorite == -1 || is_null($favorite))
-			$favorite = 0;
-
-		//
-		array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
-			$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
-			$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $favorite, $checkin, $share));
+		else
+		{
+			$response["status"] = 404;
+			$response["message"] = "Exec fail";
+		}
+	}
+	else
+	{
+		$response["status"] = 444;
+		$response["message"] = "Invalid token";
 	}
 
-	$response["status"] = 200;
-	$response["message"] = "Success";
-	$response["data"] = $res;
+	//close conn
+	$conn->disconnect();
 }
 else
 {
-	$response["status"] = 404;
-	$response["message"] = "Exec fail";
+	$response["status"] = 400;
+	$response["message"] = "Invalid request";
 }
-//close conn
-$conn->disconnect();
+
 //response
 echo json_encode($response);
 ?>

@@ -388,7 +388,7 @@ public class GenerateRequest {
     }
 
     public static okhttp3.Request getRestaurant() {
-        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETRESTAURANT;
+        String baseUrl = ConstantURL.BASEURL + ConstantURL.GETALLRESTAURANT;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
                 .get()

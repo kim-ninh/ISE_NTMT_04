@@ -179,8 +179,8 @@
 				lon
 			] // mảng
 			
-- getRestaurant:
-	+ url: getRestaurant.php
+- getAllRestaurant:
+	+ url: getAllRestaurant.php
 	+ type: GET
 	+ response:
 		* status: 200

@@ -108,7 +108,7 @@ class database
 
     			if ($this->query($queryAddLocation) != -1)
     			{
-    				$queryAddToPreRestaurant = 'INSERT INTO PRE_RESTAURANT (ID_REST) VALUES ('.$id.')';
+    				$queryAddToPreRestaurant = 'INSERT INTO PRE_RESTAURANT (ID_REST, STATUS) VALUES ('.$id.', 0)';
     				if ($this->query($queryAddToPreRestaurant) != -1)
     				{
     					return $id;
@@ -252,14 +252,14 @@ class database
 	// lấy tất cả các restaurant
 	public function GetAllRestaurant()
 	{
-		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST)";
+		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE RST.ID NOT IN (SELECT PR.ID_REST FROM PRE_RESTAURANT PR)";
 		return $this->query($strQuery); 
 	}
 
 	// lấy thông tin của 1 restaurant
-	public function GetRestaurant($id_rest)
+	public function GetRestaurant($owner_username)
 	{
-		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE ID = ".$id_rest;
+		$strQuery = 'SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE RST.OWNER_USERNAME = "'.$owner_username.'"';
 		return $this->query($strQuery); 
 	}
 
@@ -313,7 +313,12 @@ class database
 	public function UpdateRestaurant($id_rest, $value)
 	{
 		$strQuery = "UPDATE RESTAURANT SET ".$value." WHERE ID = ".$id_rest;
-		return $this->query($strQuery);
+		$check = $this->query($strQuery);
+
+		$strQuery = "UPDATE PRE_RESTAURANT SET STATUS = 0 WHERE ID_REST = ".$id_rest;
+		$this->query($strQuery);
+
+		return $check;
 	}
 
 	// lấy code reset password
@@ -394,7 +399,6 @@ class database
 		return $this->query($strQuery);
 	}
 
-
 	// lấy ofer của nhà hàng
 	public function GetOffer($id_rest)
 	{
@@ -407,7 +411,6 @@ class database
 		$strQuery = 'DELETE FROM OFFER WHERE ID = '.$id_offer;
 		return $this->query($strQuery);
 	}
-
 
 	public function AddCheckin($id_rest, $guest_email)
 	{
@@ -481,8 +484,37 @@ class database
 		return -1;
 	}
 
+	// 
+	public function GetRestaurantForAdmin()
+	{
+		$strQuery = 'SELECT R.*, LC.* FROM (PRE_RESTAURANT PR JOIN RESTAURANT R ON PR.ID_REST = R.ID) JOIN LOCATION LC ON R.ID = LC.ID_REST WHERE PR.STATUS = 0';
+		return $this->query($strQuery);
+	}
 
-	
+	// 
+	public function DeletePreRestaurantAdmin($id_rest)
+	{
+		$strQuery = 'DELETE FROM PRE_RESTAURANT WHERE ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function UpdatePreRestaurant($id_rest, $status)
+	{
+		$strQuery = "UPDATE PRE_RESTAURANT SET STATUS = ".$status." WHERE ID_REST = ".$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function GetEmailOwner($id_rest)
+	{
+		$strQuery = "SELECT O.EMAIL AS EMAIL FROM RESTAURANT R JOIN OWNER O ON R.OWNER_USERNAME = O.USERNAME WHERE R.ID = ".$id_rest;
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return - 1;
+		foreach ($result as $row) {
+			return $row["EMAIL"];
+		}
+		return -1;
+	}
 
 	// close connection
 	public function disconnect()

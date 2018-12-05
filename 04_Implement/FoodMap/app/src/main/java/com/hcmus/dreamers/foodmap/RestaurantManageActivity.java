@@ -50,26 +50,10 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         igvAdd.setOnClickListener(this);
 
         rcvRestaurant = (RecyclerView) findViewById(R.id.rcvRestaurant);
-        rcvRestaurant.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
-            }
-        });
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rcvRestaurant.setLayoutManager(mLayoutManager);
 
-        restaurantList= Owner.getInstance().getListRestaurant();
+        restaurantList = Owner.getInstance().getListRestaurant();
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);

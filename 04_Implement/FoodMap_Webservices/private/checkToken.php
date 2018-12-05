@@ -84,5 +84,4 @@ function checkTokenForUsername($username, $token)
 	return $check;
 }
 
-
 ?>
