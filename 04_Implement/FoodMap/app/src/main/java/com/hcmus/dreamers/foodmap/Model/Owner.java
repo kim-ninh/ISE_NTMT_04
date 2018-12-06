@@ -51,7 +51,8 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     }
 
     public void setlistRestaurant(List<Restaurant> listRestaurant) {
-        this.listRestaurant = listRestaurant;
+        this.listRestaurant.clear();
+        this.listRestaurant.addAll(listRestaurant);
     }
 
     public List<Restaurant> getListRestaurant() {

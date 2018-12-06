@@ -22,6 +22,7 @@ class Restaurant{
 		$this->num_favorite = $num_favorite;
 		$this->num_checkin = $num_checkin;
 		$this->num_share = $num_share;
+		$this->ischeck = true;
 	}
 }
 class Comment{
@@ -129,7 +130,7 @@ if ($listRestaurants != -1)
 		$favorite = $conn->GetSumFavorite($id_rest);
 		if ($favorite == -1 || is_null($favorite))
 			$favorite = 0;
-
+		
 		//
 		array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
 			$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],

@@ -40,9 +40,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderRestaurant viewHolderRestaurant, int i) {
-        viewHolderRestaurant.txtName.setText(restaurantList.get(i).getName());
+        Restaurant rest = restaurantList.get(i);
+        viewHolderRestaurant.txtName.setText(rest.getName());
         DownloadImageTask task = new DownloadImageTask(viewHolderRestaurant.igvImage, context);
-        task.loadImageFromUrl(restaurantList.get(i).getUrlImage());
+        task.loadImageFromUrl(rest.getUrlImage());
+        if (!rest.isCheck())
+            viewHolderRestaurant.txtName.setTextColor(context.getResources().getColor(R.color.redColor));
     }
 
     @Override

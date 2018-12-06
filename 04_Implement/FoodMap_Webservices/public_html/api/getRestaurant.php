@@ -1,10 +1,10 @@
 <?php 
 //import library
-include "../../private/database.php";
+include "../../private/checkToken.php";
 
 //create class Restaurant
 class Restaurant{
-	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs,  $num_favorite, $num_checkin, $num_share){
+	function Restaurant($id, $owner_username, $name, $address, $phone_number, $describe_text, $url_image, $time_open, $time_close, $lat, $lon, $rank, $comments, $dishs,  $num_favorite, $num_checkin, $num_share, $ischeck){
 		$this->id = $id;
 		$this->owner_username= $owner_username;
 		$this->name = $name;
@@ -22,6 +22,7 @@ class Restaurant{
 		$this->num_favorite = $num_favorite;
 		$this->num_checkin = $num_checkin;
 		$this->num_share = $num_share;
+		$this->ischeck = $ischeck;
 	}
 }
 class Comment{
@@ -65,16 +66,16 @@ if (isset($_POST["owner_username"]) && isset($_POST["token"]))
 	//connect
 	$conn->connect();
 
-	$check = $conn->checkTokenForUsername($owner_username, $token);
+	$check = checkTokenForUsername($owner_username, $token);
 	if ($check)
 	{
 		//get result
-		$restaurant = $conn->GetRestaurant($owner_username);		
+		$listRestaurant = $conn->GetRestaurant($owner_username);		
 
-		if ($restaurant != -1)
+		if ($listRestaurant != -1)
 		{
-			$res = "";
-			foreach ($restaurant as $row) 
+			$res = array();
+			foreach ($listRestaurant as $row) 
 			{
 				$id_rest = $row['ID'];		
 
@@ -140,10 +141,11 @@ if (isset($_POST["owner_username"]) && isset($_POST["token"]))
 				if ($favorite == -1 || is_null($favorite))
 					$favorite = 0;		
 
+				// get is check
+				$ischeck = $conn->GetIsCheck($id_rest);
+
 				//
-				$res = new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], 
-					$row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],
-					$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $favorite, $checkin, $share);
+				array_push($res, new Restaurant($id_rest, $row['OWNER_USERNAME'], $row['NAME'], $row['ADDRESS'], $row['PHONE_NUMBER'], $row['DESCRIBE_TEXT'], $row['URL_IMAGE'], $row['TIMEOPEN'], $row['TIMECLOSE'],$row['LAT'], $row['LON'], $ranks, $comments, $dishs, $favorite, $checkin, $share, $ischeck));
 			}		
 
 			$response["status"] = 200;

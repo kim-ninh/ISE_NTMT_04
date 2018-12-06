@@ -516,6 +516,15 @@ class database
 		return -1;
 	}
 
+	public function GetIsCheck($id_rest)
+	{
+		$strQuery = "SELECT * FROM PRE_RESTAURANT WHERE ID_REST = ".$id_rest;
+		$result = $this->query($strQuery);
+		if ($result == -1 || $result == null)
+			return true;
+		return false;
+	}
+
 	// close connection
 	public function disconnect()
 	{

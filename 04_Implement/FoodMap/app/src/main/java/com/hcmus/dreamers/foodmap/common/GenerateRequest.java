@@ -387,11 +387,25 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request getRestaurant() {
+    public static okhttp3.Request getAllRestaurant() {
         String baseUrl = ConstantURL.BASEURL + ConstantURL.GETALLRESTAURANT;
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(baseUrl)
                 .get()
+                .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request getRestaurant(String token, String owner_username) {
+        String url = ConstantURL.BASEURL + ConstantURL.GETRESTAURANT;
+        Map<String, String> params = new HashMap<>();
+        params.put("owner_username", owner_username);
+        params.put("token", token);
+        RequestBody bodyRequest = Utils.buildParameter(params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(bodyRequest)
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;

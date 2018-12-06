@@ -48,6 +48,7 @@ public class Restaurant implements Serializable {
     private HashMap<String, Integer> ranks;
 
     private int num_checkin;
+    private boolean isCheck;
 
     //
     public Restaurant() {
@@ -83,6 +84,7 @@ public class Restaurant implements Serializable {
         this.num_checkin = num_checkin;
         this.nFavorites = nFavorites;
         this.nShare = nShare;
+        this.isCheck = true; // đã được kiểm duyệt
 	}
 
     public int getNum_checkin() {
@@ -214,5 +216,13 @@ public class Restaurant implements Serializable {
 
     public void setnShare(int nShare) {
         this.nShare = nShare;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +16,12 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.RestaurantListAdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.event.ClickListener;
 
 import java.util.ArrayList;
@@ -57,6 +60,8 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);
+
+        LoadData();
     }
 
     @Override
@@ -123,5 +128,20 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         }
     }
 
+
+    void LoadData(){
+        ProgressDialog progressDialog = new ProgressDialog(RestaurantManageActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        FoodMapApiManager.getRestaurantForOwner(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+                restaurantListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 
 }

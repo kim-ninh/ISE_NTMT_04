@@ -686,7 +686,45 @@ public class FoodMapApiManager {
                 }
             }
         });
-        taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant()));
+        taskRequest.execute(new DoingTask(GenerateRequest.getAllRestaurant()));
+    }
+
+
+    public static void getRestaurantForOwner(final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String Sresponse = response.toString();
+
+                if (Sresponse != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
+
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        try {
+                            Owner.getInstance().setlistRestaurant(ParseJSON.parseRestaurant(Sresponse));
+                            taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                        } catch (JSONException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            taskCompleteCallBack.OnTaskComplete(PARSE_FAIL);
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.getRestaurant(Owner.getInstance().getToken(), Owner.getInstance().getUsername())));
     }
 
     // lấy danh sách catalog
