@@ -1,5 +1,6 @@
 package com.hcmus.dreamers.foodmap.fragment;
 
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -48,17 +48,16 @@ import java.util.stream.Collectors;
  * A simple {@link Fragment} subclass.
  */
 public class OrderListFragment extends Fragment implements AdapterView.OnItemLongClickListener {
+
     Restaurant restaurant;
 
     private ListView listOffer;
     private OrderListAdapter adapter;
-
     private List<Offer> offers, offersAdapter;
     private int id_rest;
     private Calendar c = Calendar.getInstance();
 
     Context context = null;
-
     LinearLayout rootLayout;
 
     public OrderListFragment() {
@@ -125,6 +124,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
             }
         });
     }
+
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
         showConfirmDialog(position);

@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -45,7 +43,6 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
-
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.define.ConstantValue;
 import com.squareup.picasso.Callback;
@@ -92,7 +89,6 @@ public class RestaurantInfoFragment extends Fragment {
     Restaurant restaurant;
 
     ScrollView rootLayout;
-
     EditText txtResName;
     EditText txtAddress;
     EditText txtPhoneNumber;
@@ -100,8 +96,8 @@ public class RestaurantInfoFragment extends Fragment {
     TextView lblCloseHour;
     ImageView imgDescription;
     EditText txtDescription;
-
     ProgressBar progressBar;
+
     Uri resultUri;
 
     public RestaurantInfoFragment() {
@@ -148,7 +144,8 @@ public class RestaurantInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootLayout = (ScrollView) inflater.inflate(R.layout.fragment_restaurant_info, container, false);
+        rootLayout = (ScrollView) inflater.inflate(
+                R.layout.fragment_restaurant_info, container, false);
 
         takeReferenceFromResource();
         putDataToViews();
@@ -256,6 +253,7 @@ public class RestaurantInfoFragment extends Fragment {
         lblOpenHour.setText(openingHour);
         lblCloseHour.setText(closingHour);
         txtDescription.setText(restaurant.getDescription());
+
         if (restaurant.getUrlImage().matches("^(http|https)://.*"))
             progressBar.setVisibility(View.VISIBLE);
         else
@@ -571,6 +569,7 @@ public class RestaurantInfoFragment extends Fragment {
     }
 
     Uri photoURI;
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -598,6 +597,7 @@ public class RestaurantInfoFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
             startCropImageActivity(photoURI);
         }
 

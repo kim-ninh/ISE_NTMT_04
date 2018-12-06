@@ -23,9 +23,7 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Locatio
     private Context context;
     private MapView mapView;
     private Polyline roadOverlay;
-
     TaskCompleteCallBack onTaskCompleteCallBack;
-
 
     public UpdateRoadTask(Context context, MapView mapView, TaskCompleteCallBack onTaskCompleteCallBack)
     {
@@ -67,7 +65,6 @@ public class UpdateRoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Locatio
             onTaskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
         }
     }
-
 
     public void removePolyline() {
        mapView.getOverlays().clear();

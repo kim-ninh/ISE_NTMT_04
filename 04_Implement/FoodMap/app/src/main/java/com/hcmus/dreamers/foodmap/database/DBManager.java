@@ -63,10 +63,8 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_TIME_OPEN = "TIME_OPEN";
     private static final String KEY_TIME_CLOSE = "TIME_CLOSE";
     private static final String KEY_TOTAL_CHECKIN = "TOTAL_CHECKIN";
-
     private static final String KEY_TOTAL_SHARE = "TOTAL_SHARE";
     private static final String KEY_TOTAL_FAVORITE = "TOTAL_FAVORITE";
-
 
     // LOCATION Table - column names
     //private static final String ID_REST = "ID_REST";
@@ -273,7 +271,6 @@ public class DBManager extends SQLiteOpenHelper {
         value.put(KEY_TOTAL_CHECKIN, restaurant.getNum_checkin());
         value.put(KEY_TOTAL_FAVORITE, restaurant.getnFavorites());
         value.put(KEY_TOTAL_SHARE, restaurant.getnShare());
-
 
         if (db.insertWithOnConflict(TABLE_RESTAURANT, null, value, SQLiteDatabase.CONFLICT_IGNORE) == -1) {
             db.update(TABLE_RESTAURANT, value, KEY_ID + " = " + restaurant.getId(), null);

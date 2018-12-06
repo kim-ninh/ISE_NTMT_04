@@ -159,6 +159,7 @@ public class DishListFragment extends Fragment {
 
                 Gson gson = new Gson();
                 Dish dish;
+
                 String dishJSON = data.getStringExtra("dishJSON");
                 dish = gson.fromJson(dishJSON, Dish.class);
 

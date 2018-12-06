@@ -27,7 +27,6 @@ import com.hcmus.dreamers.foodmap.View.NotificationBuilder;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
-
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.websocket.OrderEmitterListener;
 import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
@@ -97,6 +96,7 @@ public class OrderService extends Service {
         return null;
     }
 
+
     private void notification(String title, String content){
         Uri soundNotify = Uri.parse("android.resource://com.hcmus.dreamers.foodmap/" + R.raw.messenger_sound);
         NotificationCompat.Builder builder =
@@ -138,4 +138,5 @@ public class OrderService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
 }

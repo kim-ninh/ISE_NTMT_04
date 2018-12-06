@@ -13,7 +13,6 @@ import com.hcmus.dreamers.foodmap.Model.Discount;
 import org.osmdroid.util.GeoPoint;
 
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -257,7 +256,6 @@ public class GenerateRequest {
                 .build();
         return request;
     }
-
 
     public static okhttp3.Request addCheckin(final int id_rest, final String guest_email) {
 
