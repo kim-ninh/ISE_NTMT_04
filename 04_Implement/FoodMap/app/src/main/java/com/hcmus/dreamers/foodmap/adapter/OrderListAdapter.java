@@ -2,6 +2,8 @@ package com.hcmus.dreamers.foodmap.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -52,11 +54,23 @@ public class OrderListAdapter extends ArrayAdapter<Offer>{
         TextView percent = (TextView) view.findViewById(R.id.discount_percent);
         TextView emailGuest = (TextView) view.findViewById(R.id.email_guest);
         TextView total = (TextView) view.findViewById(R.id.total);
+        TextView status = (TextView) view.findViewById(R.id.status);
         Offer offer = offers.get(position);
         dishName.setText(offer.getNameDish());
         percent.setText(String.valueOf(offer.getDiscountPercent() + "%"));
         emailGuest.setText(offer.getGuestEmail());
         total.setText(String.valueOf(offer.getTotal()));
+        if(offer.getStatus() == 0){
+            status.setText("Chưa được xử lí");
+            status.setTextColor(Color.RED);
+        }else{
+            status.setText("Đã được xử lí");
+            status.setTextColor(Color.rgb(0, 255, 196));
+        }
         return view;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
     }
 }

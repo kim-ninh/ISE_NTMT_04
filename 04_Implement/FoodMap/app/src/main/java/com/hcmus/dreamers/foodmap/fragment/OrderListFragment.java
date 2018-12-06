@@ -1,14 +1,23 @@
 package com.hcmus.dreamers.foodmap.fragment;
 
-
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.DatePicker;
+
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,42 +36,53 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrderListFragment extends Fragment {
-
+public class OrderListFragment extends Fragment implements AdapterView.OnItemLongClickListener {
     Restaurant restaurant;
 
     private ListView listOffer;
     private OrderListAdapter adapter;
-    private List<Offer> offers;
+
+    private List<Offer> offers, offersAdapter;
     private int id_rest;
+    private Calendar c = Calendar.getInstance();
 
     Context context = null;
-    EditRestaurantActivity editRestaurantActivity;
+
     LinearLayout rootLayout;
 
     public OrderListFragment() {
         // Required empty public constructor
     }
 
+    public void setId_rest(int id_rest) {
+        this.id_rest = id_rest;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-        // Get host activity "EditRestaurant"
-        context = getActivity();
-        editRestaurantActivity = (EditRestaurantActivity) getActivity();
-
-        if (editRestaurantActivity != null)
-        {
-            restaurant = editRestaurantActivity.restaurant;
-        }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -72,31 +92,14 @@ public class OrderListFragment extends Fragment {
         rootLayout =(LinearLayout) inflater.inflate(R.layout.fragment_order_list, container, false);
 
         refferences();
-        getItentFromActivity();
-        //must not remove
-        //refreshData();
-
-
-
-        offers = new ArrayList<>();
-        for (int i = 0; i < 20; i++)
-            offers.add(new Offer("Phở " + i, 10, "chauhoangphuc@gmail.com", i));
-
-
-        adapter = new OrderListAdapter(context, R.layout.order_item_list, offers);
-        listOffer.setAdapter(adapter);
         return rootLayout;
     }
 
     private void refferences(){
         listOffer = rootLayout.findViewById(R.id.list_order);
+        listOffer.setOnItemLongClickListener(this);
     }
 
-
-    private void getItentFromActivity(){
-        //Intent intent = getIntent();
-        //id_rest = intent.getIntExtra("id_rest", -1);
-    }
 
     private void refreshData(){
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
@@ -107,8 +110,10 @@ public class OrderListFragment extends Fragment {
                     ResponseJSON responseJSON = ParseJSON.parseFromAllResponse(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         offers = ParseJSON.parseOffer(resp);
-                        adapter = new OrderListAdapter(context, R.layout.order_item_list, offers);
+                        offersAdapter = new ArrayList<>(offers);
+                        adapter = new OrderListAdapter(context, R.layout.order_item_list, offersAdapter);
                         listOffer.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(context, "NOT FOUND!", Toast.LENGTH_SHORT).show();
                     }else {
@@ -119,5 +124,93 @@ public class OrderListFragment extends Fragment {
                 }
             }
         });
+    }
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        showConfirmDialog(position);
+        return true;
+    }
+
+
+    private void showConfirmDialog(final int position){
+        new AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Xóa Đơn hàng")
+                .setMessage("Bạn có muốn xóa đơn hàng này?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final Offer offer = (Offer) offersAdapter.get(position);
+                        FoodMapApiManager.deleteOffer(offer.getId(), new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                if((int)response == ConstantCODE.SUCCESS){
+                                    Offer o = offersAdapter.get(position);
+                                    int index = offers.indexOf(o);
+                                    offers.remove(index);
+                                    offersAdapter.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(context, "Xóa Đơn hàng thành công!", Toast.LENGTH_SHORT).show();
+                                }else if((int) response == ConstantCODE.NOTFOUND){
+                                    Toast.makeText(context, "Lỗi xóa Đơn hàng không tồn tại, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(context, "Không có kết nối internet, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+
+                })
+                .setNegativeButton("Không", null)
+                .show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.order_group_by_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.action_GroupByNone:
+                c = Calendar.getInstance();
+                offersAdapter = offers;
+                adapter.setOffers(offersAdapter);
+                adapter.notifyDataSetChanged();
+            return true;
+
+            case R.id.action_GroupByDate:
+                int mYear, mMonth, mDay;
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+                                c.set(year, monthOfYear, dayOfMonth);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    offersAdapter = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
+                                    adapter.setOffers(offersAdapter);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 }

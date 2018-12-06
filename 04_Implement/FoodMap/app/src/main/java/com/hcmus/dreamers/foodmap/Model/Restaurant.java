@@ -8,6 +8,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/*  Lớp Owner dùng để chứa thông tin của chủ quán ăn
+ *
+ *   @ownerUsername: String           //Username của chủ nhà hàng
+ *   @name: String                    //Tên nhà hàng
+ *   @phoneNumber: String             //chứa số điện thoại chủ quán
+ *   @description: String             //Mô tả của quán ăn
+ *   @address: String                 //Địa chỉ của quán ăn
+ *   @urlImage: String                //chứa đường dẫn hình đại diện trên server
+ *   @timeOpen: Date                  //Thời gian mở cửa
+ *   @timeClose: Date                 //Thời gian đóng cửa
+ *   @location: GeoPoint              //Tọa độ vị trí của quán ăn
+ *   @dishes: List                    //Danh sách món ăn
+ *   @comments: List                  //Danh sách các comments của quán ăn
+ *   @nFavorites: int                 //Số lượt yêu thích của quán ăn
+ *   num_checkin: int                 //Số lượt check in tại quán ăn
+ *   @nShare: int                     //Số lượt share quán ăn trên facebook
+ *   ranks: HashMap                   //Chứa email và số sao của khách hàng đánh giá quán ăn.
+ *
+ * */
 public class Restaurant implements Serializable {
     private int id;
     private String ownerUsername;
@@ -29,6 +48,7 @@ public class Restaurant implements Serializable {
     private HashMap<String, Integer> ranks;
 
     private int num_checkin;
+    private boolean isCheck;
 
     //
     public Restaurant() {
@@ -48,7 +68,9 @@ public class Restaurant implements Serializable {
                       Date timeOpen,
                       Date timeClose,
                       GeoPoint location,
-                      int num_checkin) {
+                      int num_checkin,
+                      int nFavorites,
+                      int nShare) {
         this.id = id_rest;
         this.ownerUsername = ownerUsername;
         this.name = name;
@@ -60,6 +82,9 @@ public class Restaurant implements Serializable {
         this.timeClose = timeClose;
         this.location = location;
         this.num_checkin = num_checkin;
+        this.nFavorites = nFavorites;
+        this.nShare = nShare;
+        this.isCheck = true; // đã được kiểm duyệt
 	}
 
     public int getNum_checkin() {
@@ -191,5 +216,13 @@ public class Restaurant implements Serializable {
 
     public void setnShare(int nShare) {
         this.nShare = nShare;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

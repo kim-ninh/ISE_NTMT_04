@@ -23,21 +23,28 @@ public class DownloadImageTask {
 
     public void loadImageFromUrl(final String url)
     {
-        Picasso.get()
-                .load(url)
-                .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
-                .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
-                .into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.e(TAG, "onSuccess: " + url);
-                    }
+        if (url != null && !url.equals("")){
+            Picasso.get()
+                    .load(url)
+                    .noFade()
+                    .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                    .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.e(TAG, "onSuccess: " + url);
+                        }
 
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(TAG, "onError: " + url);
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "onError: " + url);
+                        }
+                    });
+        }
+        else {
+            imageView.setImageResource(R.mipmap.ic_launcher);
+        }
+
     }
 
     public void loadImageFromUrl(String url, Callback callback)

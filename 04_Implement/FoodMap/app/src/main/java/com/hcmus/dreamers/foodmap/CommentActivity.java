@@ -59,7 +59,9 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         lstComment = (RecyclerView)findViewById(R.id.lstComment);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        lstComment.scrollToPosition(comments.size() - 1);
+
+        mLayoutManager.scrollToPosition(comments.size() - 1);
+
         lstComment.setLayoutManager(mLayoutManager);
         lstComment.setAdapter(commentListAdapter);
 
@@ -103,6 +105,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                                 FoodMapManager.addComment(CommentActivity.this, id_rest, comment);
                                 comments.add(comment);
                                 commentListAdapter.notifyDataSetChanged();
+                                lstComment.scrollToPosition(comments.size() - 1);
                                 isRefesh = true;
                             }
                             else if (code == ConstantCODE.NOTINTERNET){

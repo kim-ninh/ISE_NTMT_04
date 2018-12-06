@@ -2,6 +2,9 @@ package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
 import android.app.Dialog;
+
+import android.app.ProgressDialog;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,13 +33,16 @@ import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+
+import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -49,7 +55,7 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity{
 
-    MapView mMap;
+    private ZoomLimitMapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -62,6 +68,12 @@ public class MapActivity extends AppCompatActivity{
 
     FloatingActionButton fabSearch;
 
+    private GeoPoint startPointEx;
+    private GeoPoint endPointEx;
+    private String startName;
+    private String endName;
+    private String startAddress;
+    private String endAddress;
     @Override
     protected void onPause() {
         super.onPause();
@@ -108,6 +120,8 @@ public class MapActivity extends AppCompatActivity{
             double lon = location.getLongitude();
             startPoint = new GeoPoint(lat, lon);
 
+            //add marker of end point
+            addMarker("title","description",endPoint);
             showingPath();
         }
 
@@ -132,7 +146,6 @@ public class MapActivity extends AppCompatActivity{
 
     private void mapInit(){
         //
-
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -140,9 +153,8 @@ public class MapActivity extends AppCompatActivity{
         Configuration.getInstance().setOsmdroidBasePath(new File(Environment.getExternalStorageDirectory(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
 
-
         // cài đặt map
-        mMap = (MapView) findViewById(R.id.FindWayMap);
+        mMap = (ZoomLimitMapView) findViewById(R.id.FindWayMap);
         mMap.setBuiltInZoomControls(true);
         mMap.setMultiTouchControls(true);
         if (Build.VERSION.SDK_INT >= 16)
@@ -168,8 +180,7 @@ public class MapActivity extends AppCompatActivity{
 
     }
 
-    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-
+    private void addMarker(String title, String description, GeoPoint point){
         markers.clear();
         markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
@@ -189,26 +200,46 @@ public class MapActivity extends AppCompatActivity{
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
-        return mOverlay;
     }
 
     private void showingPath(){
-        //add marker of end point
-        addMarker("title","description",endPoint);
+        //moving camera to the start point
+        moveCamera(startPoint);
 
         ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
         pointsList.add(startPoint);
         pointsList.add(endPoint);
 
         //Display the paths between 2 points
-        updateRoadTask = new UpdateRoadTask(getApplicationContext(), mMap);
+        final ProgressDialog progressDialog = new ProgressDialog(MapActivity.this);
+        progressDialog.setMessage("Roading");
+        progressDialog.show();
+
+        updateRoadTask = new UpdateRoadTask(getApplicationContext(), mMap, new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+
+                int code = (int)response;
+                if (code == ConstantCODE.NOTINTERNET){
+                    Toast.makeText(MapActivity.this, "Không thể tìm được đường đi", Toast.LENGTH_LONG);
+                }
+                else {
+                    moveCamera(mLocationOverlay.getMyLocation());
+                }
+            }
+        });
         updateRoadTask.execute(pointsList);
     }
 
     void searchAutoCompleteSupportInit(){
+
         final Dialog dialog = new Dialog(MapActivity.this);
         dialog.setContentView(R.layout.dialog_input_location);
         dialog.setCanceledOnTouchOutside(true);
+        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.90);
+        int height = (int)(getResources().getDisplayMetrics().heightPixels*0.40);
+        dialog.getWindow().setLayout(width, height);
         dialog.show();
 
         final AutoCompleteTextView atclStart = (AutoCompleteTextView) dialog.findViewById(R.id.atclStart);
@@ -263,32 +294,34 @@ public class MapActivity extends AppCompatActivity{
         atclStart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = detailAddresses.get(position).getName();
-                String address = detailAddresses.get(position).toString();
-                GeoPoint point = detailAddresses.get(position).getPoint();
-                startPoint = point;
-                atclStart.setText(address);
-                addMarker(name, address, point);
+                startName = detailAddresses.get(position).getName();
+                startAddress = detailAddresses.get(position).toString();
+                startPointEx = detailAddresses.get(position).getPoint();
+                atclStart.setText( startAddress);
+
             }
         });
         atclDestination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = detailAddresses.get(position).getName();
-                String address = detailAddresses.get(position).toString();
-                GeoPoint point = detailAddresses.get(position).getPoint();
-                endPoint = point;
-                atclDestination.setText(address);
-                addMarker(name, address, point);
-                mapController.setCenter(point);
+                endName = detailAddresses.get(position).getName();
+                endAddress = detailAddresses.get(position).toString();
+                endPointEx = detailAddresses.get(position).getPoint();
+                atclDestination.setText(endAddress);
+
+                mapController.setCenter(endPointEx);
             }
         });
 
         btnFindWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(startPoint != null && endPoint != null) {
+                if(startPointEx != null && endPointEx != null) {
                     updateRoadTask.removePolyline();
+                    startPoint = startPointEx;
+                    endPoint = endPointEx;
+                    addMarker(startName, startAddress, startPointEx);
+                    addMarker(endName, endAddress, endPointEx);
                     showingPath();
                 }
 
@@ -313,4 +346,7 @@ public class MapActivity extends AppCompatActivity{
         });
     }
 
+    void moveCamera(GeoPoint geoPoint){
+        mapController.setCenter(geoPoint);
+    }
 }

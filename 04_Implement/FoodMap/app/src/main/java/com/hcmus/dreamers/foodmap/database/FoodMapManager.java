@@ -71,6 +71,9 @@ public class FoodMapManager {
         FoodMapManager.restaurants = restaurants;
 
         DBManager dbManager = new DBManager(context);
+        // xóa dữ liệu cũ
+        dbManager.clearDB();
+
         for (Restaurant rest: FoodMapManager.restaurants) {
             dbManager.addRestaurant(rest);
         }
@@ -98,6 +101,29 @@ public class FoodMapManager {
             if (restaurants.get(i).getId() == id_rest)
             {
                 restaurants.get(i).getComments().add(comment);
+                return;
+            }
+        }
+    }
+
+    public static void addCheckIn(int id_rest){
+        int n = restaurants.size();
+        for (int i = 0; i< n; i++)
+        {
+            if (restaurants.get(i).getId() == id_rest)
+            {
+                restaurants.get(i).setNum_checkin(restaurants.get(i).getNum_checkin() + 1);
+                return;
+            }
+        }
+    }
+    public static void addShare(int id_rest){
+        int n = restaurants.size();
+        for (int i = 0; i< n; i++)
+        {
+            if (restaurants.get(i).getId() == id_rest)
+            {
+                restaurants.get(i).setnShare(restaurants.get(i).getNum_checkin() + 1);
                 return;
             }
         }

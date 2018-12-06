@@ -49,7 +49,7 @@ public class DishListFragment extends Fragment {
     final int IPC_ID = (int) (10001 * Math.random());
     final int AFA_ID = 1009;
 
-    public DishListFragment(){
+    public DishListFragment() {
         // Required empty public constructor
     }
 
@@ -62,8 +62,7 @@ public class DishListFragment extends Fragment {
         context = getActivity();
         editRestaurantActivity = (EditRestaurantActivity) getActivity();
 
-        if (editRestaurantActivity != null)
-        {
+        if (editRestaurantActivity != null) {
             restaurant = editRestaurantActivity.restaurant;
 
             //Null pointer is already check in host activity
@@ -81,7 +80,7 @@ public class DishListFragment extends Fragment {
         setup();
         handleClickEvnet();
 
-        return  rootLayout;
+        return rootLayout;
     }
 
     private void setup() {
@@ -112,8 +111,8 @@ public class DishListFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent intent = new Intent(context, AddDishActivity.class);
-               intent.putExtra("rest", (Serializable)restaurant);
-               startActivityForResult(intent, AFA_ID);
+                intent.putExtra("rest", (Serializable) restaurant);
+                startActivityForResult(intent, AFA_ID);
             }
         });
     }
@@ -126,7 +125,7 @@ public class DishListFragment extends Fragment {
                 context,
                 EditDishActivity.class);
 
-        transferData.putString("dishJSON",gson.toJson(dish));
+        transferData.putString("dishJSON", gson.toJson(dish));
         transferData.putInt("restID", restaurant.getId());
 
         manageRest_manageDish.putExtras(transferData);
@@ -137,53 +136,38 @@ public class DishListFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        try{
+        try {
             if (IPC_ID == requestCode) {
 
-                if (resultCode == Activity.RESULT_OK)
-                {
+                if (resultCode == Activity.RESULT_OK) {
                     Gson gson = new Gson();
                     Dish dish;
 
                     Boolean isDelete = data.getBooleanExtra("isDelete", false);
-                    if(! isDelete){
-                        String dishJSON =  data.getStringExtra("dishJSON");
+                    if (!isDelete) {
+                        String dishJSON = data.getStringExtra("dishJSON");
                         dish = gson.fromJson(dishJSON, Dish.class);
                         dishes.set(selectedRow, dish);
                         Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         dishes.remove(selectedRow);
                         Toast.makeText(context, "Xóa thành công!", Toast.LENGTH_LONG).show();
                     }
                     adapter.notifyDataSetChanged();
                 }
-            }
-            else if (requestCode == AFA_ID && resultCode == Activity.RESULT_OK){
+            } else if (requestCode == AFA_ID && resultCode == Activity.RESULT_OK) {
 
                 Gson gson = new Gson();
                 Dish dish;
-
-                String dishJSON =  data.getStringExtra("dishJSON");
+                String dishJSON = data.getStringExtra("dishJSON");
                 dish = gson.fromJson(dishJSON, Dish.class);
 
                 dishes.add(dish);
                 adapter.notifyDataSetChanged();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG)
                     .show();
         } //try
-    }
-
-    private void generateFakeDishList() {
-        dishes = new ArrayList<>();
-        dishes.add(new Dish("Bánh tráng trộn",100000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",5000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",80000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",90000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",0,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",70000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",10000,"",new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn",20000,"",new Catalog(1, "Cơm")));
     }
 }

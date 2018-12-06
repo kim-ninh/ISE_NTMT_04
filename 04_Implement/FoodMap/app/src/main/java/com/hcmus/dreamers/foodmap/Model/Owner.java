@@ -51,7 +51,8 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
     }
 
     public void setlistRestaurant(List<Restaurant> listRestaurant) {
-        this.listRestaurant = listRestaurant;
+        this.listRestaurant.clear();
+        this.listRestaurant.addAll(listRestaurant);
     }
 
     public List<Restaurant> getListRestaurant() {
@@ -104,72 +105,6 @@ public class Owner extends com.hcmus.dreamers.foodmap.Model.User {
 
     public String getToken() {
         return token;
-    }
-
-    public void changePassword(String newPassword)
-    {
-        final String pass_temp = instance.getPassword();
-        instance.setPassword(newPassword);
-
-        TaskRequest taskRequest = new TaskRequest();
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response) {
-                String Sresponse = response.toString();
-
-                if (Sresponse != null) {
-                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
-
-                    if (parseJSON.getCode() != 200) {
-                        Owner.getInstance().setPassword(pass_temp);
-                    }
-                    Log.i("CHANGE_PASS_RESPONSE", parseJSON.getMessage());
-                }
-                else
-                {
-                    Log.i("CHANGE_PASS_RESPONSE", "null");
-                }
-            }
-
-        });
-
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance)));
-    }
-
-    public void updateInformation(String name, String phoneNumber, String email)
-    {
-        final String name_temp = instance.getName();
-        final String phone_temp = instance.getPhoneNumber();
-        final String email_temp = instance.getEmail();
-        instance.setName(name);
-        instance.setPhoneNumber(phoneNumber);
-        instance.setEmail(email);
-
-
-        TaskRequest taskRequest = new TaskRequest();
-
-        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
-            @Override
-            public void OnTaskComplete(Object response){
-                String Sresponse = response.toString();
-                if (Sresponse != null) {
-                    ResponseJSON parseJSON = ParseJSON.fromStringToResponeJSON(Sresponse);
-
-                    if (parseJSON.getCode() != 200) {
-                        Owner.getInstance().setName(name_temp);
-                        Owner.getInstance().setPhoneNumber(phone_temp);
-                        Owner.getInstance().setEmail(email_temp);
-                    }
-                    Log.i("UPDATE_INFO_RESPONSE", parseJSON.getMessage());
-                }
-                else
-                {
-                    Log.i("UPDATE_INFO_RESPONSE", "null");
-                }
-            }
-        });
-
-        taskRequest.execute(new DoingTask(GenerateRequest.updateAccount(instance)));
     }
 
     public String getUrlImage() {

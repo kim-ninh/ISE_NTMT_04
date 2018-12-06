@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -120,6 +121,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtPrice = (TextView) findViewById(R.id.txtPrice);
         imgDescription = (ImageView) findViewById(R.id.imgDescription);
         lstDish = (ListView) findViewById(R.id.lstDish);
+        lstDish.setFocusable(false);
         lnrCheckIn = (LinearLayout) findViewById(R.id.lnrCheckIn);
         lnrComment = (LinearLayout) findViewById(R.id.lnrComment);
         lnrFavorite = (LinearLayout)findViewById(R.id.lnrFavourite);
@@ -131,8 +133,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         fabOffer= (FloatingActionButton) findViewById(R.id.fabOffer);
         fabLocation = (FloatingActionButton) findViewById(R.id.fabLocation);
         //get Restaurant
+        int restID;
         Intent intent = this.getIntent();
-        restaurant = (Restaurant) intent.getSerializableExtra("rest");
+        restID = intent.getIntExtra("restID", -1);
+        restaurant = FoodMapManager.findRestaurant(restID);
+
         if(restaurant == null)
         {
             Log.i(TAG,"can't get restaurant data");
@@ -265,6 +270,15 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             //make the list view don't have scroll
             justifyListViewHeightBasedOnChildren(lstDish);
 
+            lstDish.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(RestaurantInfoActivity.this, DishDetailActivity.class);
+                    intent.putExtra("dish", restaurant.getDishes().get(position));
+                    startActivity(intent);
+                }
+            });
+
         }catch (Exception e)
         {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -308,7 +322,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.fabOffer:
                 //add offer here
-
+                Intent intentOfferAct = new Intent(RestaurantInfoActivity.this, DiscountListInfoActivity.class);
+                intentOfferAct.putExtra("rest", (Serializable) restaurant);
+                startActivity(intentOfferAct);
                 break;
             case R.id.fabLocation:
                 Intent intent = new Intent(RestaurantInfoActivity.this, MapActivity.class);
@@ -320,7 +336,9 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
     private void clickOnCheckInEvent() {
         if(isGuestLogin) {
-            startActivity(new Intent(RestaurantInfoActivity.this, CheckInActivity.class));
+            Intent intent = new Intent(RestaurantInfoActivity.this, CheckInActivity.class);
+            intent.putExtra("restID", restaurant.getId());
+            startActivity(intent);
         }
         else{
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
@@ -347,14 +365,16 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
                         if (code == ConstantCODE.SUCCESS) {
                             Guest.getInstance().getFavRestaurant().add(restaurant);
-                            restaurant.setnFavorites(restaurant.getnFavorites() + 1);
                             imgHeart.setImageResource(R.drawable.ic_red_heart);
+                            //reset a number of favorites
+                            restaurant.setnFavorites(restaurant.getnFavorites() + 1);
+                            txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
-                            Log.i(TAG, "Add favorite restaurant successfully");
+                            Log.e(TAG, "Add favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant has been your favorites", Toast.LENGTH_LONG).show();
 
                         } else {
-                            Log.i(TAG, "Error transfer data");
+                            Log.e(TAG, "Error transfer data");
                             Toast.makeText(RestaurantInfoActivity.this, "Add error " + Integer.toString(code), Toast.LENGTH_LONG).show();
                         }
 
@@ -372,11 +392,13 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                             Guest.getInstance().removeFavoriteRestaurant(restaurant.getId());
                             restaurant.setnFavorites(restaurant.getnFavorites() - 1);
                             imgHeart.setImageResource(R.drawable.ic_heart);
+                            //set nFavorite
+                            txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
-                            Log.i(TAG, "Delete favorite restaurant successfully");
+                            Log.e(TAG, "Delete favorite restaurant successfully");
                             Toast.makeText(RestaurantInfoActivity.this, "This restaurant was removed out your favorites", Toast.LENGTH_LONG).show();
                         } else {
-                            Log.i(TAG, "Error transfer data");
+                            Log.e(TAG, "Error transfer data");
                             Toast.makeText(RestaurantInfoActivity.this, "Delete error", Toast.LENGTH_LONG).show();
                         }
 
@@ -384,7 +406,6 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                     }
                 });
             }
-
         } else {
             Toast.makeText(this, "You must login first", Toast.LENGTH_LONG).show();
         }
@@ -424,11 +445,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
                                         if(restaurant.getRanks().size() != 0) {
                                             txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
                                         }
-                                        Log.i(TAG, "Submit rate successfully");
+                                        Log.e(TAG, "Submit rate successfully");
                                         Toast.makeText(RestaurantInfoActivity.this, "Thank you for your submit", Toast.LENGTH_LONG).show();
 
                                     } else {
-                                        Log.i(TAG, "Error transfer data");
+                                        Log.e(TAG, "Error transfer data");
                                         Toast.makeText(RestaurantInfoActivity.this, "Submit error " + Integer.toString(code), Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -451,12 +472,22 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                 @Override
                 public void onSuccess(Sharer.Result result) {
-                    Toast.makeText(RestaurantInfoActivity.this, "success", Toast.LENGTH_LONG).show();
+                    //reset a number of shares
+                    restaurant.setnShare(restaurant.getnShare() + 1);
+                    FoodMapApiManager.addShare(restaurant.getId(), Guest.getInstance().getEmail(), new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            int code = (int)response;
+                            if(code == FoodMapApiManager.SUCCESS){
+                                txtNShare.setText(Integer.toString(restaurant.getnShare()));
+                                FoodMapManager.addShare(restaurant.getId());
+                            }
+                        }
+                    });
                 }
 
                 @Override
                 public void onCancel() {
-                    Toast.makeText(RestaurantInfoActivity.this, "cancel", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -569,5 +600,17 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //reset a number of check in
+        txtNCheckIn.setText(Integer.toString(restaurant.getNum_checkin()));
+
+        //reset  a number of comments
+        txtNComment.setText(Integer.toString(restaurant.getComments().size()));
+
     }
 }

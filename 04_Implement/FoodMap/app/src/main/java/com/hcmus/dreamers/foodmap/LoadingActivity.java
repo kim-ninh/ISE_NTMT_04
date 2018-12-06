@@ -3,6 +3,7 @@ package com.hcmus.dreamers.foodmap;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -65,7 +66,8 @@ public class LoadingActivity extends AppCompatActivity {
         String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CALL_PHONE};
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.ACCESS_NOTIFICATION_POLICY};
 
         boolean isPermissionOK = true;
 
@@ -105,7 +107,7 @@ public class LoadingActivity extends AppCompatActivity {
                 }
             }
 
-            if (allPermissionAreGranted){
+            if (allPermissionAreGranted || Build.VERSION.SDK_INT < 23){
                 openMap();
             } else {
                 // Nếu tồn tại 1 quyền truy cập chưa được cấp, hiện thông báo, yêu cầu cấp lại?

@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -46,6 +49,7 @@ import com.hcmus.dreamers.foodmap.event.LocationChange;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +65,9 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
+import com.hcmus.dreamers.foodmap.service.OrderService;
+import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -74,6 +81,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
-    private MapView mMap;
+    private ZoomLimitMapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -103,16 +112,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if((Owner.getInstance() != null) && !Owner.getInstance().getEmail().equals("")  && OrderSocket.isNULL()){
+            //start service
+            Intent myIntent = new Intent(MainActivity.this, OrderService.class);
+            myIntent.putExtra("email", Owner.getInstance().getUsername());
+            // Gọi phương thức startService (Truyền vào đối tượng Intent)
+            startService(myIntent);
+        }
         navmenuToolbarInit();
         mMap.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //stop service
+        Intent myIntent = new Intent(MainActivity.this, OrderService.class);
+        // Gọi phương thức stopservice
+        stopService(myIntent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
 
         // setup view
         mapInit();
@@ -153,8 +185,7 @@ public class MainActivity extends AppCompatActivity {
     private void mapInit()
     {
         //
-        mMap = (MapView) findViewById(R.id.map);
-
+        mMap = (ZoomLimitMapView) findViewById(R.id.map);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -171,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
         mapController = mMap.getController();
         mapController.setZoom(17.0);
-        mMap = (MapView) findViewById(R.id.map);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
         //list marker
@@ -185,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         this.mLocationOverlay.enableMyLocation();
         this.mLocationOverlay.disableFollowLocation();
         this.mLocationOverlay.setOptionsMenuEnabled(true);
-        mapController.animateTo(this.mLocationOverlay.getMyLocation());
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -197,10 +227,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // thêm một marker vào map
-    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-
+    private void addMarker(String title, String description, GeoPoint point){
         markers.clear();
-        markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
+
+        OverlayItem marker = new OverlayItem(title, description, point);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+        marker.setMarker(drawable);
+        markers.add(marker); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
@@ -215,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (restaurant != null){
                     Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-                    intent.putExtra("rest", (Serializable) restaurant);
+                    intent.putExtra("restID", restaurant.getId());
                     startActivity(intent);
                 }
                 return false;
@@ -226,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
-        return mOverlay;
     }
 
     private void moveCamera(GeoPoint point){
@@ -561,12 +593,6 @@ public class MainActivity extends AppCompatActivity {
             for (Restaurant rest : restaurants) {
                 addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
             }
-        }
-    }
-
-    void uploadDataToAccount() {
-        if(FoodMapApiManager.isGuestLogin()){
-
         }
     }
 }

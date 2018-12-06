@@ -1,6 +1,10 @@
 package com.hcmus.dreamers.foodmap.jsonapi;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.hcmus.dreamers.foodmap.Model.Catalog;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
@@ -12,6 +16,7 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.common.ResponseJSON;
 import com.hcmus.dreamers.foodmap.map.LocationDirection;
+import com.hcmus.dreamers.foodmap.serializer.OrderSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -191,7 +196,10 @@ public class ParseJSON {
             rest.setRanks(parseRanks(o.getJSONArray("ranks")));
             rest.setComments(parseComment(o.getJSONArray("comments")));
             rest.setDishes(parseDish(o.getJSONArray("dishs")));
-            rest.setNum_checkin(o.getInt("num_checkin"));
+            rest.setNum_checkin(o.get("num_checkin") == null ? 0 :o.getInt("num_checkin"));
+            rest.setnFavorites(o.get("num_favorite") == null ? 0 : o.getInt("num_favorite"));
+            rest.setnShare(o.get("num_share") == null ? 0 : o.getInt("num_share"));
+            rest.setCheck(o.getBoolean("ischeck"));
             listRestaurants.add(rest);
         }
         return listRestaurants;
@@ -229,6 +237,9 @@ public class ParseJSON {
         JSONObject object = new JSONObject(response);
         JSONArray array = object.getJSONArray("data");
         int length = array.length();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(OrderSerializer.class, new OrderSerializer());
+        Gson gson = gsonBuilder.create();
         for(int i = 0; i < length; i++){
             Offer offer = gson.fromJson(array.getJSONObject(i).toString(), Offer.class);
             list.add(offer);
@@ -238,7 +249,10 @@ public class ParseJSON {
 
     public static Offer parseOfferObject(String response) throws JSONException {
         JSONObject object = new JSONObject(response);
-        Offer offer = gson.fromJson(object.getJSONObject("order").toString(), Offer.class);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(OrderSerializer.class, new OrderSerializer());
+        Gson gson = gsonBuilder.create();
+        Offer offer = gson.fromJson(object.getString("order"), Offer.class);
         return offer;
     }
 
@@ -252,10 +266,11 @@ public class ParseJSON {
             JSONObject o = array.getJSONObject(i);
             Discount discount = new Discount();
             discount.setId(o.getInt("id"));
+            discount.setNameDish(o.getString("namedish"));
             discount.setId_rest(o.getInt("id_rest"));
             discount.setDiscountPercent(o.getInt("discount_percent"));
-            discount.setTimeStart(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timestart")));
-            discount.setTimeEnd(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(o.getString("timeend")));
+            discount.setTimeStart(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o.getString("timestart")));
+            discount.setTimeEnd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o.getString("timeend")));
             list.add(discount);
         }
         return list;

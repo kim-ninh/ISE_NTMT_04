@@ -1,7 +1,7 @@
 package com.hcmus.dreamers.foodmap.define;
 
 public interface ConstantURL {
-    public static final String BASEURL                     = "https://foodmapserver.000webhostapp.com/";
+    public static final String BASEURL                     = "https://foodmapserver.000webhostapp.com/api/";
     public static final String LOGIN                       = "login.php";
     public static final String CREATEACCOUNT               = "createAccount.php";
     public static final String COMMENT                     = "comment.php";
@@ -15,6 +15,7 @@ public interface ConstantURL {
     public static final String UPDATERESTAURANT            = "updateRestaurant.php";
     public static final String GETCOMMENT                  = "getComment.php";
     public static final String GETLOCATION                 = "getLocation.php";
+    public static final String GETALLRESTAURANT               = "getAllRestaurant.php";
     public static final String GETRESTAURANT               = "getRestaurant.php";
     public static final String UPLOAD                      = "upload.php";
     public static final String DELETEPICTURE               = "deletePicture.php";
@@ -35,6 +36,11 @@ public interface ConstantURL {
     public static final String GETFAVORITE                 = "getFavorite.php";
     public static final String PHOTONAPI                   = "http://photon.komoot.de/api/";
     public static final String PHOTONAPIREVERSE            = "http://photon.komoot.de/reverse";
-    public static final String IMAGE_RELATIVE_PATH         = "./images/%d/%s";              // %d: id_rest, %s: imageName
+    public static final String IMAGE_RELATIVE_PATH         = "../images/%d/%s";              // %d: id_rest, %s: imageName
     public static final String URLWEBSOCKET                = "http://foodmap-notifyserver.herokuapp.com/";
+    public static final String ADDCHECKIN                  = "addCheckin.php";
+    public static final String ADDSHARE                    = "addShare.php";
+	public static final String CREATEDISCOUNT              = "createDiscount.php";
+    public static final String DELETEDISCOUNT              = "deleteDiscount.php";
+	public static final String DELETEOFFER                 = "deleteOffer.php";
 }

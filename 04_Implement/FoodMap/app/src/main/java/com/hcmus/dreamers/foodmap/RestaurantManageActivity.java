@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +16,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
+
+import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.RestaurantListAdapter;
+import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.event.ClickListener;
 
 import java.util.ArrayList;
@@ -36,7 +41,6 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     private final int RRA_ID = 1234;
     private final int RMA_ID = 1111;
-    private final int ROA_ID = 6789;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,34 +55,15 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         igvAdd.setOnClickListener(this);
 
         rcvRestaurant = (RecyclerView) findViewById(R.id.rcvRestaurant);
-        rcvRestaurant.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
-            }
-        });
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         rcvRestaurant.setLayoutManager(mLayoutManager);
 
-        // TODO Tại sao ở đây ko lấy tham chiếu trực tiếp?
-        // restaurantList = Owner.getInstance().getListRestaurant()
-
-        restaurantList = new ArrayList<>();
-        restaurantList.addAll(Owner.getInstance().getListRestaurant());
+        restaurantList = Owner.getInstance().getListRestaurant();
         restaurantListAdapter = new RestaurantListAdapter(RestaurantManageActivity.this,R.layout.item_restaurant_list, restaurantList);
         restaurantListAdapter.setOnClickListener(this);
         rcvRestaurant.setAdapter(restaurantListAdapter);
 
+        LoadData();
     }
 
     @Override
@@ -114,27 +99,19 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
 
     @Override
     public void onItemLongClick(int position, View v) {
-        Intent intent = new Intent(RestaurantManageActivity.this, OrderListActivity.class);
-        intent.putExtra("id_rest", restaurantList.get(position).getId());
-        startActivityForResult(intent, ROA_ID);
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == RRA_ID && resultCode == Activity.RESULT_OK){
             boolean isAdd = data.getBooleanExtra("isAdd", false);
             if (isAdd){
-                restaurantList.clear();
-                List<Restaurant> temp = Owner.getInstance().getListRestaurant();
-                restaurantList.addAll(temp);
                 restaurantListAdapter.notifyDataSetChanged();
             }
         }
         else if (requestCode == RMA_ID && resultCode == Activity.RESULT_OK){
-            //TODO Đã tiết kiệm chi phí việc phải thêm lại toàn bộ danh sách
-            //List<Restaurant> temp = Owner.getInstance().getListRestaurant();
-            //restaurantList.addAll(temp);
-
             boolean isDelete = data.getBooleanExtra("isDelete",false);
 
             if (isDelete)
@@ -143,7 +120,7 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
             }else
             {
                 String restJSON = data.getStringExtra("restJSON");
-                Restaurant restaurant = new Gson().fromJson(restJSON,Restaurant.class);
+                Restaurant restaurant = new Gson().fromJson(restJSON, Restaurant.class);
 
                 restaurantList.remove(selectedRow);
                 restaurantList.add(selectedRow, restaurant);
@@ -153,5 +130,20 @@ public class RestaurantManageActivity extends AppCompatActivity implements View.
         }
     }
 
+
+    void LoadData(){
+        ProgressDialog progressDialog = new ProgressDialog(RestaurantManageActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        FoodMapApiManager.getRestaurantForOwner(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+                restaurantListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 
 }

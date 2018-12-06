@@ -1,14 +1,19 @@
 package com.hcmus.dreamers.foodmap.fragment;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,19 +25,30 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hcmus.dreamers.foodmap.AddDishActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.EditDishActivity;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.ManageAccountActivity;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+
+import com.hcmus.dreamers.foodmap.define.ConstantURL;
+import com.hcmus.dreamers.foodmap.define.ConstantValue;
+import com.squareup.picasso.Callback;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -75,7 +91,8 @@ public class RestaurantInfoFragment extends Fragment {
 
     Restaurant restaurant;
 
-    LinearLayout rootLayout;
+    ScrollView rootLayout;
+
     EditText txtResName;
     EditText txtAddress;
     EditText txtPhoneNumber;
@@ -84,6 +101,8 @@ public class RestaurantInfoFragment extends Fragment {
     ImageView imgDescription;
     EditText txtDescription;
 
+    ProgressBar progressBar;
+    Uri resultUri;
 
     public RestaurantInfoFragment() {
         // Required empty public constructor
@@ -118,10 +137,9 @@ public class RestaurantInfoFragment extends Fragment {
         }
 
         context = getActivity();
-        editRestaurantActivity =(EditRestaurantActivity) getActivity();
+        editRestaurantActivity = (EditRestaurantActivity) getActivity();
 
-        if (editRestaurantActivity != null)
-        {
+        if (editRestaurantActivity != null) {
             restaurant = editRestaurantActivity.restaurant;
         }
     }
@@ -130,8 +148,7 @@ public class RestaurantInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootLayout = (LinearLayout) inflater.inflate(
-                R.layout.fragment_restaurant_info, container, false);
+        rootLayout = (ScrollView) inflater.inflate(R.layout.fragment_restaurant_info, container, false);
 
         takeReferenceFromResource();
         putDataToViews();
@@ -155,7 +172,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -181,7 +198,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay,minute));
+                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -206,7 +223,7 @@ public class RestaurantInfoFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
 
                         int itemID = item.getItemId();
-                        switch (itemID){
+                        switch (itemID) {
                             case R.id.open_camera:
                                 dispatchTakePictureIntent();
                                 break;
@@ -239,9 +256,25 @@ public class RestaurantInfoFragment extends Fragment {
         lblOpenHour.setText(openingHour);
         lblCloseHour.setText(closingHour);
         txtDescription.setText(restaurant.getDescription());
+        if (restaurant.getUrlImage().matches("^(http|https)://.*"))
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.INVISIBLE);
 
-        DownloadImageTask task = new DownloadImageTask(imgDescription,context);
-        task.loadImageFromUrl(restaurant.getUrlImage());
+        DownloadImageTask task = new DownloadImageTask(imgDescription, context);
+        task.loadImageFromUrl(restaurant.getUrlImage(), new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+        imgDescription.setLayoutParams(new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void takeReferenceFromResource() {
@@ -250,8 +283,9 @@ public class RestaurantInfoFragment extends Fragment {
         txtPhoneNumber = (EditText) rootLayout.findViewById(R.id.txtPhoneNumber);
         lblCloseHour = (TextView) rootLayout.findViewById(R.id.closeHour);
         lblOpenHour = (TextView) rootLayout.findViewById(R.id.openHour);
-        imgDescription = (ImageView) rootLayout.findViewById(R.id.imgDescription);
+        imgDescription = (ImageView) rootLayout.findViewById(R.id.imageView);
         txtDescription = (EditText) rootLayout.findViewById(R.id.txtDescription);
+        progressBar = (ProgressBar) rootLayout.findViewById(R.id.progressBar);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -293,31 +327,55 @@ public class RestaurantInfoFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private boolean checkValid(){
-        if(txtResName.length() > 0 && txtAddress.length() > 0 && txtPhoneNumber.length() > 0){
-            // Get Date object
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
-            Date openHour = new Date();
-            Date closeHour = new Date();
+    private boolean checkValid() {
 
-            try{
-                openHour = timeFormatter.parse(lblOpenHour.getText().toString());
-                closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
-            }catch (Exception e){
-                //This line should never run
-            }
+        boolean isValid = true;
 
-
-            restaurant.setName(txtResName.getText().toString());
-            restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
-            restaurant.setAddress(txtAddress.getText().toString());
-            restaurant.setTimeOpen(openHour);
-            restaurant.setTimeClose(closeHour);
-            restaurant.setDescription(txtDescription.getText().toString());
-
-            return true;
+        if (txtResName.length() == 0 && isValid) {
+            Toast.makeText(getContext(), "Tên nhà hàng trống", Toast.LENGTH_LONG).show();
+            isValid = false;
         }
-        return false;
+
+        if (txtAddress.length() == 0 && isValid) {
+            Toast.makeText(getContext(), "Địa chỉ nhà hàng trống", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        if (txtPhoneNumber.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid) {
+            Toast.makeText(getContext(), "Số điện thoại không đúng", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        String openHour = lblOpenHour.getText().toString();
+        String closeHour = lblCloseHour.getText().toString();
+        if (openHour.compareTo(closeHour) > 0 && isValid) {
+            Toast.makeText(getContext(), "Giờ đóng cửa phải lớn hơn giờ mở cửa", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private void setDataFromView() {
+        // Get Date object
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+        Date openHour = new Date();
+        Date closeHour = new Date();
+
+        try {
+            openHour = timeFormatter.parse(lblOpenHour.getText().toString());
+            closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
+        } catch (Exception e) {
+            //This line should never run
+        }
+
+
+        restaurant.setName(txtResName.getText().toString());
+        restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
+        restaurant.setAddress(txtAddress.getText().toString());
+        restaurant.setTimeOpen(openHour);
+        restaurant.setTimeClose(closeHour);
+        restaurant.setDescription(txtDescription.getText().toString());
     }
 
     @Override
@@ -328,55 +386,169 @@ public class RestaurantInfoFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_delete:
-                //Toast.makeText(context,"Delete button hit",Toast.LENGTH_LONG).show();
-                FoodMapApiManager.deleteRestaurant(restaurant, new TaskCompleteCallBack() {
-                    @Override
-                    public void OnTaskComplete(Object response) {
-                        if((int)response == FoodMapApiManager.SUCCESS){
-                            Intent intent = new Intent();
-
-                            intent.putExtra("isDelete",true);
-                            editRestaurantActivity.setResult(RESULT_OK, intent);
-                            editRestaurantActivity.finish();
-                        }else if((int)response == ConstantCODE.NOTINTERNET){
-                            Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(context, "Xóa quán thất bại!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                showAlertDialog();
                 return true;
 
             case R.id.action_done:
-                //Toast.makeText(context,"Done button hit",Toast.LENGTH_LONG).show();
-                if(checkValid()){
-                    FoodMapApiManager.updateRestaurant(restaurant, new TaskCompleteCallBack() {
-                        @Override
-                        public void OnTaskComplete(Object response) {
-                            if((int)response == FoodMapApiManager.SUCCESS) {
+                final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setMessage("Đang cập nhật");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
 
-                                Gson gson = new Gson();
-                                Intent intent = new Intent();
-                                intent.putExtra("restJSON", gson.toJson(restaurant));
-
-                                editRestaurantActivity.setResult(RESULT_OK, intent);
-                                editRestaurantActivity.finish();
-                            }else if((int)response == ConstantCODE.NOTINTERNET){
-                                Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context, "Cập nhật nhà hàng thất bại!", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }else{
-                    Toast.makeText(context, "Hãy nhập đầy đủ thông tin!", Toast.LENGTH_LONG).show();
+                if (checkValid()) {
+                    setDataFromView();
+                    updateRestaurant(progressDialog);
+                } else {
+                    progressDialog.dismiss();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateRestaurant(final ProgressDialog progressDialog) {
+        final TaskCompleteCallBack updateRestaurantCallBack;
+        TaskCompleteCallBack deleteImageCallBack;
+        final TaskCompleteCallBack uploadImageCallBack;
+
+        updateRestaurantCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                    Gson gson = new Gson();
+                    Intent intent = new Intent();
+                    intent.putExtra("restJSON", gson.toJson(restaurant));
+
+                    editRestaurantActivity.setResult(RESULT_OK, intent);
+                    editRestaurantActivity.finish();
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        uploadImageCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if (((String) response).matches("^(http|https)://.*")) {
+                    restaurant.setUrlImage((String) response);
+                    FoodMapApiManager.updateRestaurant(restaurant, updateRestaurantCallBack);
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, (String) response, Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        deleteImageCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    restaurant.setUrlImage("");
+                    FoodMapApiManager.uploadImage(context, restaurant.getId(), resultUri, uploadImageCallBack);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_SHORT).show();
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        // Nếu chưa chọn hình thì cập nhật trực tiếp tài khoản
+        if (resultUri == null) {
+            FoodMapApiManager.updateRestaurant(restaurant, updateRestaurantCallBack);
+        } else {
+            // Nếu tài khoản chưa có hình hoặc hình ko thuộc foodmapserver thì upload trực tiếp
+            // Ngược lại thì xóa hình cũ -> up hình mới lên
+            if (restaurant.getUrlImage() == null || !restaurant.getUrlImage().matches("^(http|https)://foodmapserver.000webhostapp.com/.*")) {
+                FoodMapApiManager.uploadImage(context, restaurant.getId(), resultUri, uploadImageCallBack);
+            } else {
+                // Tài khoản đã có hình thuộc foodmapserver
+                String absolutePath = restaurant.getUrlImage();
+                String imageName = new File(absolutePath).getName();
+                String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, restaurant.getId(), imageName);
+                FoodMapApiManager.deleteImage(relativePath, deleteImageCallBack);
+            }
+        }
+    }
+
+    private void showAlertDialog() {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.title_confirmDeleteRestaurant)
+                .setMessage(R.string.confirmDeleteRestaurant)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final ProgressDialog progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Đang xóa...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+
+                        deleteRestaurant(progressDialog);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void deleteRestaurant(final ProgressDialog progressDialog) {
+        TaskCompleteCallBack deleteImageTaskCallBack;
+        final TaskCompleteCallBack deleteRestaurantTaskCallBack;
+
+        deleteRestaurantTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                progressDialog.dismiss();
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    Toast.makeText(context, "Xóa nhà hàng thành công", Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("isDelete", true);
+                    editRestaurantActivity.setResult(RESULT_OK, intent);
+                    editRestaurantActivity.finish();
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.e("DeleteRestCallBack", "Can't delete restaurant");
+                }
+            }
+        };
+
+        deleteImageTaskCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    FoodMapApiManager.deleteRestaurant(restaurant, deleteRestaurantTaskCallBack);
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else {
+                    progressDialog.dismiss();
+                    Log.e("DeleteImageCallBack", "Can't delete image");
+                }
+            }
+        };
+
+        // Nếu hình đang lưu thuộc foodmapserver thì xóa hình trước, xóa nhà hàng sau
+        if (restaurant.getUrlImage() != null && restaurant.getUrlImage().matches("^(http|https)://foodmapserver.000webhostapp.com/.*")) {
+
+            String absolutePath = restaurant.getUrlImage();
+            String imageName = new File(absolutePath).getName();
+            String relativePath = String.format(ConstantURL.IMAGE_RELATIVE_PATH, restaurant.getId(), imageName);
+
+            FoodMapApiManager.deleteImage(relativePath, deleteImageTaskCallBack);
+        } else {
+            FoodMapApiManager.deleteRestaurant(restaurant, deleteRestaurantTaskCallBack);
         }
     }
 
@@ -397,6 +569,7 @@ public class RestaurantInfoFragment extends Fragment {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     Uri photoURI;
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -425,12 +598,10 @@ public class RestaurantInfoFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
             startCropImageActivity(photoURI);
         }
 
-        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK)
-        {
+        if (requestCode == REQUEST_OPEN_GALERY && resultCode == RESULT_OK) {
             // Chuỗi URI trả về có dạng content://<path>
             Uri imageUri = Uri.parse(data.getDataString());
             String str = imageUri.getPath();
@@ -440,9 +611,9 @@ public class RestaurantInfoFragment extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-
+                resultUri = result.getUri();
                 imgDescription.setImageURI(resultUri);
+                //uploadImageToServer(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(context,
@@ -453,6 +624,27 @@ public class RestaurantInfoFragment extends Fragment {
 
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
-                .start(getContext(),this);
+                .start(getContext(), this);
+    }
+
+    private void uploadImageToServer(Uri imageUri) {
+        if (imageUri != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            // Upload hình lên Server
+            FoodMapApiManager.uploadImage(getContext(),
+                    restaurant.getId(), imageUri, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            progressBar.setVisibility(View.INVISIBLE);
+
+                            String strResponse = (String) response;
+                            if (strResponse.matches("^(http|https)://.*")) {
+                                restaurant.setUrlImage(strResponse);
+                            } else {
+                                Toast.makeText(getContext(), strResponse, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
     }
 }

@@ -108,7 +108,17 @@ class database
 
     			if ($this->query($queryAddLocation) != -1)
     			{
-    				return $id;
+    				$queryAddToPreRestaurant = 'INSERT INTO PRE_RESTAURANT (ID_REST, STATUS) VALUES ('.$id.', 0)';
+    				if ($this->query($queryAddToPreRestaurant) != -1)
+    				{
+    					return $id;
+    				}
+    				else
+    				{
+    					$queryDeleteRest = 'DELETE FROM RESTAURANT WHERE RESTAURANT.ID = '.$id;
+	    				$this->query($queryDeleteRest);
+	    				return -1;
+    				}
     			}
     			else
     			{
@@ -152,6 +162,21 @@ class database
 		return $this->query($strQuery); 
 	}
 
+	public function GetSumFavorite($id_rest)
+	{
+		$strQuery = 'SELECT COUNT(*) AS NUMBERFAV FROM FAVORITE WHERE ID_REST ='.$id_rest;
+		$result = $this->query($strQuery);
+
+		if ($result != -1)
+		{
+			foreach($result as $row)
+			{
+				return $row["NUMBERFAV"];
+			}
+		}
+		return -1;
+	}
+
 	public function DeleteFavorite($id_rest, $guest_email)
 	{
 		$strQuery = 'DELETE FROM FAVORITE WHERE ID_REST = '.$id_rest.' AND GUEST_EMAIL = "'.$guest_email.'"';
@@ -172,14 +197,30 @@ class database
 
 	public function DeleteOwner($username)
 	{
-		$strQuery = 'CALL SP_DELETE_OWNER("'.$username.'")';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_DELETE_OWNER("'.$username.'") AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+		
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		return -1;
 	}
 
 	public function DeleteRestaurant($id_rest)
 	{
-		$strQuery = 'CALL SP_DELETE_REST('.$id_rest.')';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_DELETE_REST('.$id_rest.') AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+		
+		foreach($result as $row)
+		{
+			return 1;
+		}
+		return -1;
 	}
 
 	public function GetComment($id_rest)
@@ -211,14 +252,14 @@ class database
 	// lấy tất cả các restaurant
 	public function GetAllRestaurant()
 	{
-		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST)";
+		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE RST.ID NOT IN (SELECT PR.ID_REST FROM PRE_RESTAURANT PR)";
 		return $this->query($strQuery); 
 	}
 
 	// lấy thông tin của 1 restaurant
-	public function GetRestaurant($id_rest)
+	public function GetRestaurant($owner_username)
 	{
-		$strQuery = "SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE ID = ".$id_rest;
+		$strQuery = 'SELECT RST.*, LC.LAT LAT, LC.LON LON FROM (RESTAURANT RST JOIN LOCATION LC ON RST.ID = LC.ID_REST) WHERE RST.OWNER_USERNAME = "'.$owner_username.'"';
 		return $this->query($strQuery); 
 	}
 
@@ -226,6 +267,9 @@ class database
 	{
 		$strQuery = 'SELECT FC_GETTOKEN("'.$username.'") AS TOKEN;';
 		$token = $this->query($strQuery);
+		if ($token == -1)
+			return -1;
+		
 		foreach($token as $row)
 		{
 			return $row["TOKEN"];
@@ -269,7 +313,12 @@ class database
 	public function UpdateRestaurant($id_rest, $value)
 	{
 		$strQuery = "UPDATE RESTAURANT SET ".$value." WHERE ID = ".$id_rest;
-		return $this->query($strQuery);
+		$check = $this->query($strQuery);
+
+		$strQuery = "UPDATE PRE_RESTAURANT SET STATUS = 0 WHERE ID_REST = ".$id_rest;
+		$this->query($strQuery);
+
+		return $check;
 	}
 
 	// lấy code reset password
@@ -312,14 +361,34 @@ class database
 	// thêm offer
 	public function AddOffer($guest_email, $total, $id_discount)
 	{
-		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.')';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_ADDOFFER("'.$guest_email.'",'.$total.','.$id_discount.') AS RESULT';
+		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			if ($row["RESULT"] == 1)
+			{
+				return 0;
+			}
+		}
+		
+		return -1;
 	}
 
 	// tạo discount
 	public function CreateDiscount($id_rest, $namedish, $discount_percent, $timestart, $timeend)
 	{
 		$strQuery = 'INSERT INTO DISCOUNT (ID_REST, NAMEDISH, DISCOUNT_PERCENT, TIMESTART, TIMEEND) VALUES ('.$id_rest.', "'.$namedish.'", '.$discount_percent.', "'.$timestart.'", "'.$timeend.'")';
+		return $this->query($strQuery);
+	}
+
+	// xóa discount
+	public function DeleteDiscount($id_discount)
+	{
+		$strQuery = 'DELETE FROM DISCOUNT WHERE ID = '.$id_discount;
 		return $this->query($strQuery);
 	}
 
@@ -333,21 +402,127 @@ class database
 	// lấy ofer của nhà hàng
 	public function GetOffer($id_rest)
 	{
-		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.GUEST_EMAIL, OF.TOTAL FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
+		$strQuery = 'SELECT DC.NAMEDISH, DC.DISCOUNT_PERCENT, OF.* FROM DISCOUNT DC JOIN OFFER OF ON DC.ID = OF.ID_DISCOUNT WHERE DC.ID_REST = '.$id_rest;
 		return $this->query($strQuery);
 	}
 
+	public function DeleteOffer($id_offer)
+	{
+		$strQuery = 'DELETE FROM OFFER WHERE ID = '.$id_offer;
+		return $this->query($strQuery);
+	}
 
 	public function AddCheckin($id_rest, $guest_email)
 	{
-		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'")';
-		return $this->query($strQuery);
+		$strQuery = 'SELECT FC_ADDCHECKIN('.$id_rest.', "'.$guest_email.'") AS RESULT';
+		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		
+		return -1;
 	}
 
 	public function GetCheckin($id_rest)
 	{
-		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN';
+		$strQuery = 'SELECT SUM(TOTAL_CHECKIN) COUNT FROM CHECKIN WHERE ID_REST = '.$id_rest;
 		return $this->query($strQuery);
+	}
+
+	public function AddShare($id_rest, $guest_email)
+	{
+		$strQuery = 'SELECT FC_ADDSHARE('.$id_rest.', "'.$guest_email.'") AS RESULT';
+		$result = $this->query($strQuery);
+		
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			return $row["RESULT"];
+		}
+		
+		return -1;
+	}
+
+	public function GetShare($id_rest)
+	{
+		$strQuery = 'SELECT SUM(TOTAL_SHARE) COUNT FROM SHARE WHERE ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+
+	public function CheckExitsRestaurant($id_rest, $username)
+	{
+		$strQuery = 'SELECT ID FROM RESTAURANT WHERE ID ='.$id_rest.' AND OWNER_USERNAME="'.$username.'"';
+		$check = $this->query($strQuery);
+		if ($check == -1 || $check == null)
+			return false;
+		return true;		
+	}
+
+	// admin control
+	public function LoginAdmin($username, $password)
+	{
+		$strQuery = 'SELECT FC_LOGIN_ADMIN("'.$username.'","'.$password.'") AS RESULT';
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return -1;
+
+		foreach($result as $row)
+		{
+			if ($row["RESULT"] == 1)
+				return 1;
+			break;
+		}
+
+		return -1;
+	}
+
+	// 
+	public function GetRestaurantForAdmin()
+	{
+		$strQuery = 'SELECT R.*, LC.* FROM (PRE_RESTAURANT PR JOIN RESTAURANT R ON PR.ID_REST = R.ID) JOIN LOCATION LC ON R.ID = LC.ID_REST WHERE PR.STATUS = 0';
+		return $this->query($strQuery);
+	}
+
+	// 
+	public function DeletePreRestaurantAdmin($id_rest)
+	{
+		$strQuery = 'DELETE FROM PRE_RESTAURANT WHERE ID_REST = '.$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function UpdatePreRestaurant($id_rest, $status)
+	{
+		$strQuery = "UPDATE PRE_RESTAURANT SET STATUS = ".$status." WHERE ID_REST = ".$id_rest;
+		return $this->query($strQuery);
+	}
+
+	public function GetEmailOwner($id_rest)
+	{
+		$strQuery = "SELECT O.EMAIL AS EMAIL FROM RESTAURANT R JOIN OWNER O ON R.OWNER_USERNAME = O.USERNAME WHERE R.ID = ".$id_rest;
+		$result = $this->query($strQuery);
+		if ($result == -1)
+			return - 1;
+		foreach ($result as $row) {
+			return $row["EMAIL"];
+		}
+		return -1;
+	}
+
+	public function GetIsCheck($id_rest)
+	{
+		$strQuery = "SELECT * FROM PRE_RESTAURANT WHERE ID_REST = ".$id_rest;
+		$result = $this->query($strQuery);
+		if ($result == -1 || $result == null)
+			return true;
+		return false;
 	}
 
 	// close connection
