@@ -96,6 +96,7 @@ public class RestaurantInfoFragment extends Fragment {
     TextView lblCloseHour;
     ImageView imgDescription;
     EditText txtDescription;
+    TextView txtCheck;
     ProgressBar progressBar;
 
     Uri resultUri;
@@ -254,6 +255,13 @@ public class RestaurantInfoFragment extends Fragment {
         lblCloseHour.setText(closingHour);
         txtDescription.setText(restaurant.getDescription());
 
+        if (!restaurant.isCheck()){
+            txtCheck.setVisibility(View.VISIBLE);
+        }
+        else {
+            txtCheck.setVisibility(View.INVISIBLE);
+        }
+
         if (restaurant.getUrlImage().matches("^(http|https)://.*"))
             progressBar.setVisibility(View.VISIBLE);
         else
@@ -284,6 +292,7 @@ public class RestaurantInfoFragment extends Fragment {
         imgDescription = (ImageView) rootLayout.findViewById(R.id.imageView);
         txtDescription = (EditText) rootLayout.findViewById(R.id.txtDescription);
         progressBar = (ProgressBar) rootLayout.findViewById(R.id.progressBar);
+        txtCheck = rootLayout.findViewById(R.id.txtCheck);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
