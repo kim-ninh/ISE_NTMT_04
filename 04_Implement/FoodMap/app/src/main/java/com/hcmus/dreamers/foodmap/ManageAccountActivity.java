@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -19,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,8 +41,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import bolts.Task;
-
 //Crop Image Source
 //https://github.com/ArthurHub/Android-Image-Cropper
 
@@ -58,8 +56,9 @@ public class ManageAccountActivity extends AppCompatActivity {
     TextInputEditText txtCurrentPass;
     TextInputEditText txtNewPass;
     LinearLayout passwordSection;
-    LinearLayout avatarSection;
     AppCompatCheckBox checkBoxChangePassword;
+    TextInputLayout currentPassView;
+    TextInputLayout newPassView;
 
     Owner owner;
     Uri resultUri;
@@ -82,7 +81,7 @@ public class ManageAccountActivity extends AppCompatActivity {
 
     private void handleClickEvent() {
 
-        avatarSection.setOnClickListener(new View.OnClickListener() {
+        ic_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Đổi hình đại diện (Từ máy ảnh hoặc thư viện)
@@ -147,8 +146,9 @@ public class ManageAccountActivity extends AppCompatActivity {
         txtCurrentPass = (TextInputEditText) findViewById(R.id.txtCurrentPass);
         txtNewPass = (TextInputEditText) findViewById(R.id.txtNewPass);
         passwordSection = (LinearLayout) findViewById(R.id.passwordSection);
-        avatarSection = (LinearLayout) findViewById(R.id.avatarSection);
         checkBoxChangePassword = findViewById(R.id.checkBoxChangePassword);
+        currentPassView = findViewById(R.id.currentPassView);
+        newPassView = findViewById(R.id.newPassView);
     }
 
     @Override
@@ -197,39 +197,78 @@ public class ManageAccountActivity extends AppCompatActivity {
 
     private boolean checkInputValid() {
         boolean isValid = true;
+        View focusView = null;
 
-        if (txtRealName.length() == 0 && isValid) {
-            Toast.makeText(ManageAccountActivity.this, "Tên thật còn trống", Toast.LENGTH_SHORT).show();
-            isValid = false;
-        }
-
-        if (txtPhoneNumber1.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid) {
-            Toast.makeText(ManageAccountActivity.this, "Chiều dài số điện thoại chưa đúng", Toast.LENGTH_SHORT).show();
-            isValid = false;
-        }
-
+        String FullName = txtRealName.getText().toString();
+        String PhoneNumber = txtPhoneNumber1.getText().toString();
         String emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         String ownerMail = txtEmail.getText().toString();
+        String currentPass = txtCurrentPass.getText().toString();
+        String newPass = txtNewPass.getText().toString();
+
+
+        //Reset Error message to null
+        txtRealName.setError(null);
+        txtPhoneNumber1.setError(null);
+        txtEmail.setError(null);
+        currentPassView.setError(null);
+        newPassView.setError(null);
+
+        if (FullName.isEmpty() && isValid) {
+            txtRealName.setError(getString(R.string.ErrorEmptyInfo));
+            focusView = txtRealName;
+            isValid = false;
+        }
+
+        if (PhoneNumber.isEmpty() && isValid) {
+            txtPhoneNumber1.setError(getString(R.string.ErrorEmptyInfo));
+            focusView = txtPhoneNumber1;
+            isValid = false;
+        }
+
+        if (PhoneNumber.length() != ConstantValue.PHONE_NUMBER_LENGTH && isValid) {
+            txtPhoneNumber1.setError(getString(R.string.ErrorPhoneNumberNotValid));
+            focusView = txtPhoneNumber1;
+            isValid = false;
+        }
+
+        if (ownerMail.isEmpty() && isValid) {
+            txtEmail.setError(getString(R.string.ErrorEmptyInfo));
+            focusView = txtEmail;
+            isValid = false;
+        }
+
         if (!ownerMail.matches(emailPattern) && isValid) {
-            Toast.makeText(ManageAccountActivity.this, "Email chưa chính xác", Toast.LENGTH_SHORT).show();
+            txtEmail.setError(getString(R.string.ErrorEmailNotValid));
+            focusView = txtEmail;
             isValid = false;
         }
 
         if (checkBoxChangePassword.isChecked())
         {
-            if (! owner.getPassword().equals(txtCurrentPass.getText().toString()) && isValid)
+            if (!owner.getPassword().equals(currentPass) && isValid)
             {
-                Toast.makeText(ManageAccountActivity.this,
-                        "Mật khẩu hiện tại không trùng khớp, hãy thử lại",Toast.LENGTH_LONG).show();
+                currentPassView.setError(getString(R.string.ErrorPasswordNotMatch));
+                focusView = currentPassView;
                 isValid = false;
             }
 
-            if (txtNewPass.getText().toString().isEmpty() && isValid)
+            if (newPass.isEmpty() && isValid)
             {
-                Toast.makeText(ManageAccountActivity.this,
-                        "Mật khẩu mới đang trống. Hãy điền mật khẩu mới vào.", Toast.LENGTH_LONG).show();
+                newPassView.setError(getString(R.string.ErrorEmptyInfo));
+                focusView = newPassView;
                 isValid = false;
             }
+
+            if (newPass.equals(owner.getPassword()) && isValid) {
+                newPassView.setError(getString(R.string.ErrorDuplicatePass));
+                focusView = newPassView;
+                isValid = false;
+            }
+        }
+
+        if (!isValid) {
+            focusView.requestFocus();
         }
         return isValid;
     }

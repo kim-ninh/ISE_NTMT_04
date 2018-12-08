@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eeeeee"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ManageAccountActivity"
-    tools:showIn="@layout/activity_manage_account"
-    android:background="#eeeeee">
+    tools:showIn="@layout/activity_manage_account">
     <!-- Main content -->
 
-    <ScrollView android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -24,108 +25,82 @@
                 android:id="@+id/lblAvatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:text="HÌNH ĐẠI DIỆN"
-                android:textSize="18sp"
-                android:padding="10dp"/>
-            <LinearLayout
-                android:id="@+id/avatarSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_border">
+                android:textSize="18sp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/ic_avatar"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:src="@drawable/avatar_boss"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@android:color/white"
-                    android:layout_marginRight="10dp"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/lblChangeAvatar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textColor="#333333"
-                            android:text="Đổi ảnh đại diện"/>
-
-                    </LinearLayout>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:text=">"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        />
-                </RelativeLayout>
-            </LinearLayout>
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ic_avatar"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/default_image"
+                app:civ_border_color="@android:color/white"
+                app:civ_border_width="2dp" />
 
             <TextView
                 android:id="@+id/lblContactAndInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:text="THÔNG TIN VÀ LIÊN HỆ"
-                android:textSize="18sp"
-                android:padding="10dp"/>
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:background="@drawable/custom_border">
 
                 <TextView
                     android:id="@+id/lblUserName"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tên đăng nhập"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
                     android:labelFor="@id/txtUserName"
-                    android:textSize="14sp"/>
+                    android:text="Tên đăng nhập"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/txtUserName"
-                    android:layout_weight="2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
                     android:ems="10"
                     android:inputType="textShortMessage"
-                    android:background="@drawable/custom_border"
                     android:text="admin_69"
                     android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:background="@drawable/custom_border">
 
                 <TextView
                     android:id="@+id/lblRealName"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tên thật"
-                    android:labelFor="@id/txtRealName"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:labelFor="@id/txtRealName"
+                    android:text="Tên thật" />
 
                 <EditText
                     android:id="@+id/txtRealName"
-                    android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="center_vertical"
+
                     android:ems="10"
                     android:inputType="textShortMessage"
-                    android:background="@drawable/custom_border"
                     android:text="Nguyễn Văn A"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -150,7 +125,6 @@
                     android:layout_weight="2"
                     android:ems="10"
                     android:inputType="phone"
-                    android:background="@drawable/custom_border"
                     android:text="0904461762"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -173,9 +147,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+
                     android:ems="10"
                     android:inputType="textEmailAddress"
-                    android:background="@drawable/custom_border"
                     android:text="admin69@gmail.com"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -186,51 +160,59 @@
                 android:layout_height="wrap_content"
                 android:text="Thay đổi mật khẩu"
                 android:background="@drawable/custom_border"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"/>
+                android:padding="8dp"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/passwordSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/custom_border"
+                android:orientation="vertical"
+                android:visibility="invisible">
 
-                    <android.support.design.widget.TextInputLayout
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/currentPassView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:hint="Nhập mật khẩu hiện tại"
+                    app:passwordToggleEnabled="true"
+                    app:errorEnabled="true">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/txtCurrentPass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/custom_border"
-                        app:passwordToggleEnabled="true">
+                        android:ems="10"
 
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/txtCurrentPass"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="Nhập mật khẩu hiện tại"
-                            android:textSize="14sp"
-                            android:inputType="textPassword" />
-                    </android.support.design.widget.TextInputLayout>
+                        android:inputType="textPassword"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
 
 
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_border"
-                        app:passwordToggleEnabled="true">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/newPassView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:hint="Nhập mật khẩu mới"
+                    app:passwordToggleEnabled="true"
+                    app:errorEnabled="true">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/txtNewPass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:hint="Nhập mật khẩu mới"
-                        android:textSize="14sp"
-                        android:inputType="textPassword" />
-                    </android.support.design.widget.TextInputLayout>
 
+                        android:inputType="textPassword"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
