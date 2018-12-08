@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,11 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderListActivity extends AppCompatActivity {
 
@@ -29,12 +34,18 @@ public class OrderListActivity extends AppCompatActivity {
     private OrderListAdapter adapter;
     private List<Offer> offers;
     private int id_rest;
+    private Calendar c = Calendar.getInstance();
 
     @Override
     protected void onResume() {
         super.onResume();
         getItentFromActivity();
-        refreshData();
+        int mYear, mMonth, mDay;
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        refreshData( mYear, mMonth, mDay);
+
     }
 
     @Override
@@ -78,7 +89,7 @@ public class OrderListActivity extends AppCompatActivity {
         id_rest = intent.getIntExtra("id_rest", -1);
     }
 
-    private void refreshData(){
+    private void refreshData(int year,int monthOfYear ,int dayOfMonth){
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
@@ -87,8 +98,10 @@ public class OrderListActivity extends AppCompatActivity {
                     ResponseJSON responseJSON = ParseJSON.parseFromAllResponse(resp);
                     if(responseJSON.getCode() == ConstantCODE.SUCCESS){
                         offers = ParseJSON.parseOffer(resp);
+                        filter(year, monthOfYear, dayOfMonth);
                         adapter = new OrderListAdapter(OrderListActivity.this, R.layout.order_item_list, offers);
                         listOffer.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(OrderListActivity.this, "NOT FOUND!", Toast.LENGTH_SHORT).show();
                     }else {
@@ -99,6 +112,15 @@ public class OrderListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void filter(int year,int monthOfYear,int dayOfMonth){
+        Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+        c.set(year, monthOfYear, dayOfMonth);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            offers = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
+            adapter.setOffers(offers);
+        }
     }
 
 }

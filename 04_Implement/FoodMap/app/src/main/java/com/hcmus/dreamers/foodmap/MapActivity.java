@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -167,9 +168,9 @@ public class MapActivity extends AppCompatActivity{
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(MapActivity.this),mMap);
         mLocationOverlay.enableMyLocation();
 
+
         mapController.setCenter(this.mLocationOverlay.getMyLocation());
         mMap.getOverlays().add(this.mLocationOverlay);
-
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -182,7 +183,10 @@ public class MapActivity extends AppCompatActivity{
 
     private void addMarker(String title, String description, GeoPoint point){
         markers.clear();
-        markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
+        OverlayItem marker = new OverlayItem(title, description, point);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+        marker.setMarker(drawable);
+        markers.add(marker); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MapActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/toolbar"
         app:title="Thông tin địa chỉ"
-        android:background="@color/colorPrimary"
+        android:background="@color/redColor"
         app:titleTextColor="#ffffff"/>
 
     <com.hcmus.dreamers.foodmap_admin.map.ZoomLimitMapView

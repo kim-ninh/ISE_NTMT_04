@@ -4,29 +4,35 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,36 +41,14 @@ import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.Model.Guest;
+import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.View.NotificationBuilder;
+import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
-
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
-
 import com.hcmus.dreamers.foodmap.event.LocationChange;
-
-
-import android.text.Editable;
-import android.text.TextWatcher;
-
-import android.util.Base64;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.hcmus.dreamers.foodmap.Model.Owner;
-import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 import com.hcmus.dreamers.foodmap.service.OrderService;
 import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
@@ -73,16 +57,12 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
-import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
-    private ArrayList<OverlayItem> markers;
 
+    private ArrayList<OverlayItem> markers;
+    private ItemizedOverlayWithFocus<OverlayItem> markerTemp;
 
     @Override
     protected void onPause() {
@@ -228,14 +209,15 @@ public class MainActivity extends AppCompatActivity {
 
     // thêm một marker vào map
     private void addMarker(String title, String description, GeoPoint point){
-        markers.clear();
+        if (markerTemp != null){
+            mMap.getOverlays().remove(markerTemp);
+        }
+        List<OverlayItem> overlayItems = new ArrayList<>();
 
         OverlayItem marker = new OverlayItem(title, description, point);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
-        marker.setMarker(drawable);
-        markers.add(marker); // Lat/Lon decimal degrees
+        overlayItems.add(marker); // Lat/Lon decimal degrees
         // thêm sự kiện marker click
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, overlayItems, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
                 return false;
@@ -243,6 +225,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+                return false;
+            }
+        });
+
+        markerTemp = mOverlay;
+        // thêm marker vào map
+        mMap.getOverlays().add(mOverlay);
+        mMap.invalidate();
+    }
+
+    // sử dụng để thêm nhiều marker cùng lúc
+    private void addMarkers(List<OverlayItem> markers){
+        // thêm sự kiện marker click
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
                 GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
@@ -251,18 +249,24 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("restID", restaurant.getId());
                     startActivity(intent);
                 }
+
+                return true;
+            }
+
+            @Override
+            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
                 return false;
             }
         });
-        mOverlay.setFocusItemsOnTap(true);
 
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
     }
 
+
     private void moveCamera(GeoPoint point){
-        mapController.animateTo(point);
+        mapController.setCenter(point);
     }
 
     // navigation menu and toolbar init
@@ -389,9 +393,9 @@ public class MainActivity extends AppCompatActivity {
         navigationMenu.inflateHeaderView(R.layout.nav_header_notlogin);
 
         View head = navigationMenu.getHeaderView(0);
-        Button btnLogin = (Button)head.findViewById(R.id.btnNavDangNhap);
+        View accountView = head.findViewById(R.id.accountView);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        accountView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LoginGuestActivity.class);
@@ -591,8 +595,13 @@ public class MainActivity extends AppCompatActivity {
         List<Restaurant> restaurants = FoodMapManager.getRestaurants();
         if (restaurants != null) {
             for (Restaurant rest : restaurants) {
-                addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
+                OverlayItem marker = new OverlayItem(rest.getName(), rest.getDescription(), rest.getLocation());
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+                marker.setMarker(drawable);
+                markers.add(marker);
             }
         }
+
+        addMarkers(markers);
     }
 }

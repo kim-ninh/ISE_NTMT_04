@@ -22,6 +22,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -264,25 +265,19 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             txtPrice.setText(String.format("%d VND - %d VND", minPrice, maxPrice));
 
         //set Menu
-        try {
-            DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.adapter_dish_info_list, restaurant.getDishes());
-            lstDish.setAdapter(dishInfoList);
-            //make the list view don't have scroll
-            justifyListViewHeightBasedOnChildren(lstDish);
+        DishInfoListAdapter dishInfoList = new DishInfoListAdapter(this, R.layout.adapter_dish_info_list, restaurant.getDishes());
+        lstDish.setAdapter(dishInfoList);
+        //make the list view don't have scroll
+        justifyListViewHeightBasedOnChildren(lstDish);
 
-            lstDish.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(RestaurantInfoActivity.this, DishDetailActivity.class);
-                    intent.putExtra("dish", restaurant.getDishes().get(position));
-                    startActivity(intent);
-                }
-            });
-
-        }catch (Exception e)
-        {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        lstDish.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(RestaurantInfoActivity.this, DishDetailActivity.class);
+                intent.putExtra("dish", restaurant.getDishes().get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -577,7 +572,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         }
 
         ViewGroup.LayoutParams par = listView.getLayoutParams();
-        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1)) + 230;
         listView.setLayoutParams(par);
         listView.requestLayout();
     }

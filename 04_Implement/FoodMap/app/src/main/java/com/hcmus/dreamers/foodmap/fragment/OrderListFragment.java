@@ -75,7 +75,12 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     @Override
     public void onResume() {
         super.onResume();
-        refreshData();
+
+        int mYear, mMonth, mDay;
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        refreshData(true, mYear, mMonth, mDay);
     }
 
     @Override
@@ -100,7 +105,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     }
 
 
-    private void refreshData(){
+    private void refreshData(boolean filter, int year,int monthOfYear ,int dayOfMonth){
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
@@ -112,6 +117,9 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                         offersAdapter = new ArrayList<>(offers);
                         adapter = new OrderListAdapter(context, R.layout.order_item_list, offersAdapter);
                         listOffer.setAdapter(adapter);
+                        if(filter){
+                            filter(year, monthOfYear, dayOfMonth);
+                        }
                         adapter.notifyDataSetChanged();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(context, "NOT FOUND!", Toast.LENGTH_SHORT).show();
@@ -191,17 +199,11 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                         new DatePickerDialog.OnDateSetListener() {
-
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
-                                c.set(year, monthOfYear, dayOfMonth);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    offersAdapter = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
-                                    adapter.setOffers(offersAdapter);
-                                    adapter.notifyDataSetChanged();
-                                }
+                                filter(year, monthOfYear, dayOfMonth);
+                                adapter.notifyDataSetChanged();
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -212,5 +214,14 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    private void filter(int year,int monthOfYear,int dayOfMonth){
+        Date date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+        c.set(year, monthOfYear, dayOfMonth);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            offersAdapter = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
+            adapter.setOffers(offersAdapter);
+        }
     }
 }
