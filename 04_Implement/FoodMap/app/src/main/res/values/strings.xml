@@ -23,4 +23,6 @@
     <string name="ErrorEmptyInfo">Thông tin bắt buộc</string>
     <string name="ErrorEmailNotValid">Email không hợp lệ</string>
     <string name="ErrorPhoneNumberNotValid">Số điện thoại không hợp lệ</string>
+    <string name="ErrorPasswordNotMatch">Mật khẩu hiện tại không đúng</string>
+    <string name="ErrorDuplicatePass">Mật khẩu mới phải khác mật khẩu cũ</string>
 </resources>
