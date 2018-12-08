@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -210,7 +211,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     // thêm một marker vào map
     private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
         markers.clear();
-        markers.add(new OverlayItem(title, description, point)); // Lat/Lon decimal degrees
+        OverlayItem marker = new OverlayItem(title, description, point);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+        marker.setMarker(drawable);
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override

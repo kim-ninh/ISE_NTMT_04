@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="Thông tin quán ăn"
-        android:background="@color/colorPrimary"
+        android:background="@color/redColor"
         app:titleTextColor="#fff"
         android:id="@+id/toolbar">
 
@@ -42,8 +42,7 @@
                 android:layout_height="200dp"
                 android:src="@mipmap/ic_launcher"
                 android:id="@+id/imvAvatar"
-                android:layout_margin="10dp"
-                />
+                android:layout_margin="10dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -51,6 +50,7 @@
                 android:text="Quán ăn ngon"
                 android:textAlignment="center"
                 android:id="@+id/txtName"
+                android:textStyle="bold"
                 android:layout_margin="5dp"
                 android:textSize="30dp"
                 android:textColor="@color/colorAccent"/>
@@ -77,24 +77,30 @@
                 android:textSize="20dp"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center"
+                android:padding="5dp">
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Call"
                     android:id="@+id/btnCall"
-                    android:layout_gravity="right"
-                    android:layout_marginLeft="40dp"/>
+                    android:background="#00e676"
+                    android:textColor="#ffffff"/>
 
                 <Button
                     android:id="@+id/btnMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="80dp"
-                    android:text="Kiểm tra địa chỉ" />
+                    android:text="Kiểm tra địa chỉ"
+                    android:background="#ff9100"
+                    android:textColor="#fff"
+                    android:layout_gravity="right"
+                    android:padding="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
