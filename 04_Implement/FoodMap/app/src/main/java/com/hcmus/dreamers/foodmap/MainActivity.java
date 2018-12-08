@@ -82,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
-    private ArrayList<OverlayItem> markers;
 
+    private ArrayList<OverlayItem> markers;
+    private ItemizedOverlayWithFocus<OverlayItem> markerTemp;
 
     @Override
     protected void onPause() {
@@ -208,12 +209,34 @@ public class MainActivity extends AppCompatActivity {
 
     // thêm một marker vào map
     private void addMarker(String title, String description, GeoPoint point){
-        markers.clear();
+        if (markerTemp != null){
+            mMap.getOverlays().remove(markerTemp);
+        }
+        List<OverlayItem> overlayItems = new ArrayList<>();
 
         OverlayItem marker = new OverlayItem(title, description, point);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
-        marker.setMarker(drawable);
-        markers.add(marker); // Lat/Lon decimal degrees
+        overlayItems.add(marker); // Lat/Lon decimal degrees
+        // thêm sự kiện marker click
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, overlayItems, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
+                return false;
+            }
+
+            @Override
+            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+                return false;
+            }
+        });
+
+        markerTemp = mOverlay;
+        // thêm marker vào map
+        mMap.getOverlays().add(mOverlay);
+        mMap.invalidate();
+    }
+
+    // sử dụng để thêm nhiều marker cùng lúc
+    private void addMarkers(List<OverlayItem> markers){
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
@@ -227,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
-                return false;
+                return true;
             }
 
             @Override
@@ -235,12 +258,12 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        mOverlay.setFocusItemsOnTap(true);
 
         // thêm marker vào map
         mMap.getOverlays().add(mOverlay);
         mMap.invalidate();
     }
+
 
     private void moveCamera(GeoPoint point){
         mapController.setCenter(point);
@@ -572,8 +595,13 @@ public class MainActivity extends AppCompatActivity {
         List<Restaurant> restaurants = FoodMapManager.getRestaurants();
         if (restaurants != null) {
             for (Restaurant rest : restaurants) {
-                addMarker(rest.getName(), rest.getDescription(), rest.getLocation());
+                OverlayItem marker = new OverlayItem(rest.getName(), rest.getDescription(), rest.getLocation());
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+                marker.setMarker(drawable);
+                markers.add(marker);
             }
         }
+
+        addMarkers(markers);
     }
 }
