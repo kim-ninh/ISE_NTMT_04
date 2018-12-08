@@ -3,8 +3,9 @@ package com.hcmus.dreamers.foodmap;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +20,17 @@ import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 public class RegisterOwnerActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edtUsername;
     private EditText edtPassword;
-    private EditText edtRePassword;
     private EditText edtName;
     private EditText edtEmail;
     private EditText edtPhoneNumber;
     private Button btnRegister;
     private Toolbar toolbar;
+
+    private TextInputLayout UsernameView;
+    private TextInputLayout FullNameView;
+    private TextInputLayout EmailView;
+    private TextInputLayout PasswordView;
+    private TextInputLayout PhoneNumberView;
 
     private ProgressDialog progressDialog;
 
@@ -41,9 +47,14 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtName = (EditText) findViewById(R.id.edtName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
-        edtRePassword = (EditText) findViewById(R.id.edtRePassword);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtPhoneNumber = (EditText) findViewById(R.id.edtPhoneNumber);
+
+        EmailView = findViewById(R.id.txtInputLayoutEmail);
+        FullNameView = findViewById(R.id.txtInputLayoutName);
+        PasswordView = findViewById(R.id.txtInputLayoutPassword);
+        PhoneNumberView = findViewById(R.id.txtInputLayoutPhoneNumber);
+        UsernameView = findViewById(R.id.txtInputLayoutUsername);
 
         btnRegister = (Button)findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
@@ -59,31 +70,49 @@ public class RegisterOwnerActivity extends AppCompatActivity implements View.OnC
             String username = edtUsername.getText().toString();
             String name = edtName.getText().toString();
             String password = edtPassword.getText().toString();
-            final String rePassword = edtRePassword.getText().toString();
             String email = edtEmail.getText().toString();
             String phoneNumber = edtPhoneNumber.getText().toString();
 
-            if (username.equals("") || name.equals("") || password.equals("") || rePassword.equals("") || email.equals("") || phoneNumber.equals("")){
-                Toast.makeText(RegisterOwnerActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
+            // Reset error message to null
+            UsernameView.setError(null);
+            FullNameView.setError(null);
+            PasswordView.setError(null);
+            EmailView.setError(null);
+            PhoneNumberView.setError(null);
+
+            // Check empty info
+            boolean cancel = false;
+            View focusView = null;
+            if (!cancel && username.isEmpty()) {
+                UsernameView.setError(getString(R.string.ErrorEmptyInfo));
+                focusView = UsernameView;
+                cancel = true;
             }
-            else if (!password.equals(rePassword)){
-                Toast.makeText(RegisterOwnerActivity.this, "Xác nhận mật khẩu chưa đúng", Toast.LENGTH_LONG).show();
-                edtPassword.setText("");
-                edtRePassword.setFocusable(true);
-                edtRePassword.setText("");
+            if (!cancel && email.isEmpty()) {
+                EmailView.setError(getString(R.string.ErrorEmptyInfo));
+                focusView = EmailView;
+                cancel = true;
             }
-            else if (!RegisterOwnerActivity.checkEmail(email)){
-                Toast.makeText(RegisterOwnerActivity.this, "Email không hợp lệ", Toast.LENGTH_LONG).show();
-                edtEmail.setText("");
-                edtEmail.setFocusable(true);
+            if (!cancel && !RegisterOwnerActivity.checkEmail(email)) {
+                EmailView.setError(getString(R.string.ErrorEmailNotValid));
+                focusView = EmailView;
+                cancel = true;
             }
-            else if (phoneNumber.length() < 10 || phoneNumber.length() > 11){
-                Toast.makeText(RegisterOwnerActivity.this, "Số điện thoại không hợp lệ", Toast.LENGTH_LONG).show();
-                edtPhoneNumber.setText("");
-                edtPhoneNumber.setFocusable(true);
+            if (!cancel && password.isEmpty()) {
+                PasswordView.setError(getString(R.string.ErrorEmptyInfo));
+                focusView = PasswordView;
+                cancel = true;
             }
-            else{
-                progressDialog.show();;
+            if (!cancel && (phoneNumber.length() < 10 || phoneNumber.length() > 11)) {
+                PhoneNumberView.setError(getString(R.string.ErrorPhoneNumberNotValid));
+                focusView = PhoneNumberView;
+                cancel = true;
+            }
+
+            if (cancel) {
+                focusView.requestFocus();
+            } else {
+                progressDialog.show();
                 FoodMapApiManager.createAccount(username, password, name, phoneNumber, email, new TaskCompleteCallBack() {
                     @Override
                     public void OnTaskComplete(Object response) {

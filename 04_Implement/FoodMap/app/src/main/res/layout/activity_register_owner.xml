@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,109 +20,151 @@
             app:title="Đăng ký" />
 
     </android.support.design.widget.AppBarLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <ImageView
+                android:id="@+id/igvLogo"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/igvLogo"
-                android:src="@drawable/icon_foodmap"/>
-            <EditText
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/icon_foodmap" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtInputLayoutUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtUsername"
-                android:hint="Tên đăng nhập"
-                android:maxLines="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"
-                />
-            <EditText
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:hint="Tên đăng nhập *"
+                app:errorEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_person"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtInputLayoutName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtName"
-                android:hint="Tên đầy đủ"
-                android:maxLines="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"/>
-            <EditText
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:hint="Họ tên"
+                app:errorEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_face"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtInputLayoutEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtEmail"
-                android:hint="Địa chỉ mail"
-                android:maxLines="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"/>
-            <EditText
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:hint="Email*"
+                app:errorEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_email"
+                    android:drawablePadding="10dp"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtInputLayoutPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtPassword"
-                android:hint="Mật khẩu"
-                android:maxLines="1"
-                android:inputType="textPassword"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"/>
-            <EditText
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:hint="Mật khẩu*"
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@android:drawable/ic_secure"
+                    android:drawableLeft="@android:drawable/ic_secure"
+                    android:drawablePadding="10dp"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/txtInputLayoutPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtRePassword"
-                android:hint="Xác nhận mật khẩu"
-                android:maxLines="1"
-                android:inputType="textPassword"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/backgroun_edittext"
-                android:id="@+id/edtPhoneNumber"
-                android:inputType="number"
-                android:hint="Số điện thoại liên hệ"
-                android:maxLines="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:padding="10dp"
-                android:textSize="20sp"/>
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:hint="Số điện thoại"
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="11">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_phone"
+                    android:drawablePadding="10dp"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
             <Button
-                android:layout_width="wrap_content"
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Đăng ký"
-                android:id="@+id/btnRegister"
-                android:padding="10dp"
-                android:textSize="20sp"
-                android:textAllCaps="false"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/background_button_sign_in"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                />
+                android:text="Đăng ký"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
         </LinearLayout>
     </ScrollView>
 
