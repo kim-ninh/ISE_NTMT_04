@@ -218,11 +218,6 @@ public class MainActivity extends AppCompatActivity {
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(MainActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
-                return false;
-            }
-
-            @Override
-            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
                 GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
@@ -231,6 +226,12 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("restID", restaurant.getId());
                     startActivity(intent);
                 }
+
+                return false;
+            }
+
+            @Override
+            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
                 return false;
             }
         });

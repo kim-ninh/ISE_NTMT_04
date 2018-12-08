@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,11 +38,14 @@ public class LoginOwnerActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
+    private int loginCount;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_owner);
+
+        loginCount = 0;
 
         // setup toolbar
         toolbar = (Toolbar)findViewById(R.id.login_owner_toolbar);
@@ -62,6 +66,11 @@ public class LoginOwnerActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (loginCount > 2){
+                    showOverLogin();
+                    return;
+                }
+
                 String username = edtUsername.getText().toString();
                 String password = edtPassword.getText().toString();
 
@@ -88,6 +97,8 @@ public class LoginOwnerActivity extends AppCompatActivity {
                             else {
                                 Toast.makeText(LoginOwnerActivity.this, "Lỗi đăng nhập", Toast.LENGTH_LONG).show();
                             }
+
+                            loginCount++;
                         }
                     });
                 }
@@ -107,48 +118,7 @@ public class LoginOwnerActivity extends AppCompatActivity {
         btnForgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(LoginOwnerActivity.this);
-                View forgotPassLayout = getLayoutInflater().inflate(R.layout.dialog_forgot_password, null);
-
-                final AlertDialog dialog = builder.create();
-
-                final EditText edtEmail = (EditText)forgotPassLayout.findViewById(R.id.edtEmail);
-                Button btnSend = (Button)forgotPassLayout.findViewById(R.id.btnSend);
-                btnSend.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                        final String email = edtEmail.getText().toString();
-                        if (email.equals("") || !RegisterOwnerActivity.checkEmail(email)){
-                            Toast.makeText(LoginOwnerActivity.this, "Email không hợp lệ", Toast.LENGTH_LONG).show();
-                        }
-                        else{
-                            progressDialog.setTitle("Sending");
-                            progressDialog.show();
-
-                            FoodMapApiManager.forgotPassword(email, new TaskCompleteCallBack() {
-                                @Override
-                                public void OnTaskComplete(Object response) {
-                                    progressDialog.dismiss();;
-                                    if ((int)response == FoodMapApiManager.SUCCESS){
-                                        dialog.dismiss();
-                                        showTypeCodeDialog(email);
-                                    }
-                                    else if ((int)response == FoodMapApiManager.FAIL_INFO){
-                                        Toast.makeText(LoginOwnerActivity.this, "Email không tồn tại", Toast.LENGTH_LONG).show();
-                                    }
-                                    else if ((int)response == ConstantCODE.NOTINTERNET){
-                                        Toast.makeText(LoginOwnerActivity.this, "Kiểm tra lại kết nối internet", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-
-                dialog.setView(forgotPassLayout);
-                dialog.show();
+                forgotPass();
             }
         });
     }
@@ -237,6 +207,8 @@ public class LoginOwnerActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             if (code == FoodMapApiManager.SUCCESS){
                                 dialog.dismiss();
+                                loginCount = 0;
+
                                 Toast.makeText(LoginOwnerActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_LONG).show();
                             }
                             else {
@@ -262,6 +234,69 @@ public class LoginOwnerActivity extends AppCompatActivity {
         dialog.setView(resetPassLayout);
         dialog.show();
     }
+
+
+    void forgotPass(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginOwnerActivity.this);
+        View forgotPassLayout = getLayoutInflater().inflate(R.layout.dialog_forgot_password, null);
+
+        final AlertDialog dialog = builder.create();
+
+        final EditText edtEmail = (EditText)forgotPassLayout.findViewById(R.id.edtEmail);
+        Button btnSend = (Button)forgotPassLayout.findViewById(R.id.btnSend);
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                final String email = edtEmail.getText().toString();
+                if (email.equals("") || !RegisterOwnerActivity.checkEmail(email)){
+                    Toast.makeText(LoginOwnerActivity.this, "Email không hợp lệ", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    progressDialog.setTitle("Sending");
+                    progressDialog.show();
+
+                    FoodMapApiManager.forgotPassword(email, new TaskCompleteCallBack() {
+                        @Override
+                        public void OnTaskComplete(Object response) {
+                            progressDialog.dismiss();;
+                            if ((int)response == FoodMapApiManager.SUCCESS){
+                                dialog.dismiss();
+                                showTypeCodeDialog(email);
+                            }
+                            else if ((int)response == FoodMapApiManager.FAIL_INFO){
+                                Toast.makeText(LoginOwnerActivity.this, "Email không tồn tại", Toast.LENGTH_LONG).show();
+                            }
+                            else if ((int)response == ConstantCODE.NOTINTERNET){
+                                Toast.makeText(LoginOwnerActivity.this, "Kiểm tra lại kết nối internet", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        dialog.setView(forgotPassLayout);
+        dialog.show();
+    }
+
+    void showOverLogin(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginOwnerActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_over_login, null);
+        AlertDialog dialog = builder.create();
+        Button btnShow = view.findViewById(R.id.btnOK);
+        btnShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(view);
+        dialog.show();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

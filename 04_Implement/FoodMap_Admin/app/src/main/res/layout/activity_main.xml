@@ -40,6 +40,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Đăng nhập"
         android:id="@+id/btnLogin"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimary"/>
 
 </LinearLayout>
