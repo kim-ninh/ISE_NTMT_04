@@ -1,6 +1,7 @@
 package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -378,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
-                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        showAboutDialog();
                         break;
                 }
                 return true;
@@ -441,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
-                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        showAboutDialog();
                         break;
                 }
                 return true;
@@ -528,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
-                        Toast.makeText(MainActivity.this, "onClick: btnAbout", Toast.LENGTH_SHORT).show();
+                        showAboutDialog();
                         break;
                 }
                 return true;
@@ -604,4 +606,20 @@ public class MainActivity extends AppCompatActivity {
 
         addMarkers(markers);
     }
+
+    void showAboutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog dialog = builder.create();
+        View view = getLayoutInflater().inflate(R.layout.dialog_about, null);
+        Button btnOk = view.findViewById(R.id.btnOK);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setView(view);
+        dialog.show();
+    }
+
 }
