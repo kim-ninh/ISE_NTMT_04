@@ -3,18 +3,11 @@ $respone = array();
 
 if (isset($_POST["url"]))
 {
-	if (file_exists("../images/".$id)) {
-        $url = $_POST["url"];
-		unlink($url);
+	$url = $_POST["url"];
+	unlink($url);
 
-		$respone["status"] = 200;
-		$respone["message"] = "Success";
-    }
-    else
-    {
-    	$respone["status"] = 404;
-		$respone["message"] = "Not Found";
-    }
+	$respone["status"] = 200;
+	$respone["message"] = "Success";
 }
 else
 {
