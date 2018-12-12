@@ -7,15 +7,19 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,13 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
 
 import com.google.gson.Gson;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -170,7 +167,7 @@ public class EditDishActivity extends AppCompatActivity {
                             FoodMapApiManager.deleteImage(relativePath, new TaskCompleteCallBack() {
                                 @Override
                                 public void OnTaskComplete(Object response) {
-                                    if ((int) response == ConstantCODE.SUCCESS) {
+                                    if ((int) response == FoodMapApiManager.SUCCESS) {
 
                                         // Xóa thành công trên server, cập nhật lại grid view
                                         if (dish.getUrlImage().equals(imagesUri.get(position).toString())) {
