@@ -59,6 +59,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationMenu;
 
-    private ZoomLimitMapView mMap;
+    private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
     {
         //
         mMap = (ZoomLimitMapView) findViewById(R.id.map);
+        ((ZoomLimitMapView) mMap).initZoomLimit();
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -178,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
         Configuration.getInstance().setOsmdroidTileCache(new File(Environment.getExternalStorageDirectory(), "osmdroid/tiles"));
 
         // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
+
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 

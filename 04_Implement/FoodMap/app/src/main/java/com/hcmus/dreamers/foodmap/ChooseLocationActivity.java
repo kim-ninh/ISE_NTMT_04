@@ -10,10 +10,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,6 +40,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
@@ -62,7 +63,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
     Toolbar toolbar;
 
-    private ZoomLimitMapView mMap;
+    private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -153,8 +154,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     {
         mMap = (ZoomLimitMapView) findViewById(R.id.map);
         // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
+        ((ZoomLimitMapView) mMap).initZoomLimit();
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 

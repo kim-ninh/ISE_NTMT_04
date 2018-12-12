@@ -5,9 +5,10 @@ import android.os.Handler;
 import android.util.AttributeSet;
 
 import org.osmdroid.tileprovider.MapTileProviderBase;
+import org.osmdroid.util.BoundingBox;
+import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 
-import microsoft.mappoint.TileSystem;
 
 public class ZoomLimitMapView extends MapView
 {
@@ -35,22 +36,15 @@ public class ZoomLimitMapView extends MapView
         super(context, aTileProvider, tileRequestCompleteHandler);
     }
 
-    @Override
-    public double getMinZoomLevel() {
-        return 4.0;
+    public void initZoomLimit() {
+        this.setBuiltInZoomControls(true);
+        this.setMultiTouchControls(true);
+        this.setMinZoomLevel(3.0);
+        this.setMaxZoomLevel(21.0);
+        this.setVerticalMapRepetitionEnabled(false);                //Không lặp bản đồ theo chiều dọc
+        this.setScrollableAreaLimitDouble(new BoundingBox(
+                TileSystem.MaxLatitude, TileSystem.MaxLongitude,
+                TileSystem.MinLatitude, TileSystem.MinLongitude
+        ));                                                         //Giới hạn không gian vuốt
     }
-
-    @Override
-    public void scrollTo(int x, int y) {
-
-        final int worldSize = TileSystem.MapSize(this.getZoomLevel());
-        if(y < -worldSize/2) { // when over north pole
-            y = 0; // scroll to north pole
-        }else if(y + getHeight() >= worldSize) { // when over south pole
-            y = worldSize - getHeight() - 1; // scroll to south pole
-        }
-
-        super.scrollTo(x, y);
-    }
-
 }

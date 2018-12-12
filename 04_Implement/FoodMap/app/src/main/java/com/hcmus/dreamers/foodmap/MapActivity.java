@@ -12,12 +12,12 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
-
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -44,6 +43,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -56,7 +56,7 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity{
 
-    private ZoomLimitMapView mMap;
+    private MapView mMap;
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
@@ -156,8 +156,7 @@ public class MapActivity extends AppCompatActivity{
 
         // cài đặt map
         mMap = (ZoomLimitMapView) findViewById(R.id.FindWayMap);
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
+        ((ZoomLimitMapView) mMap).initZoomLimit();
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 
