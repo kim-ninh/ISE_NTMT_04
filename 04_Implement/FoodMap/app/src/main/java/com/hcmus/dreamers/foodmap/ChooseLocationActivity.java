@@ -32,7 +32,6 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
-
 import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
@@ -206,7 +205,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             }
         };
 
-        OverlayEvents = new MapEventsOverlay(getBaseContext(), mReceive);
+        OverlayEvents = new MapEventsOverlay(mReceive);
         mMap.getOverlays().add(OverlayEvents);
 
     }
@@ -217,6 +216,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         OverlayItem marker = new OverlayItem(title, description, point);
         Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
         marker.setMarker(drawable);
+        markers.add(marker);
         // thêm sự kiện marker click
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
