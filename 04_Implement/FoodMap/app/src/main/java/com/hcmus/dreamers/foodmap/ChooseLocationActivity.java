@@ -32,14 +32,13 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
@@ -152,16 +151,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
 
     private void mapInit()
     {
-        mMap = (MapView) findViewById(R.id.map);
+        mMap = (ZoomLimitMapView) findViewById(R.id.map);
         // cài đặt map
-        mMap.setBuiltInZoomControls(true);
-        mMap.setMultiTouchControls(true);
-        mMap.setMinZoomLevel(3.0);
-        mMap.setMaxZoomLevel(21.0);
-        mMap.setVerticalMapRepetitionEnabled(false);
-        mMap.setScrollableAreaLimitDouble(new BoundingBox(
-                TileSystem.MaxLatitude, TileSystem.MaxLongitude,
-                TileSystem.MinLatitude, TileSystem.MinLongitude));
+        ((ZoomLimitMapView) mMap).initZoomLimit();
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 
