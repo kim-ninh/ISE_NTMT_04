@@ -191,6 +191,12 @@ class database
 
 	public function DeleteDish($id_rest, $name)
 	{
+		$strQuery = 'DELETE FROM OFFER WHERE ID_DISCOUNT IN (SELECT D.ID FROM DISCOUNT D WHERE ID_REST = '.$id_rest.' AND NAMEDISH = "'.$name.'")';
+		$this->query($strQuery);
+
+		$strQuery = 'DELETE FROM DISCOUNT WHERE  ID_REST = '.$id_rest.' AND NAMEDISH = "'.$name.'"';
+		$this->query($strQuery);
+
 		$strQuery = 'DELETE FROM DISH WHERE ID_REST = '.$id_rest.' AND NAME = "'.$name.'"';
 		return $this->query($strQuery);
 	}
@@ -523,6 +529,12 @@ class database
 		if ($result == -1 || $result == null)
 			return true;
 		return false;
+	}
+
+	public function UpdateStatusOffer($id_discount, $id_offer, $status)
+	{
+		$strQuery = 'UPDATE OFFER SET STATUS = '.$status.' WHERE ID_REST = '.$id_rest.' AND ID = '.$id_offer;
+		$this->query($strQuery);
 	}
 
 	// close connection
