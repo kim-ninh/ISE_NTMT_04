@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 
 public class OrderSocket {
     private static Socket mSocket = null;
-
     private OrderSocket() {
     }
 
@@ -33,5 +32,4 @@ public class OrderSocket {
     public static void setSocket(Socket socket){
         mSocket = socket;
     }
-
 }

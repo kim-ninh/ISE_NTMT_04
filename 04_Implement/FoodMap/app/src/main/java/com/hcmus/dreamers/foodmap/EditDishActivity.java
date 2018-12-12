@@ -40,6 +40,7 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
+
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -110,7 +111,6 @@ public class EditDishActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // Add new image
                 gridRow = imagesUri.size();
                 showPopupMenuSelection(view); //Chụp từ camera/chọn từ Galery
@@ -388,7 +388,6 @@ public class EditDishActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
 
             startCropImageActivity(photoURI);
@@ -415,7 +414,6 @@ public class EditDishActivity extends AppCompatActivity {
                         rest_id, resultUri, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
-
                                 progressBar.setVisibility(View.INVISIBLE);
 
                                 // Kiểm tra chuỗi trả về có phải là đường dẫn URL:
@@ -450,7 +448,6 @@ public class EditDishActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(EditDishActivity.this);
 
         builder.setMessage(R.string.confirmSetDefaultDishImage).setTitle(R.string.title_confirmSetDefaultDishImage);
-
         // Add the buttons
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

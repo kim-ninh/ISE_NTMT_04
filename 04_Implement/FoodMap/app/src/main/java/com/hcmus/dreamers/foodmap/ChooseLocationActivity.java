@@ -32,6 +32,7 @@ import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.event.LocationChange;
+
 import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
 import org.osmdroid.api.IMapController;
@@ -169,7 +170,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         mLocationOverlay.setPersonIcon(iconMyLocation);
         mLocationOverlay.disableFollowLocation();
+
         mapController.setCenter(this.mLocationOverlay.getMyLocation());
+
 
         // thêm marker vào
         mMap.getOverlays().add(this.mLocationOverlay);
@@ -245,7 +248,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         return mOverlay;
     }
     private void moveCamera(GeoPoint point){
-        mapController.setCenter(point);
+        mapController.animateTo(point);
     }
 
     //

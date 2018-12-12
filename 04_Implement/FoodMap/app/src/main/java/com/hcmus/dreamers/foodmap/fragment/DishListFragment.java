@@ -171,16 +171,4 @@ public class DishListFragment extends Fragment {
                     .show();
         } //try
     }
-
-    private void generateFakeDishList() {
-        dishes = new ArrayList<>();
-        dishes.add(new Dish("Bánh tráng trộn", 100000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 5000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 80000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 90000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 0, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 70000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 10000, "", new Catalog(1, "Cơm")));
-        dishes.add(new Dish("Bánh tráng trộn", 20000, "", new Catalog(1, "Cơm")));
-    }
 }

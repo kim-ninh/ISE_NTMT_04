@@ -23,9 +23,11 @@ import com.hcmus.dreamers.foodmap.adapter.FavorRestNameAutocompleteAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FavoriteRestaurantsActivity extends AppCompatActivity implements TextWatcher {
-
     private ImageView imgBackFavorRest;
     private AutoCompleteTextView txtAutoComplete;
     private GridViewItem grdFavorRest;
@@ -50,6 +52,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         txtAutoComplete = (AutoCompleteTextView) findViewById(R.id.txtAutoComplete);
         grdFavorRest = (GridViewItem) findViewById(R.id.grdFavorRest);
 
+        favorRestaurant = Guest.getInstance().getFavRestaurant();
         //debug
         //set Image background of favorite restaurant layout
         try {
@@ -63,8 +66,6 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
         //end debug
 
         initAdapter();
-
-
     }
 
     @Override

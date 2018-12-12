@@ -595,6 +595,7 @@ public class DBManager extends SQLiteOpenHelper {
         restaurant.setDishes(getDishes(id_rest));
         restaurant.setComments(getComments(id_rest));
         restaurant.setRanks(getRanks(id_rest));
+        restaurant.setCheck(true);
 
         cursor.close();
         db.close();
@@ -630,6 +631,7 @@ public class DBManager extends SQLiteOpenHelper {
                 restaurant.setDishes(getDishes(restaurant.getId()));
                 restaurant.setComments(getComments(restaurant.getId()));
                 restaurant.setRanks(getRanks(restaurant.getId()));
+                restaurant.setCheck(true);
 
                 restaurants.add(restaurant);
             } while (cursor.moveToNext());

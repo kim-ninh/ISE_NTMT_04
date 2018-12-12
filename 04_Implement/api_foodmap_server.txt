@@ -427,7 +427,6 @@
 		* message: Success	
 		* data:
 			** count // số lượng lần checkin tại nhà hàng
-
 - addShare:
 	+ url: addShare.php
 	+ type: POST

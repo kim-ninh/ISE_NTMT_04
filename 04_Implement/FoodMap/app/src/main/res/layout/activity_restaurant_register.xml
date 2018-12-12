@@ -130,7 +130,6 @@
                         android:textSize="14sp" />
                 </RelativeLayout>
 
-
                 <EditText
                     android:id="@+id/edt_phone_number"
                     android:layout_width="match_parent"

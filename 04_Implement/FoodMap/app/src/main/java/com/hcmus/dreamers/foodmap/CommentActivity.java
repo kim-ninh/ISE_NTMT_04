@@ -59,7 +59,9 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         lstComment = (RecyclerView)findViewById(R.id.lstComment);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+
         mLayoutManager.scrollToPosition(comments.size() - 1);
+
         lstComment.setLayoutManager(mLayoutManager);
         lstComment.setAdapter(commentListAdapter);
 

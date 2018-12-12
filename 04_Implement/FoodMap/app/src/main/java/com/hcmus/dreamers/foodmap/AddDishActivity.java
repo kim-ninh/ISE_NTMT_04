@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.DateTimeKeyListener;
+
 import android.util.Log;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,7 +22,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import android.widget.PopupMenu;
+
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,11 +37,13 @@ import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,8 +62,10 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
     private Restaurant restaurant;
 
     private final int IPC_ID = 1231;
+
     private static final int REQUEST_OPEN_GALERY = 12345;
     private static final int REQUEST_TAKE_PHOTO = 11111;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,7 @@ public class AddDishActivity extends AppCompatActivity implements View.OnClickLi
         // Create an ArrayAdapter using the string array and a default spinner layout
         listCatalog = FoodMapManager.getCatalogsString();
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+
         adapter.addAll(listCatalog);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnCatalog.setAdapter(adapter);

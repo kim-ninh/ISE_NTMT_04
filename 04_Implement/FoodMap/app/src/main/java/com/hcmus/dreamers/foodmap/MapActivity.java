@@ -2,7 +2,9 @@ package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
 import android.app.Dialog;
+
 import android.app.ProgressDialog;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,7 +33,9 @@ import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
+
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
@@ -65,14 +69,12 @@ public class MapActivity extends AppCompatActivity{
 
     FloatingActionButton fabSearch;
 
-
     private GeoPoint startPointEx;
     private GeoPoint endPointEx;
     private String startName;
     private String endName;
     private String startAddress;
     private String endAddress;
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -121,7 +123,6 @@ public class MapActivity extends AppCompatActivity{
 
             //add marker of end point
             addMarker("title","description",endPoint);
-
             showingPath();
         }
 
