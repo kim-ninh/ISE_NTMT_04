@@ -464,3 +464,21 @@
 	+ response:
 		* status: 200
 		* message: Success	
+
+- updateOfferStatus:
+	+ url: updateOfferStatus.php
+	+ type: POST
+	+ data_post:
+		* token
+		* id_offer
+		* id_discount
+		* status
+	+ response:
+		* status: 200
+		* message: Success
+
+
+
+
+
+
