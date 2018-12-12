@@ -84,7 +84,7 @@ function checkTokenForUsername($username, $token)
 	return $check;
 }
 
-public function checkTokenForDiscount($id_discount, $token)
+function checkTokenForDiscount($id_discount, $token)
 {
 	$strQuery = 'SELECT FC_CHECKTOKEN("'.$token.'") AS RESULT';
 
