@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap.fragment;
 
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AddOrderActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
@@ -56,6 +59,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     private List<Offer> offers, offersAdapter;
     private int id_rest;
     private Calendar c = Calendar.getInstance();
+    private ProgressDialog progressDialog;
 
     Context context = null;
     LinearLayout rootLayout;
@@ -107,6 +111,10 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
 
 
     private void refreshData(boolean filter, int year,int monthOfYear ,int dayOfMonth){
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
@@ -122,6 +130,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                             filter(year, monthOfYear, dayOfMonth);
                         }
                         adapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(context, "NOT FOUND!", Toast.LENGTH_SHORT).show();
                     }else {
@@ -222,7 +231,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
         switch (id){
             case R.id.action_GroupByNone:
                 c = Calendar.getInstance();
-                offersAdapter = offers;
+                offersAdapter = new ArrayList<>(offers);
                 adapter.setOffers(offersAdapter);
                 adapter.notifyDataSetChanged();
             return true;
