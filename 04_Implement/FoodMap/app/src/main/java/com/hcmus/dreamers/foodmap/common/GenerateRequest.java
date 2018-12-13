@@ -3,12 +3,12 @@ package com.hcmus.dreamers.foodmap.common;
 import android.location.Location;
 
 import com.hcmus.dreamers.foodmap.Model.Comment;
+import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
-import com.hcmus.dreamers.foodmap.Model.Discount;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -618,6 +618,22 @@ public class GenerateRequest {
                 .url(url)
                 .post(bodyRequest)
                 .addHeader("Authorization", "header value") //Notice this request has header if you don't need to send a header just erase this part
+                .build();
+        return request;
+    }
+
+    public static okhttp3.Request GeoPoint2Address(GeoPoint point) {
+        String baseUrl = ConstantURL.NOMINATIM_REVERSE;
+        Map<String, String> params = new HashMap<>();
+        params.put("format", "jsonv2");
+        params.put("lat", String.valueOf(point.getLatitude()));
+        params.put("lon", String.valueOf(point.getLongitude()));
+        params.put("addressdetails", "0");
+        String url = Utils.buildUrl(baseUrl, params);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("accept-language", "vi, en") //Notice this request has header if you don't need to send a header just erase this part
                 .build();
         return request;
     }

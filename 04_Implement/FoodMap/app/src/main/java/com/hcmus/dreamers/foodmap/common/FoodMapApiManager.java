@@ -11,8 +11,8 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskRequest;
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
-import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Discount;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Owner;
@@ -22,10 +22,10 @@ import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
 import java.text.ParseException;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -1127,6 +1127,32 @@ public class FoodMapApiManager {
             }
         });
         taskRequest.execute(new DoingTask(GenerateRequest.deleteDiscount(id_rest, id_discount, Owner.getInstance().getToken())));
+    }
+
+    public static void getAddressFromPoint(GeoPoint sourcePoint, final TaskCompleteCallBack taskCompleteCallBack) {
+        TaskRequest getAddressTask = new TaskRequest();
+
+        getAddressTask.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+                if (resp != null) {
+                    Log.w("getAddressFromPoint", resp);
+                    String detailAddress = null;
+
+                    try {
+                        detailAddress = ParseJSON.getDisplayName(resp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    taskCompleteCallBack.OnTaskComplete(detailAddress);
+                } else {
+                    taskCompleteCallBack.OnTaskComplete(null);
+                }
+            }
+        });
+
+        getAddressTask.execute(new DoingTask(GenerateRequest.GeoPoint2Address(sourcePoint)));
     }
 }
 
