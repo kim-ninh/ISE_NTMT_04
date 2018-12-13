@@ -1128,5 +1128,35 @@ public class FoodMapApiManager {
         });
         taskRequest.execute(new DoingTask(GenerateRequest.deleteDiscount(id_rest, id_discount, Owner.getInstance().getToken())));
     }
+
+    public static void updateStatusOrder(int id_order, int status, final TaskCompleteCallBack taskCompleteCallBack){
+        TaskRequest taskRequest = new TaskRequest();
+
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if(responseJSON.getCode() == ConstantCODE.SUCCESS){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.SUCCESS);
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTFOUND); // trường hợp đã tồn tại
+                    }
+                    else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET){
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                }
+                else{
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateStatusOrder(id_order, Owner.getInstance().getToken(), status)));
+    }
+
+
 }
 

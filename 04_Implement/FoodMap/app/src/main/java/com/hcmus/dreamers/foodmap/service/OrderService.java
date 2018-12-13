@@ -71,14 +71,12 @@ public class OrderService extends Service {
         super.onCreate();
         socket = OrderSocket.getInstance();
         socket.connect();
-        Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String email = intent.getStringExtra("email");
         socket.emit("register", email);
-        Toast.makeText(this, email + " registed", Toast.LENGTH_SHORT).show();
         socket.on("receive_order", receiceOrder);
         return START_STICKY;
     }
@@ -87,7 +85,6 @@ public class OrderService extends Service {
     public void onDestroy() {
         socket.disconnect();
         OrderSocket.setSocket(null);
-        Toast.makeText(this, "disconnected", Toast.LENGTH_SHORT).show();
     }
 
     @Nullable

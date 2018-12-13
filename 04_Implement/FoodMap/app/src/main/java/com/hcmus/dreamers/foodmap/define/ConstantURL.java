@@ -15,7 +15,7 @@ public interface ConstantURL {
     public static final String UPDATERESTAURANT            = "updateRestaurant.php";
     public static final String GETCOMMENT                  = "getComment.php";
     public static final String GETLOCATION                 = "getLocation.php";
-    public static final String GETALLRESTAURANT               = "getAllRestaurant.php";
+    public static final String GETALLRESTAURANT            = "getAllRestaurant.php";
     public static final String GETRESTAURANT               = "getRestaurant.php";
     public static final String UPLOAD                      = "upload.php";
     public static final String DELETEPICTURE               = "deletePicture.php";
@@ -43,4 +43,5 @@ public interface ConstantURL {
 	public static final String CREATEDISCOUNT              = "createDiscount.php";
     public static final String DELETEDISCOUNT              = "deleteDiscount.php";
 	public static final String DELETEOFFER                 = "deleteOffer.php";
+	public static final String UPDATESTATUS                = "updateOfferStatus.php";
 }
