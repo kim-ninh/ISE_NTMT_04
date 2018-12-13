@@ -286,4 +286,22 @@ public class ParseJSON {
         return locationDirection;
     }
 
+    public static String getDisplayName(final String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        String displayName = object.getString("display_name");
+        return displayName;
+    }
+
+    public static String getAddressDetail(final String response) throws JSONException {
+        JSONObject object = new JSONObject(response);
+        JSONArray array = object.getJSONArray("features");
+        JSONObject o = array.getJSONObject(0);
+        JSONObject properties = o.getJSONObject("properties");
+        String name = properties.getString("name");
+        String city = properties.getString("city");
+        String country = properties.getString("country");
+        String result = name + ", " + city + ", " + country;
+        return result;
+    }
+
 }
