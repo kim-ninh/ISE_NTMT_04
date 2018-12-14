@@ -1,7 +1,6 @@
 package com.hcmus.dreamers.foodmap.map;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -58,14 +57,9 @@ public class ZoomLimitMapView extends MapView
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
 
         ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(this);
-        scaleBarOverlay.setCentred(true);
-
-        if (Build.VERSION.SDK_INT <= 10)
-            scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, dm.heightPixels - (int) (80 * dm.density));
-        else
-
-            scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, dm.heightPixels - (int) (105 * dm.density));
-
+        scaleBarOverlay.setTextSize(48.0F);
+        scaleBarOverlay.setMaxLength(1.5F);
+        scaleBarOverlay.setAlignBottom(true);
         scaleBarOverlay.setUnitsOfMeasure(ScaleBarOverlay.UnitsOfMeasure.metric);
         this.getOverlayManager().add(scaleBarOverlay);
     }
