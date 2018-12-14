@@ -2,9 +2,7 @@ package com.hcmus.dreamers.foodmap;
 
 import android.Manifest;
 import android.app.Dialog;
-
 import android.app.ProgressDialog;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,9 +31,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.UpdateRoadTask;
 import com.hcmus.dreamers.foodmap.Model.DetailAddress;
 import com.hcmus.dreamers.foodmap.adapter.PlaceAutoCompleteApdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
-
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
-
 import com.hcmus.dreamers.foodmap.event.LocationChange;
 import com.hcmus.dreamers.foodmap.map.ZoomLimitMapView;
 
@@ -157,6 +153,7 @@ public class MapActivity extends AppCompatActivity{
         // cài đặt map
         mMap = (ZoomLimitMapView) findViewById(R.id.FindWayMap);
         ((ZoomLimitMapView) mMap).initZoomLimit();
+        ((ZoomLimitMapView) mMap).initScaleBar();
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 

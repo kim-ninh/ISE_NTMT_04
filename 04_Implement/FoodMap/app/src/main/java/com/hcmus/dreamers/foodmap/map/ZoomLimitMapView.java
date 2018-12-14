@@ -1,13 +1,16 @@
 package com.hcmus.dreamers.foodmap.map;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 
 import org.osmdroid.tileprovider.MapTileProviderBase;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 
 public class ZoomLimitMapView extends MapView
@@ -46,5 +49,24 @@ public class ZoomLimitMapView extends MapView
                 TileSystem.MaxLatitude, TileSystem.MaxLongitude,
                 TileSystem.MinLatitude, TileSystem.MinLongitude
         ));                                                         //Giới hạn không gian vuốt
+        this.setBuiltInZoomControls(false);
+        this.setTilesScaledToDpi(true);
+    }
+
+    public void initScaleBar() {
+        final Context context = this.getContext();
+        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
+
+        ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(this);
+        scaleBarOverlay.setCentred(true);
+
+        if (Build.VERSION.SDK_INT <= 10)
+            scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, dm.heightPixels - (int) (80 * dm.density));
+        else
+
+            scaleBarOverlay.setScaleBarOffset(dm.widthPixels / 2, dm.heightPixels - (int) (105 * dm.density));
+
+        scaleBarOverlay.setUnitsOfMeasure(ScaleBarOverlay.UnitsOfMeasure.metric);
+        this.getOverlayManager().add(scaleBarOverlay);
     }
 }

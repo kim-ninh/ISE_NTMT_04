@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         //
         mMap = (ZoomLimitMapView) findViewById(R.id.map);
         ((ZoomLimitMapView) mMap).initZoomLimit();
+        ((ZoomLimitMapView) mMap).initScaleBar();
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));

@@ -152,6 +152,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         mMap = (ZoomLimitMapView) findViewById(R.id.map);
         // cài đặt map
         ((ZoomLimitMapView) mMap).initZoomLimit();
+        ((ZoomLimitMapView) mMap).initScaleBar();
         if (Build.VERSION.SDK_INT >= 16)
             mMap.setHasTransientState(true);
 
