@@ -80,7 +80,6 @@ public class AddOrderActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         socket.disconnect();
-        Toast.makeText(this, "Disconnect", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -96,7 +95,6 @@ public class AddOrderActivity extends AppCompatActivity {
         socket.connect();
         socket.emit("register", Guest.getInstance().getEmail());
         socket.on("receive_result", receiveResult);
-        Toast.makeText(this, "connected", Toast.LENGTH_LONG).show();
         Intent data = getIntent();
         discount = (Discount) data.getSerializableExtra("discount");
         restaurant = (Restaurant) data.getSerializableExtra("restaurant");
@@ -140,27 +138,6 @@ public class AddOrderActivity extends AppCompatActivity {
 
                 String orderRequest = createOrder(restaurant.getOwnerUsername(), offer.getGuestEmail(), restaurant.getName(), restaurant.getId(), discount.getId(), offer);
                 socket.emit("send_order", orderRequest);
-                Toast.makeText(AddOrderActivity.this, orderRequest, Toast.LENGTH_LONG).show();
-
-//                // tạo Discount
-//                FoodMapApiManager.addOrder(offer, id_discount, new TaskCompleteCallBack() {
-//                    @Override
-//                    public void OnTaskComplete(Object response) {
-//                        int code = (int) response;
-//                        progressDialog.dismiss();
-//                        if (code == ConstantCODE.SUCCESS) {
-//                            AddOrderActivity.this.finish();
-//                            Toast.makeText(getBaseContext(), "Đặt món thành công", Toast.LENGTH_LONG).show();
-//                            return;
-//                        } else if (code == FoodMapApiManager.FAIL_INFO) {
-//                            Toast.makeText(AddOrderActivity.this, "Xin lỗi, Discount này đã hết hạn", Toast.LENGTH_LONG).show();
-//                        } else if (code == ConstantCODE.NOTINTERNET) {
-//                            Toast.makeText(AddOrderActivity.this, "Kiểm tra kết nối mạng", Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
-
-
             }
         });
     }
