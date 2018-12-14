@@ -115,7 +115,7 @@ public class FavoriteRestaurantsActivity extends AppCompatActivity implements Te
                 for(int i = 0; i < favorRestaurant.size(); i++) {
                     if(favorRestaurant.get(i).getId() == info.getId())
                     {
-                        intent.putExtra("rest", favorRestaurant.get(i));
+                        intent.putExtra("restID", favorRestaurant.get(i).getId());
                         break;
                     }
                 }
