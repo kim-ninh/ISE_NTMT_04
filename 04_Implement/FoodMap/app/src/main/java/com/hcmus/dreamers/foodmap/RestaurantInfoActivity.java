@@ -47,6 +47,7 @@ import com.facebook.share.widget.ShareDialog;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
+import com.hcmus.dreamers.foodmap.Model.Dish;
 import com.hcmus.dreamers.foodmap.Model.Guest;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.adapter.DishInfoListAdapter;
@@ -59,6 +60,9 @@ import com.squareup.picasso.Target;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
@@ -245,20 +249,22 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtDescription.setText((restaurant.getDescription()));
 
         //Set Price range of restaurant
-        int minPrice = 0, maxPrice = 0;
-        int price;
-        for(int i = 0; i < restaurant.getDishes().size(); i++)
-        {
-            price =  restaurant.getDishes().get(i).getPrice();
-
-            if(minPrice == 0 || minPrice > price){
-                minPrice = price;
+        int minPrice = 0;
+        int maxPrice = 0;
+        minPrice = Collections.min(restaurant.getDishes(), new Comparator<Dish>() {
+            @Override
+            public int compare(Dish o1, Dish o2) {
+                return ((Integer)o1.getPrice()).compareTo((Integer)o2.getPrice());
             }
+        }).getPrice();
 
-            if(maxPrice == 0 || maxPrice < price){
-                maxPrice = price;
+        maxPrice = Collections.max(restaurant.getDishes(), new Comparator<Dish>() {
+            @Override
+            public int compare(Dish o1, Dish o2) {
+                return ((Integer)o1.getPrice()).compareTo((Integer)o2.getPrice());
             }
-        }
+        }).getPrice();
+
         if(minPrice == maxPrice)
             txtPrice.setText(Integer.toString(minPrice) + " VND");
         else

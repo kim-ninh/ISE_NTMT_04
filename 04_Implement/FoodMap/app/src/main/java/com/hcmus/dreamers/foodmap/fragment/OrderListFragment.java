@@ -2,6 +2,7 @@ package com.hcmus.dreamers.foodmap.fragment;
 
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.hcmus.dreamers.foodmap.AddOrderActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
@@ -47,7 +50,7 @@ import java.util.stream.Collectors;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrderListFragment extends Fragment implements AdapterView.OnItemLongClickListener {
+public class OrderListFragment extends Fragment implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 
     Restaurant restaurant;
 
@@ -56,6 +59,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     private List<Offer> offers, offersAdapter;
     private int id_rest;
     private Calendar c = Calendar.getInstance();
+    private ProgressDialog progressDialog;
 
     Context context = null;
     LinearLayout rootLayout;
@@ -102,10 +106,15 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     private void refferences(){
         listOffer = rootLayout.findViewById(R.id.list_order);
         listOffer.setOnItemLongClickListener(this);
+        listOffer.setOnItemClickListener(this);
     }
 
 
     private void refreshData(boolean filter, int year,int monthOfYear ,int dayOfMonth){
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
         FoodMapApiManager.getOffer(id_rest, new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
@@ -121,6 +130,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                             filter(year, monthOfYear, dayOfMonth);
                         }
                         adapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
                     }else if(responseJSON.getCode() == ConstantCODE.NOTFOUND){
                         Toast.makeText(context, "NOT FOUND!", Toast.LENGTH_SHORT).show();
                     }else {
@@ -135,12 +145,12 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-        showConfirmDialog(position);
+        showConfirmDeleteDialog(position);
         return true;
     }
 
 
-    private void showConfirmDialog(final int position){
+    private void showConfirmDeleteDialog(final int position){
         new AlertDialog.Builder(context)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Xóa Đơn hàng")
@@ -174,6 +184,41 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                 .show();
     }
 
+    private void showConfirmProcessDialog(final int position){
+        new AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Thay đổi trạng thái")
+                .setMessage("Bạn có muốn thay đổi trạng thái đơn hàng này?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final Offer offer = (Offer) offersAdapter.get(position);
+                        int status = offer.getStatus() == 1 ? 0 : 1;
+                        FoodMapApiManager.updateStatusOrder(offer.getId(), status, new TaskCompleteCallBack() {
+                            @Override
+                            public void OnTaskComplete(Object response) {
+                                if((int)response == ConstantCODE.SUCCESS){
+                                    Offer o = offersAdapter.get(position);
+                                    int index = offers.indexOf(o);
+                                    offersAdapter.get(position).setStatus(status);
+                                    offers.get(index).setStatus(status);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(context, "Cập nhật đơn hàng thành công!", Toast.LENGTH_SHORT).show();
+                                }else if((int) response == ConstantCODE.NOTFOUND){
+                                    Toast.makeText(context, "Lỗi cập nhật đơn hàng không tồn tại, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(context, "Không có kết nối internet, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+
+                })
+                .setNegativeButton("Không", null)
+                .show();
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.order_group_by_menu, menu);
@@ -186,7 +231,7 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
         switch (id){
             case R.id.action_GroupByNone:
                 c = Calendar.getInstance();
-                offersAdapter = offers;
+                offersAdapter = new ArrayList<>(offers);
                 adapter.setOffers(offersAdapter);
                 adapter.notifyDataSetChanged();
             return true;
@@ -223,5 +268,10 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
             offersAdapter = offers.stream().filter(o -> o.compareDateOrder(date)).collect(Collectors.toList());
             adapter.setOffers(offersAdapter);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        showConfirmProcessDialog(position);
     }
 }
