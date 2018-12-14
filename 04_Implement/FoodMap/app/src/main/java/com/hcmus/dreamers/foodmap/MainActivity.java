@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             mMap.setHasTransientState(true);
 
         mapController = mMap.getController();
-        mapController.setZoom(17.0);
+        mapController.setZoom(15.0);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
         //list marker

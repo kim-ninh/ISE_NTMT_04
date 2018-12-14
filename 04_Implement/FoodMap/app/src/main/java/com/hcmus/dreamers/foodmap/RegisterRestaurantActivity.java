@@ -265,14 +265,11 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
         } else if (id == R.id.selectLocationSection) {
 
             String address = edtAddress.getText().toString();
-
-            if (address.equals("")) {
-                Toast.makeText(RegisterRestaurantActivity.this, "Vui lòng nhập địa chỉ", Toast.LENGTH_LONG).show();
-            } else {
-                Intent intent = new Intent(RegisterRestaurantActivity.this, ChooseLocationActivity.class);
+            Intent intent = new Intent(RegisterRestaurantActivity.this, ChooseLocationActivity.class);
+            if (!address.equals("")) {
                 intent.putExtra("address", address);
-                startActivityForResult(intent, CLA_ID);
             }
+            startActivityForResult(intent, CLA_ID);
         }
     }
 
@@ -288,7 +285,7 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
                     txvLatLongInfo.setText(String.format(LAT_LONG_FORMAT, lat,lon));
                 }
                 if (address != null) {
-                    //edtAddress.setText(address);
+                    edtAddress.setText(address);
                 }
             }
         }

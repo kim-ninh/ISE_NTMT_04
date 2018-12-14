@@ -135,7 +135,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 intent.putExtra("lat", restPoint.getLatitude());
                 intent.putExtra("lon", restPoint.getLongitude());
             }
-            intent.putExtra("address", address);
+            intent.putExtra("address", currentStreetAddress.getText());
             setResult(Activity.RESULT_OK, intent);
 
             ChooseLocationActivity.this.finish();
@@ -145,6 +145,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 mapController.setZoom(17.0);
                 moveCamera(mLocationOverlay.getMyLocation());
                 restPoint = mLocationOverlay.getMyLocation();
+                updateMarker(mLocationOverlay.getMyLocation());
             }
         }
     }
