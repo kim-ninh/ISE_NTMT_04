@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
@@ -57,6 +58,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     AutoCompleteTextView atclSearch;
     ImageView igvDone;
     ImageView igvMyLocation;
+    TextView currentStreetAddress;
 
     Toolbar toolbar;
 
@@ -89,7 +91,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getData();
+        //getData();
+        currentStreetAddress = findViewById(R.id.currentStreetAddress);
     }
 
     void getData(){
@@ -231,44 +234,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     // thêm một marker vào map
     private void updateMarker(GeoPoint point) {
         marker.setPosition(point);
-        marker.setSnippet(point.toDoubleString());
-        marker.showInfoWindow();
+        showAddressFromPoint(point);
         mMap.invalidate();
 
-//        markers.clear();
-//        OverlayItem marker = new OverlayItem(title, description, point);
-//        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
-//        marker.setMarker(drawable);
-//        markers.add(marker);
-//        // thêm sự kiện marker click
-//        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-//            @Override
-//            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
-//                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
-//                Restaurant restaurant = FoodMapManager.findRestaurant(point);
-//
-//                if (restaurant != null){
-//                    Intent intent = new Intent(ChooseLocationActivity.this, RestaurantInfoActivity.class);
-//                    intent.putExtra("rest", (Serializable) restaurant);
-//                    startActivity(intent);
-//                }
-//                return false;
-//            }
-//        });
-//        mOverlay.setFocusItemsOnTap(true);
-//
-//        // thêm marker vào map và chỉ một marker được tồn tại
-//        mMap.getOverlays().clear();
-//        mMap.getOverlays().add(mOverlay);
-//        mMap.getOverlays().add(mLocationOverlay);
-//        mMap.getOverlays().add(OverlayEvents);
-//        mMap.invalidate();
-//        return mOverlay;
     }
     private void moveCamera(GeoPoint point){
         mapController.animateTo(point);
@@ -329,4 +297,18 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         });
     }
 
+    private void showAddressFromPoint(GeoPoint centerPoint) {
+        FoodMapApiManager.getAddressFromPoint(centerPoint, new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String streetAddress = (String) response;
+                currentStreetAddress.setText("");
+                if (streetAddress != null) {
+                    currentStreetAddress.setText(streetAddress);
+                } else {
+                    Toast.makeText(ChooseLocationActivity.this, "Kiểm tra kết nối Internet của bạn", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 }
