@@ -15,14 +15,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -44,7 +41,6 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
-
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -60,7 +56,6 @@ import com.squareup.picasso.Target;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -254,14 +249,14 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         minPrice = Collections.min(restaurant.getDishes(), new Comparator<Dish>() {
             @Override
             public int compare(Dish o1, Dish o2) {
-                return ((Integer)o1.getPrice()).compareTo((Integer)o2.getPrice());
+                return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
             }
         }).getPrice();
 
         maxPrice = Collections.max(restaurant.getDishes(), new Comparator<Dish>() {
             @Override
             public int compare(Dish o1, Dish o2) {
-                return ((Integer)o1.getPrice()).compareTo((Integer)o2.getPrice());
+                return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
             }
         }).getPrice();
 

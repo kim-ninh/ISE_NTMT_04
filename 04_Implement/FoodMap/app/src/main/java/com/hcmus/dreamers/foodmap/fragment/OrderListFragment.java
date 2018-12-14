@@ -5,12 +5,10 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,15 +19,11 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.hcmus.dreamers.foodmap.AddOrderActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
-import com.hcmus.dreamers.foodmap.OrderListActivity;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.adapter.OrderListAdapter;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -39,7 +33,6 @@ import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 
 import org.json.JSONException;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -150,13 +143,12 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
     }
 
 
-    private void showConfirmDeleteDialog(final int position){
+    private void showConfirmDeleteDialog(final int position) {
         new AlertDialog.Builder(context)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Xóa Đơn hàng")
                 .setMessage("Bạn có muốn xóa đơn hàng này?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final Offer offer = (Offer) offersAdapter.get(position);
@@ -184,13 +176,12 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                 .show();
     }
 
-    private void showConfirmProcessDialog(final int position){
+    private void showConfirmProcessDialog(final int position) {
         new AlertDialog.Builder(context)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Thay đổi trạng thái")
                 .setMessage("Bạn có muốn thay đổi trạng thái đơn hàng này?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final Offer offer = (Offer) offersAdapter.get(position);
@@ -198,16 +189,16 @@ public class OrderListFragment extends Fragment implements AdapterView.OnItemLon
                         FoodMapApiManager.updateStatusOrder(offer.getId(), status, new TaskCompleteCallBack() {
                             @Override
                             public void OnTaskComplete(Object response) {
-                                if((int)response == ConstantCODE.SUCCESS){
+                                if ((int) response == ConstantCODE.SUCCESS) {
                                     Offer o = offersAdapter.get(position);
                                     int index = offers.indexOf(o);
                                     offersAdapter.get(position).setStatus(status);
                                     offers.get(index).setStatus(status);
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(context, "Cập nhật đơn hàng thành công!", Toast.LENGTH_SHORT).show();
-                                }else if((int) response == ConstantCODE.NOTFOUND){
+                                } else if ((int) response == ConstantCODE.NOTFOUND) {
                                     Toast.makeText(context, "Lỗi cập nhật đơn hàng không tồn tại, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
-                                }else{
+                                } else {
                                     Toast.makeText(context, "Không có kết nối internet, xin kiểm tra lại!", Toast.LENGTH_SHORT).show();
                                 }
                             }

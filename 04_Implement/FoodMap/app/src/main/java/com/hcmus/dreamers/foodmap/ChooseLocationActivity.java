@@ -40,10 +40,8 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
-import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -66,8 +64,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
     private MyLocationNewOverlay mLocationOverlay;
     private LocationManager mLocMgr;
     private IMapController mapController;
-    private ArrayList<OverlayItem> markers;
     MapEventsOverlay OverlayEvents;// on map click event
+    private Marker marker;          // the one and only one marker
 
     private List<DetailAddress> detailAddresses;
     private PlaceAutoCompleteApdapter placeAutoCompleteApdapter;
@@ -161,8 +159,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         mapController.setZoom(17.0);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
 
-        //list marker
-        markers = new ArrayList<OverlayItem>();
 
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ChooseLocationActivity.this),mMap);
@@ -194,7 +190,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
                 restPoint = p;
-                addMarker("You choose", "Địa chỉ bạn đã chọn", restPoint);
+                updateMarker(restPoint);
                 moveCamera(restPoint);
                 return false;
             }
@@ -208,25 +204,15 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
         OverlayEvents = new MapEventsOverlay(mReceive);
         mMap.getOverlays().add(OverlayEvents);
 
-    }
-
-    // thêm một marker vào map
-    private ItemizedOverlayWithFocus<OverlayItem> addMarker(String title, String description, GeoPoint point){
-        markers.clear();
-        OverlayItem marker = new OverlayItem(title, description, point);
+        GeoPoint lastKnownPoint = new GeoPoint(mLocMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER));
         Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
-        marker.setMarker(drawable);
-        markers.add(marker);
-        // thêm sự kiện marker click
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+        marker = new Marker(mMap);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setIcon(drawable);
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
             @Override
-            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
-                return false;
-            }
-
-            @Override
-            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
-                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                GeoPoint point = marker.getPosition();
                 Restaurant restaurant = FoodMapManager.findRestaurant(point);
 
                 if (restaurant != null){
@@ -234,18 +220,54 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                     intent.putExtra("rest", (Serializable) restaurant);
                     startActivity(intent);
                 }
-                return false;
+                return true;
             }
         });
-        mOverlay.setFocusItemsOnTap(true);
+        mMap.getOverlayManager().add(marker);
+        updateMarker(lastKnownPoint);
+    }
 
-        // thêm marker vào map và chỉ một marker được tồn tại
-        mMap.getOverlays().clear();
-        mMap.getOverlays().add(mOverlay);
-        mMap.getOverlays().add(mLocationOverlay);
-        mMap.getOverlays().add(OverlayEvents);
+    // thêm một marker vào map
+    private void updateMarker(GeoPoint point) {
+        marker.setPosition(point);
+        marker.setSnippet(point.toDoubleString());
+        marker.showInfoWindow();
         mMap.invalidate();
-        return mOverlay;
+
+//        markers.clear();
+//        OverlayItem marker = new OverlayItem(title, description, point);
+//        Drawable drawable = getResources().getDrawable(R.drawable.ic_restaurant_marker);
+//        marker.setMarker(drawable);
+//        markers.add(marker);
+//        // thêm sự kiện marker click
+//        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(ChooseLocationActivity.this, markers, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+//            @Override
+//            public boolean onItemSingleTapUp(int i, OverlayItem overlayItem) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onItemLongPress(int i, OverlayItem overlayItem) {
+//                GeoPoint point = new GeoPoint(overlayItem.getPoint().getLatitude(), overlayItem.getPoint().getLongitude());
+//                Restaurant restaurant = FoodMapManager.findRestaurant(point);
+//
+//                if (restaurant != null){
+//                    Intent intent = new Intent(ChooseLocationActivity.this, RestaurantInfoActivity.class);
+//                    intent.putExtra("rest", (Serializable) restaurant);
+//                    startActivity(intent);
+//                }
+//                return false;
+//            }
+//        });
+//        mOverlay.setFocusItemsOnTap(true);
+//
+//        // thêm marker vào map và chỉ một marker được tồn tại
+//        mMap.getOverlays().clear();
+//        mMap.getOverlays().add(mOverlay);
+//        mMap.getOverlays().add(mLocationOverlay);
+//        mMap.getOverlays().add(OverlayEvents);
+//        mMap.invalidate();
+//        return mOverlay;
     }
     private void moveCamera(GeoPoint point){
         mapController.animateTo(point);
@@ -284,7 +306,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements View.On
                 restPoint = detailAddresses.get(position).getPoint();
 
                 atclSearch.setText(address);
-                addMarker(name, address, restPoint);
+                updateMarker(restPoint);
                 moveCamera(restPoint);
             }
         });

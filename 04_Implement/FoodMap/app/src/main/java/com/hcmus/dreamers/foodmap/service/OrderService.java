@@ -1,6 +1,5 @@
 package com.hcmus.dreamers.foodmap.service;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,20 +12,14 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.text.style.ParagraphStyle;
-import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
-import com.hcmus.dreamers.foodmap.MainActivity;
 import com.hcmus.dreamers.foodmap.Model.Offer;
 import com.hcmus.dreamers.foodmap.OrderListActivity;
 import com.hcmus.dreamers.foodmap.R;
-import com.hcmus.dreamers.foodmap.View.NotificationBuilder;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
-import com.hcmus.dreamers.foodmap.fragment.OrderListFragment;
 import com.hcmus.dreamers.foodmap.jsonapi.ParseJSON;
 import com.hcmus.dreamers.foodmap.websocket.OrderEmitterListener;
 import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
