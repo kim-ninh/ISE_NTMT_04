@@ -246,19 +246,24 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         //Set Price range of restaurant
         int minPrice = 0;
         int maxPrice = 0;
-        minPrice = Collections.min(restaurant.getDishes(), new Comparator<Dish>() {
-            @Override
-            public int compare(Dish o1, Dish o2) {
-                return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
-            }
-        }).getPrice();
+        try {
+            minPrice = Collections.min(restaurant.getDishes(), new Comparator<Dish>() {
+                @Override
+                public int compare(Dish o1, Dish o2) {
+                    return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
+                }
+            }).getPrice();
 
-        maxPrice = Collections.max(restaurant.getDishes(), new Comparator<Dish>() {
-            @Override
-            public int compare(Dish o1, Dish o2) {
-                return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
-            }
-        }).getPrice();
+            maxPrice = Collections.max(restaurant.getDishes(), new Comparator<Dish>() {
+                @Override
+                public int compare(Dish o1, Dish o2) {
+                    return ((Integer) o1.getPrice()).compareTo((Integer) o2.getPrice());
+                }
+            }).getPrice();
+        }catch (Exception e){
+            minPrice = 0;
+            maxPrice = 0;
+        }
 
         if(minPrice == maxPrice)
             txtPrice.setText(Integer.toString(minPrice) + " VND");
