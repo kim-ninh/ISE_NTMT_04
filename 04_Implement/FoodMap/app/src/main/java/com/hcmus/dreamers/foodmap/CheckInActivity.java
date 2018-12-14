@@ -52,7 +52,7 @@ public class CheckInActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
-    GridViewItem grdCheckInImage;
+    GridView grdCheckInImage;
     ImageView imgCamera;
     ImageView imgFacebook;
 
@@ -81,7 +81,7 @@ public class CheckInActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        grdCheckInImage = (GridViewItem) findViewById(R.id.grdCheckInImage);
+        grdCheckInImage = (GridView) findViewById(R.id.grdCheckInImage);
         imgCamera = (ImageView) findViewById(R.id.imgCamera);
         imgFacebook = (ImageView) findViewById(R.id.imgFacebook);
 

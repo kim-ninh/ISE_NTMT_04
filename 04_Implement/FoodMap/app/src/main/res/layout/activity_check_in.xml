@@ -19,7 +19,7 @@
         android:elevation="4dp"
         app:title="Check in"/>
 
-    <com.hcmus.dreamers.foodmap.View.GridViewItem
+    <GridView
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -30,7 +30,7 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:columnWidth="200dp">
-    </com.hcmus.dreamers.foodmap.View.GridViewItem>
+    </GridView>
 
     <LinearLayout
         android:layout_width="match_parent"

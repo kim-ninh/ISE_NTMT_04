@@ -1,8 +1,11 @@
 package com.hcmus.dreamers.foodmap.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +44,12 @@ public class FavorRestListAdapter extends ArrayAdapter<Restaurant> {
         ImageView imgBackFavorRest = (ImageView) cell.findViewById(R.id.imgBackFavorRest);
         TextView txtFavorRestName = (TextView) cell.findViewById(R.id.txtFavorRestName);
 
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(350, 350);
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int screenWidth = point.x;
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((screenWidth - 10 * 5) / 4, (screenWidth - 10 * 5) / 4);
 
         imgBackFavorRest.setLayoutParams(layoutParams);
         imgBackFavorRest.setScaleType(ImageView.ScaleType.CENTER_CROP);
