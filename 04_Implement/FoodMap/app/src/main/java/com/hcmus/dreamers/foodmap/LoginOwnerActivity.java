@@ -90,6 +90,7 @@ public class LoginOwnerActivity extends AppCompatActivity {
                             }
                             else if ((int)response == FoodMapApiManager.FAIL_INFO){
                                 Toast.makeText(LoginOwnerActivity.this, "Vui lòng kiểm tra lại thông tin đăng nhập", Toast.LENGTH_LONG).show();
+                                loginCount++;
                             }
                             else if ((int)response == ConstantCODE.NOTINTERNET){
                                 Toast.makeText(LoginOwnerActivity.this, "Kiểm tra lại kết nối internet", Toast.LENGTH_LONG).show();
@@ -97,8 +98,6 @@ public class LoginOwnerActivity extends AppCompatActivity {
                             else {
                                 Toast.makeText(LoginOwnerActivity.this, "Lỗi đăng nhập", Toast.LENGTH_LONG).show();
                             }
-
-                            loginCount++;
                         }
                     });
                 }

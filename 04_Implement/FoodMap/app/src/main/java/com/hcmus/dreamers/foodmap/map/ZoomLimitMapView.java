@@ -57,8 +57,8 @@ public class ZoomLimitMapView extends MapView
         final DisplayMetrics dm = context.getResources().getDisplayMetrics();
 
         ScaleBarOverlay scaleBarOverlay = new ScaleBarOverlay(this);
-        scaleBarOverlay.setTextSize(48.0F);
-        scaleBarOverlay.setMaxLength(1.5F);
+        scaleBarOverlay.setTextSize(30.0F);
+        scaleBarOverlay.setMaxLength(1.0F);
         scaleBarOverlay.setAlignBottom(true);
         scaleBarOverlay.setUnitsOfMeasure(ScaleBarOverlay.UnitsOfMeasure.metric);
         this.getOverlayManager().add(scaleBarOverlay);
