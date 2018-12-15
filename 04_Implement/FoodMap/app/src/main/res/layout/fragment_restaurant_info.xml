@@ -37,11 +37,17 @@
         android:layout_height="wrap_content"
         android:background="@drawable/custom_border">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_home" />
         <TextView
             android:id="@+id/lblResName"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Tên quán"
             android:labelFor="@id/txtResName"
             android:textSize="14sp"/>
@@ -51,7 +57,9 @@
             android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:ems="10"
+            android:maxLines="1"
             android:inputType="textShortMessage"
             android:background="@drawable/custom_border"
             android:text="Tửu quán"
@@ -63,11 +71,17 @@
         android:layout_height="wrap_content"
         android:background="@drawable/custom_border">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_location" />
         <TextView
             android:id="@+id/lblAddress"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Địa chỉ"
             android:labelFor="@id/txtAddress"/>
 
@@ -76,6 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/custom_border"
             android:ems="10"
             android:inputType="textMultiLine"
@@ -85,14 +100,48 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/selectLocationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_border">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_near_me" />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Vị trí bản đồ" />
+
+        <TextView
+            android:id="@+id/txtGeoPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="Lat 0.0- Long 0.0" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_border">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_phone_start" />
         <TextView
             android:id="@+id/lblPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:labelFor="@id/txtPhoneNumber"
             android:text="Số điện thoại" />
@@ -101,10 +150,12 @@
             android:id="@+id/txtPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="2"
             android:ems="10"
             android:inputType="phone"
             android:background="@drawable/custom_border"
+            android:maxLines="1"
             android:text="0904461762"
             android:textSize="14sp" />
     </LinearLayout>
@@ -114,6 +165,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/custom_border">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_action_clock" />
         <TextView
             android:id="@+id/lblWorkingHour"
             android:layout_gravity="center_vertical"
@@ -127,7 +183,7 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_border">
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/openHour"
@@ -152,11 +208,17 @@
         android:layout_height="wrap_content"
         android:background="@drawable/custom_border">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_description" />
         <TextView
             android:id="@+id/lblDescription"
             android:layout_gravity="center_vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:layout_weight="1"
             android:labelFor="@id/txtDescription"
             android:text="Mô tả ngắn" />
@@ -165,6 +227,7 @@
             android:id="@+id/txtDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="2"
             android:background="@drawable/custom_border"
             android:ems="10"

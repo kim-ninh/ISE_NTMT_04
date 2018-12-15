@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,13 +31,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hcmus.dreamers.foodmap.AddDishActivity;
 import com.hcmus.dreamers.foodmap.AsyncTask.DownloadImageTask;
 import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
-import com.hcmus.dreamers.foodmap.EditDishActivity;
+import com.hcmus.dreamers.foodmap.ChooseLocationActivity;
 import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
-import com.hcmus.dreamers.foodmap.ManageAccountActivity;
-import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
@@ -47,6 +43,8 @@ import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.define.ConstantValue;
 import com.squareup.picasso.Callback;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +73,7 @@ public class RestaurantInfoFragment extends Fragment {
 
     private static final int REQUEST_OPEN_GALERY = 12345;
     private static final int REQUEST_TAKE_PHOTO = 11111;
+    private static final String LAT_LONG_FORMAT = "Lat %.4f - Long %.4f";
 
 
     // TODO: Rename and change types of parameters
@@ -98,8 +97,12 @@ public class RestaurantInfoFragment extends Fragment {
     EditText txtDescription;
     TextView txtCheck;
     ProgressBar progressBar;
+    LinearLayout selectLocationView;
+    TextView txtGeoPoint;
+    GeoPoint restLocation;
 
     Uri resultUri;
+    private int CLA_ID = 1008;
 
     public RestaurantInfoFragment() {
         // Required empty public constructor
@@ -241,6 +244,18 @@ public class RestaurantInfoFragment extends Fragment {
                 popupMenu.show();
             }
         });
+
+        selectLocationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = txtAddress.getText().toString();
+                Intent intent = new Intent(getActivity(), ChooseLocationActivity.class);
+                if (!address.equals("")) {
+                    intent.putExtra("address", address);
+                }
+                startActivityForResult(intent, CLA_ID);
+            }
+        });
     }
 
     private void putDataToViews() {
@@ -254,6 +269,8 @@ public class RestaurantInfoFragment extends Fragment {
         lblOpenHour.setText(openingHour);
         lblCloseHour.setText(closingHour);
         txtDescription.setText(restaurant.getDescription());
+        txtGeoPoint.setText(String.format(LAT_LONG_FORMAT,
+                restaurant.getLocation().getLatitude(), restaurant.getLocation().getLongitude()));
 
         if (!restaurant.isCheck()){
             txtCheck.setVisibility(View.VISIBLE);
@@ -293,6 +310,8 @@ public class RestaurantInfoFragment extends Fragment {
         txtDescription = (EditText) rootLayout.findViewById(R.id.txtDescription);
         progressBar = (ProgressBar) rootLayout.findViewById(R.id.progressBar);
         txtCheck = rootLayout.findViewById(R.id.txtCheck);
+        selectLocationView = rootLayout.findViewById(R.id.selectLocationView);
+        txtGeoPoint = rootLayout.findViewById(R.id.txtGeoPoint);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -420,8 +439,9 @@ public class RestaurantInfoFragment extends Fragment {
         final TaskCompleteCallBack updateRestaurantCallBack;
         TaskCompleteCallBack deleteImageCallBack;
         final TaskCompleteCallBack uploadImageCallBack;
+        TaskCompleteCallBack updateLocationCallBack;
 
-        updateRestaurantCallBack = new TaskCompleteCallBack() {
+        updateLocationCallBack = new TaskCompleteCallBack() {
             @Override
             public void OnTaskComplete(Object response) {
                 progressDialog.dismiss();
@@ -438,6 +458,33 @@ public class RestaurantInfoFragment extends Fragment {
                     Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(context, "Cập nhật thông tin tài khoản thất bại!", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        updateRestaurantCallBack = new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+
+                if ((int) response == FoodMapApiManager.SUCCESS) {
+                    if (restLocation != null) {
+                        FoodMapApiManager.updateLocation(restaurant.getId(), restLocation, updateLocationCallBack);
+                    } else {
+                        Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                        Gson gson = new Gson();
+                        Intent intent = new Intent();
+                        intent.putExtra("restJSON", gson.toJson(restaurant));
+
+                        editRestaurantActivity.setResult(RESULT_OK, intent);
+                        editRestaurantActivity.finish();
+                    }
+
+                } else if ((int) response == ConstantCODE.NOTINTERNET) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Không có kết nối INTERNET!", Toast.LENGTH_LONG).show();
+                } else if ((int) response == FoodMapApiManager.FAIL_INFO) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Hãy thử lại sau.", Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -627,6 +674,20 @@ public class RestaurantInfoFragment extends Fragment {
                 Exception error = result.getError();
                 Toast.makeText(context,
                         error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (requestCode == CLA_ID && resultCode == RESULT_OK) {
+            double lat = data.getDoubleExtra("lat", -1000.0);
+            double lon = data.getDoubleExtra("lon", -1000.0);
+            String address = data.getStringExtra("address");
+            if (lat != -1000.0 && lon != -1000.0) {
+                restaurant.setLocation(new GeoPoint(lat, lon));
+                txtGeoPoint.setText(String.format(LAT_LONG_FORMAT, lat, lon));
+                restLocation = new GeoPoint(lat, lon);
+            }
+            if (address != null) {
+                txtAddress.setText(address);
             }
         }
     }

@@ -1180,6 +1180,30 @@ public class FoodMapApiManager {
         taskRequest.execute(new DoingTask(GenerateRequest.updateStatusOrder(id_order, Owner.getInstance().getToken(), status)));
     }
 
+    public static void updateLocation(int id_rest, GeoPoint location, final TaskCompleteCallBack taskCompleteCallBack) {
+        TaskRequest taskRequest = new TaskRequest();
 
+        taskRequest.setOnCompleteCallBack(new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                String resp = response.toString();
+
+                if (resp != null) {
+                    Log.w("updateLocation", resp);
+                    ResponseJSON responseJSON = ParseJSON.fromStringToResponeJSON(resp);
+                    if (responseJSON.getCode() == ConstantCODE.SUCCESS) {
+                        taskCompleteCallBack.OnTaskComplete(SUCCESS);
+                    } else if (responseJSON.getCode() == ConstantCODE.NOTFOUND) {
+                        taskCompleteCallBack.OnTaskComplete(FAIL_INFO); // trường hợp đã tồn tại
+                    } else if (responseJSON.getCode() == ConstantCODE.NOTINTERNET) {
+                        taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                    }
+                } else {
+                    taskCompleteCallBack.OnTaskComplete(ConstantCODE.NOTINTERNET);
+                }
+            }
+        });
+        taskRequest.execute(new DoingTask(GenerateRequest.updateLocation(id_rest, location, Owner.getInstance().getToken())));
+    }
 }
 

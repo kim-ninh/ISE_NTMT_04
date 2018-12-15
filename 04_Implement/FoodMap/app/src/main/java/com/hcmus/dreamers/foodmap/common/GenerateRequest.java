@@ -1,7 +1,5 @@
 package com.hcmus.dreamers.foodmap.common;
 
-import android.location.Location;
-
 import com.hcmus.dreamers.foodmap.Model.Comment;
 import com.hcmus.dreamers.foodmap.Model.Discount;
 import com.hcmus.dreamers.foodmap.Model.Dish;
@@ -240,7 +238,7 @@ public class GenerateRequest {
         return request;
     }
 
-    public static okhttp3.Request updateLocation(final int id_rest, final Location location, final String token) {
+    public static okhttp3.Request updateLocation(final int id_rest, final GeoPoint location, final String token) {
 
         String url = ConstantURL.BASEURL + ConstantURL.UPDATELOCAION;
         Map<String, String> params = new HashMap<>();
