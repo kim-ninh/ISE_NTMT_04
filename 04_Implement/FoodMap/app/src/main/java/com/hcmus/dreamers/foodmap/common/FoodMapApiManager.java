@@ -64,7 +64,6 @@ public class FoodMapApiManager {
                     if(parseJSON.getCode() == ConstantCODE.SUCCESS) {
                         try {
                             Owner.setInstance(ParseJSON.parseOwnerFromCreateAccount(Sresponse));
-                            Owner.getInstance().setlistRestaurant(FoodMapManager.getRestaurants(Owner.getInstance().getUsername()));
 
                             taskCompleteCallBack.OnTaskComplete(SUCCESS);
                         } catch (JSONException e) {
