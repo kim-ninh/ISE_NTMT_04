@@ -422,6 +422,12 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
             dialog.show();
 
             final RatingBar rtbRate = (RatingBar) dialog.findViewById(R.id.rtbRate);
+            //set rank that rated by this user
+            try {
+                rtbRate.setRating(restaurant.getRanks().get(Guest.getInstance().getEmail()));
+            }catch (Exception e){
+                rtbRate.setRating(0);
+            }
             Button btnRateSubmit = (Button) dialog.findViewById(R.id.btnRateSubmit);
             btnRateSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override

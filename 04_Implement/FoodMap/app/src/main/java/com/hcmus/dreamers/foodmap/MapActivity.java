@@ -66,10 +66,9 @@ public class MapActivity extends AppCompatActivity{
     FloatingActionButton fabSearch;
 
     private GeoPoint startPointEx;
-    private GeoPoint endPointEx;
     private String startName;
-    private String endName;
     private String startAddress;
+    private String endName;
     private String endAddress;
     @Override
     protected void onPause() {
@@ -243,29 +242,9 @@ public class MapActivity extends AppCompatActivity{
         dialog.show();
 
         final AutoCompleteTextView atclStart = (AutoCompleteTextView) dialog.findViewById(R.id.atclStart);
-        final AutoCompleteTextView atclDestination = (AutoCompleteTextView) dialog.findViewById(R.id.atclDestination);
         Button btnFindWay = (Button) dialog.findViewById(R.id.btnFindWay);
 
         atclStart.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String address = s.toString();
-                if (address.length() >= 3)
-                    refeshListAddressSearch(address);
-            }
-        });
-
-        atclDestination.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -289,7 +268,6 @@ public class MapActivity extends AppCompatActivity{
                 R.layout.item_detailaddress_list, detailAddresses);
 
         atclStart.setAdapter(placeAutoCompleteApdapter);
-        atclDestination.setAdapter(placeAutoCompleteApdapter);
 
         atclStart.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -301,27 +279,15 @@ public class MapActivity extends AppCompatActivity{
 
             }
         });
-        atclDestination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                endName = detailAddresses.get(position).getName();
-                endAddress = detailAddresses.get(position).toString();
-                endPointEx = detailAddresses.get(position).getPoint();
-                atclDestination.setText(endAddress);
-
-                mapController.setCenter(endPointEx);
-            }
-        });
 
         btnFindWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(startPointEx != null && endPointEx != null) {
+                if(startPointEx != null && endPoint != null) {
                     updateRoadTask.removePolyline();
                     startPoint = startPointEx;
-                    endPoint = endPointEx;
                     addMarker(startName, startAddress, startPointEx);
-                    addMarker(endName, endAddress, endPointEx);
+                    addMarker("Title", "Description", endPoint);
                     showingPath();
                 }
 
