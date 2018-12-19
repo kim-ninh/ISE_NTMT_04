@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.hcmus.dreamers.foodmap.R;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 public class DownloadImageTask {
@@ -28,16 +29,21 @@ public class DownloadImageTask {
                     .load(url)
                     .noFade()
                     .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
-                    .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                    .networkPolicy(NetworkPolicy.OFFLINE)
                     .into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            Log.e(TAG, "onSuccess: " + url);
+                            Log.e(TAG, "onSuccess: Offline " + url);
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            Log.e(TAG, "onError: " + url);
+                            Picasso.get()
+                                    .load(url)
+                                    .noFade()
+                                    .placeholder(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                                    .error(context.getResources().getDrawable(R.mipmap.ic_launcher))
+                                    .into(imageView);
                         }
                     });
         }

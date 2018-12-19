@@ -471,7 +471,6 @@
 	+ data_post:
 		* token
 		* id_offer
-		* id_discount
 		* status
 	+ response:
 		* status: 200

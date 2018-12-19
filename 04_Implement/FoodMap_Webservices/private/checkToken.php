@@ -84,7 +84,7 @@ function checkTokenForUsername($username, $token)
 	return $check;
 }
 
-function checkTokenForDiscount($id_discount, $token)
+function checkTokenForDiscount($id_offer, $token)
 {
 	$strQuery = 'SELECT FC_CHECKTOKEN("'.$token.'") AS RESULT';
 
@@ -106,17 +106,17 @@ function checkTokenForDiscount($id_discount, $token)
 	if ($check)
 	{
 		$username = substr($token, 32);
-		$username = base64_decode($usernameCheck);
+		$username = base64_decode($username);
 		
-		$strQuery = 'SELECT RS.OWNER_USERNAME AS USERNAME FROM RESTAURANT RS JOIN DISCOUNT DS ON RS.ID = DS.ID_REST WHERE DS.ID = '.$id_discount;
+		$strQuery = 'SELECT RS.OWNER_USERNAME AS USERNAME FROM RESTAURANT RS JOIN (DISCOUNT DS JOIN OFFER OF ON DS.ID = OF.ID_DISCOUNT) ON RS.ID = DS.ID_REST WHERE OF.ID = '.$id_offer;
 		$usernameRow = $conn->query($strQuery);
 		
-		if ($username != -1)
+		if ($usernameRow != -1)
 		{
 			$usernameCheck = "";
 			foreach ($usernameRow as $row)
 			{
-				$usernameCheck = $usernameRow["USERNAME"];
+				$usernameCheck = $row["USERNAME"];
 				break;
 			}
 

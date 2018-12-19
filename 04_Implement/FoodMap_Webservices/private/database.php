@@ -531,9 +531,9 @@ class database
 		return false;
 	}
 
-	public function UpdateStatusOffer($id_discount, $id_offer, $status)
+	public function UpdateStatusOffer($id_offer, $status)
 	{
-		$strQuery = 'UPDATE OFFER SET STATUS = '.$status.' WHERE ID_REST = '.$id_rest.' AND ID = '.$id_offer;
+		$strQuery = 'UPDATE OFFER SET STATUS = '.$status.' WHERE ID = '.$id_offer;
 		$this->query($strQuery);
 	}
 
