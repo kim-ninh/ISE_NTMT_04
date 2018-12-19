@@ -116,8 +116,8 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()));
-        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
+        params.put("timeopen", TimeFormatter.format(restaurant.getTimeOpen(), true));
+        params.put("timeclose", TimeFormatter.format(restaurant.getTimeClose(), true));
         params.put("lat", String.valueOf(restaurant.getLocation().getLatitude()));
         params.put("lon", String.valueOf(restaurant.getLocation().getLongitude()));
         params.put("token", token);
@@ -285,8 +285,8 @@ public class GenerateRequest {
         params.put("address", restaurant.getAddress());
         params.put("phone_number", restaurant.getPhoneNumber());
         params.put("describe_text", restaurant.getDescription());
-        params.put("timeopen", transferDateToTime(restaurant.getTimeOpen()));
-        params.put("timeclose", transferDateToTime(restaurant.getTimeClose()));
+        params.put("timeopen", TimeFormatter.format(restaurant.getTimeOpen(), true));
+        params.put("timeclose", TimeFormatter.format(restaurant.getTimeClose(), true));
 
         params.put("url_image", restaurant.getUrlImage());
         if (restaurant.getLocation() != null) {

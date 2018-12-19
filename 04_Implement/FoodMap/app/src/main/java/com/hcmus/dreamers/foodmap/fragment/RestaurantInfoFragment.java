@@ -38,6 +38,7 @@ import com.hcmus.dreamers.foodmap.EditRestaurantActivity;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.R;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.TimeFormatter;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.hcmus.dreamers.foodmap.define.ConstantURL;
 import com.hcmus.dreamers.foodmap.define.ConstantValue;
@@ -48,7 +49,6 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -173,7 +173,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblOpenHour.setText(String.format("%02d:%02d", hourOfDay, minute));
+                                lblOpenHour.setText(TimeFormatter.format(hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -199,7 +199,7 @@ public class RestaurantInfoFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                lblCloseHour.setText(String.format("%02d:%02d", hourOfDay, minute));
+                                lblCloseHour.setText(TimeFormatter.format(hourOfDay, minute));
                             }
                         },
                         hour, minute,
@@ -259,9 +259,8 @@ public class RestaurantInfoFragment extends Fragment {
     }
 
     private void putDataToViews() {
-        DateFormat hourFormat = new SimpleDateFormat("hh:mm");
-        String openingHour = hourFormat.format(restaurant.getTimeOpen());
-        String closingHour = hourFormat.format(restaurant.getTimeClose());
+        String openingHour = TimeFormatter.format(restaurant.getTimeOpen(), false);
+        String closingHour = TimeFormatter.format(restaurant.getTimeClose(), false);
 
         txtPhoneNumber.setText(restaurant.getPhoneNumber());
         txtResName.setText(restaurant.getName());
@@ -383,24 +382,14 @@ public class RestaurantInfoFragment extends Fragment {
     }
 
     private void setDataFromView() {
-        // Get Date object
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
-        Date openHour = new Date();
-        Date closeHour = new Date();
-
-        try {
-            openHour = timeFormatter.parse(lblOpenHour.getText().toString());
-            closeHour = timeFormatter.parse(lblCloseHour.getText().toString());
-        } catch (Exception e) {
-            //This line should never run
-        }
-
+        String strOpenHour = lblOpenHour.getText().toString();
+        String strCloseHour = lblCloseHour.getText().toString();
 
         restaurant.setName(txtResName.getText().toString());
         restaurant.setPhoneNumber(txtPhoneNumber.getText().toString());
         restaurant.setAddress(txtAddress.getText().toString());
-        restaurant.setTimeOpen(openHour);
-        restaurant.setTimeClose(closeHour);
+        restaurant.setTimeOpen(TimeFormatter.parse(strOpenHour));
+        restaurant.setTimeClose(TimeFormatter.parse(strCloseHour));
         restaurant.setDescription(txtDescription.getText().toString());
     }
 

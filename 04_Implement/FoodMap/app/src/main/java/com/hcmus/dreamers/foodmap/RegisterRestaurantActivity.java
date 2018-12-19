@@ -28,6 +28,7 @@ import com.hcmus.dreamers.foodmap.AsyncTask.TaskCompleteCallBack;
 import com.hcmus.dreamers.foodmap.Model.Owner;
 import com.hcmus.dreamers.foodmap.Model.Restaurant;
 import com.hcmus.dreamers.foodmap.common.FoodMapApiManager;
+import com.hcmus.dreamers.foodmap.common.TimeFormatter;
 import com.hcmus.dreamers.foodmap.database.FoodMapManager;
 import com.hcmus.dreamers.foodmap.define.ConstantCODE;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -132,16 +133,13 @@ public class RegisterRestaurantActivity extends AppCompatActivity implements Vie
             mTimePicker = new TimePickerDialog(RegisterRestaurantActivity.this, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    String time = String.valueOf(selectedHour) + " : " + String.valueOf(selectedMinute);
-                    Date date = new Date();
-                    date.setHours(selectedHour);
-                    date.setMinutes(selectedMinute);
+                    String time = TimeFormatter.format(selectedHour, selectedMinute);
                     if (id == R.id.txvOpenTime) {
                         txvOpen.setText(time);
-                        restaurant.setTimeOpen(date);
+                        restaurant.setTimeOpen(TimeFormatter.parse(time));
                     } else {
                         txvClose.setText(time);
-                        restaurant.setTimeClose(date);
+                        restaurant.setTimeClose(TimeFormatter.parse(time));
                     }
                 }
             }, hour, minute, true);//Yes 24 hour time
