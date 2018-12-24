@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:id="@+id/list_row"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher_round"
+        android:id="@+id/iv_image_dish"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_red_light"
+                android:text="Tên món ăn:"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:textColor="@android:color/black"
+                android:text="Chiết khấu(%):"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:textColor="@android:color/black"
+                android:text="Bắt đầu:"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:textColor="@android:color/black"
+                android:text="Kết thúc:"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:text="Bánh xèo"
+                android:id="@+id/txtDishName"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:id="@+id/txt_discount_percent"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:text="30-11-2018 08:00"
+                android:id="@+id/txt_time_start"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="10dp"
+                android:padding="5dp"
+                android:text="5-12-2018 22:00"
+                android:id="@+id/txt_time_end"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
