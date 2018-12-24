@@ -1,0 +1,53 @@
+** login
+	** url: /api_admin/login.php
+	** type: POST
+	** data post:
+		* username
+		* password
+	** response:
+		* satus: 200
+		* message: Success
+** get Pre Restaurant
+	** url:/api_admin/getPreRestaurant.php
+	** type: POST
+	** data post:
+		* username
+		* password
+	** response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id,
+				owner_username,
+				name,
+				address,
+				phone_number,
+				describe_text,
+				url_image,
+				timeopen,
+				timeclose,
+				lat,
+				lon
+			]
+
+** xử lý quán ăn: process restaurant
+	** url: /api_admin/processRestaurant.php
+	** type: POST
+	** data post:
+		* username
+		* password
+		* id_rest
+		* status // = 0 nếu đã kiểm duyệt hoàn tất, 1 nếu nhà hàng chưa đạt yêu cầu và yêu cầu cập nhật lại
+		* note // tùy chọn
+	** response:
+		* status: 200
+		* message: Success
+		** Sẽ có mail thông báo gửi tới cho owner
+		
+		
+		
+		
+		
+		
+		
