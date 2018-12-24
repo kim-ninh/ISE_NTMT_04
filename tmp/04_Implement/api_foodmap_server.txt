@@ -1,0 +1,483 @@
+﻿Mô tả API FoodMapServer: tất cả các api đều có baseaddress là: http://foodmap.tk/
+** Các trường hợp không hợp lệ sẽ có các response["status"] lần lượt là:
+	+ 200 : Success
+	+ 404 : Not Found
+	+ 400 : Invalid request
+	+ 444 : token invalid
+
+- Login:
+	+ url: login.php
+	+ type: POST
+	+ data_post:
+		* username
+		* password
+	+ response: chuỗi json gồm
+		* status: 200
+		* message: Success
+		* data: 
+			** username
+			** password
+			** name
+			** phone_number
+			** email
+			** url_image
+			** token
+			
+- createAccount:
+	+ url: createAccount.php
+	+ type: POST
+	+ data_post:
+		* username
+		* password
+		* name
+		* phone_number
+		* email
+	+ response: chuỗi json gồm
+		* status: 200
+		* message: Success
+		
+- comment: giúp thêm comment cho nhà hàng
+	+ url: comment.php
+	+ type: POST
+	+ data_post: 
+		* id_rest
+		* comment // đoạn bình luận
+		* guest_email/owner_email (chỉ gửi 1 trong 2)
+		* token // được gửi về lúc đăng nhập nếu là owner
+	+ response:
+		* status: 200
+		* message: Success
+		
+- createDish:
+	+ url: createDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* price
+		* url_image
+		* id_catalog // hiện tại gửi mặc định 1 là cơm
+		* token
+	+ response:
+		* status: 200
+		* message: Success
+		
+- createRestaurant:
+	+ url: createRestaurant.php
+	+ type: POST
+	+ data_post:
+		* owner_username // tên đăng nhập
+		* name
+		* address
+		* phone_number
+		* describe_text
+		* timeopen
+		* timeclose
+		* lat // tọa độ kinh độ
+		* lon // tọa độ vĩ độ
+		* token
+	+ response:
+		* status: 200
+		* message: Success
+		* id: id nhà hàng vừa được tạo
+		
+- deleteDish:
+	+ url: deleteDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* token
+	+ response:
+		* status: 200
+		* message: Success
+		
+- deleteAccount:
+	+ url: deleteAccount.php
+	+ type: POST
+	+ data_post:
+		* username // username của account
+		* token
+	+ response:
+		* status: 200
+		* message: Success
+		
+- updateAccount:
+	+ url: updateAccount.php
+	+ type: POST
+	+ data_post:
+		* username
+		* token
+		* các giá trị cần chỉnh sửa
+	+ response:
+		* status: 200
+		* message: Success
+		
+- updateDish:
+	+ url: updateDish.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* name
+		* token
+		* các giá trị cần sửa
+	+ response:
+		* status: 200
+		* message: Success
+		
+- updateLocation:
+	+ url: updateLocation.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* lat
+		* lon
+		* token
+	+ response:
+		* status: 200
+		* message: Success
+		
+- updateRestaurant
+	+ url: updateRestaurant.php
+	+ type: POST
+	+ data_post:
+		* id_rest // id của nhà hàng
+		* token
+		* các giá trị cần sửa
+	+ response:
+		* status: 200
+		* message: Success
+		
+- getComment:
+	+ url: getComment.php
+	+ type: GET
+	+ data_get:
+		* id_rest //id của nhà hàng cần lấy comment
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				date_time,
+				guest_email,
+				owner_email,
+				comment
+			] // mảng
+			
+- getLocation
+	+ url: getLocation.php
+	+ type: GET
+	+ data_get:
+		* id_rest //id của nhà hàng cần lấy comment
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id_rest,
+				lat,
+				lon
+			] // mảng
+			
+- getAllRestaurant:
+	+ url: getAllRestaurant.php
+	+ type: GET
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id,
+				owner_username,
+				name,
+				address,
+				phone_number,
+				describe_text,
+				url_image,
+				time_open,
+				time_close,
+				lacation:
+					[
+						lat,
+						lon
+					],
+				ranks:
+					[
+						email, // email của người đánh giá
+						star // số sao đánh giá
+					],// mảng
+				comments:
+					[
+						date_time, // thời gian gửi comment
+						guest_email, // nếu là khách comment thì mục này sẽ có giá trị ngược lại thì không
+						owner_email, // nếu là owner comment thì mục này sẽ có giá trị ngược lại thì không
+						comment // nội dung comment
+					], // mảng
+				dishs:
+					[
+						name, 
+						price,
+						url_image,
+						id_catalog
+					] //mảng,
+				num_favorite, // số lượng người đã yêu thích
+				num_checkin, // số lượng người đã checkin
+				num_share, // số lượng người đã share
+			] // mảng
+
+			
+- upload: // upload hình ảnh
+	+ url: upload.php
+	+ type: POST
+	+ data_post:
+		* name // tên hình ảnh
+		* data // chuổi encode Base64 của hình ảnh
+		* id // id của quán ăn
+	+ response:
+		* status: 200
+		* message: Success
+		* url // đường dẫn của hình ảnh trên host
+		
+- deletePicture:
+	+ url: deletePicture.php
+	+ type: POST
+	+ data_post:
+		* url // đường dẫn trên host nhận ở trên upload
+	+ response:
+		* status: 200
+		* message: Success
+		
+- resetPassword:
+	+ url: resetPassword.php
+	+ type: POST
+	+ data_post:
+		* email // email của tài khoản cần reset
+	+ response:
+		* status: 200
+		* message: Success
+		* Nếu thành công sẽ có mail gửi mã code reset về mail của người yêu cầu
+
+		
+- checkCode:
+	+ url: resetPassword.php
+	+ type: POST
+	+ data_post:
+		* email // email của tài khoản cần reset
+		* code // được lấy trong mail gửi ở bước resetPassword
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			** username
+			** password
+			** name
+			** phone_number
+			** email
+			** url_image
+			** token
+			
+- getCatalog:
+	+ url: getCatalog.php
+	+ type: GET
+	+ data_get: // không có
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id,
+				name
+			] // mảng
+
+- getOffer:
+	+ url: getOffer.php
+	+ type: GET
+	+ data_get: id_rest
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				namedish,
+				discount_percent,
+				guest_email,
+				total,
+				status,
+				id,
+				date_order
+			] // mảng
+			
+- getDiscount:
+	+ url: getDiscount.php
+	+ type: GET
+	+ data_get: id_rest
+	+ response:
+		* status: 200
+		* message: Success
+		* data:
+			[
+				id, // id của discount
+				id_rest,
+				namedish,
+				discount_percent,
+				timestart,
+				timeend
+			] // mảng
+
+- addOffer:
+	+ url: addOffer.php
+	+ type: POST
+	+ data_post:
+		+ guest_email
+		+ total
+		+ id_discount
+	+ response:
+		* status: 200
+		* message: Success
+- createDiscount:
+	+ url: createDiscount.php
+	+ type: POST
+	+ data_post:
+		+ id_rest
+		+ namedish
+		+ discount_percent
+		+ timestart
+		+ timeend
+		+ token
+	+ response:
+		* status: 200
+		* message: Success
+- addGuest:
+	+ url: addGuest.php
+	+ type: POST
+	+ data_post:
+		*email
+		*name
+	+response:
+		* status: 200
+		* message: Success
+- addRank:
+	+ url: addRank.php
+	+ type: POST
+	+ data_post:
+		*guest_email
+		*id_rest
+		*star
+	+response:
+		* status: 200
+		* message: Success
+- deleteRestaurant:
+	+ url: deleteRestaurant.php
+	+ type: POST
+	+ data_post:
+		*id_rest
+		* token
+	+response:
+		* status: 200
+		* message: Success		
+- addFavorite:
+	+ url: addFavorite.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- deleteFavortie:
+	+ url: deleteFavorite.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+- getFavorite:
+	+ url: getFavorite.php
+	+ type: GET
+	+ data_post:
+		* guest_email
+	+response:
+		* status: 200
+		* message: Success	
+		* data:
+			[
+				id_rest,
+				guest_email
+			] // mảng
+
+
+- addCheckin:
+	+ url: addCheckin.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+ response:
+		* status: 200
+		* message: Success	
+- getCheckin:
+	+ url: getCheckin.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+	+ response
+		* status: 200
+		* message: Success	
+		* data:
+			** count // số lượng lần checkin tại nhà hàng
+- addShare:
+	+ url: addShare.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+		* guest_email
+	+ response:
+		* status: 200
+		* message: Success	
+- getShare:
+	+ url: getShare.php
+	+ type: POST
+	+ data_post:
+		* id_rest
+	+ response
+		* status: 200
+		* message: Success	
+		* data:
+			** count // số lượng lần share tại nhà hàng
+- deleteDiscount:
+	+ url: deleteDiscount.php
+	+ type: POST
+	+ data_post:
+		* token
+		* id_discount
+	+ response:
+		* status: 200
+		* message: Success	
+	
+- deleteOffer:
+	+ url: deleteOffer.php
+	+ type: POST
+	+ data_post:
+		* id_offer
+	+ response:
+		* status: 200
+		* message: Success	
+
+- updateOfferStatus:
+	+ url: updateOfferStatus.php
+	+ type: POST
+	+ data_post:
+		* token
+		* id_offer
+		* status
+	+ response:
+		* status: 200
+		* message: Success
+
+
+
+
+
+

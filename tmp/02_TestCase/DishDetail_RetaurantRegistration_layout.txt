@@ -1,0 +1,31 @@
+Dish Detail Activity
+	1. Mất kết nối Internet khi nhấn vào các món ăn kèm.
+	
+
+Restaurant Registration Activity
+    - Thông tin chủ quán
+        1. Họ chủ quán: rỗng
+        2. Họ chủ quán: chứa ký tự đặc biệt
+		
+        3. Tên chủ quán: rỗng
+        4. Tên chủ quản: chứa ký tự đặc biệt
+		
+        3. Ngày sinh: chưa chọn
+        4. Tháng sinh: chưa chọn
+		5. Năm sinh: chưa chọn
+		
+		6. Số điện thoại: rỗng
+		7. Số điện thoại: chứa ký tự không phải số
+		
+		8. Email: rỗng
+		
+	- Thông tin quán ăn
+	    9. Tên quán: rỗng
+		
+		10. Địa chỉ: rỗng
+		
+		11. Giờ mở cửa: rỗng
+		12. Giờ mở cửa: giờ không hợp lệ
+		
+		13. Không có kết nối Internet khi nhấn "Xác nhận"
+		

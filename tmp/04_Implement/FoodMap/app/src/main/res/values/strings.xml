@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name" translatable="false">FoodMap</string>
+    <string name="nav_open">Open nav menu</string>
+    <string name="nav_close">Close nav menu</string>
+    <string name="OpenrouteApiKey">5b3ce3597851110001cf6248624c78400169414fb3c27bead71362ff</string>
+    <string name="facebook_app_id">336556870495272</string>
+    <string name="fb_login_protocol_scheme">fb336556870495272</string>
+    <string name="title_activity_manage_dish">Quản lý món</string>
+    <string name="title_activity_manage_restaurant">Quản lý quán</string>
+    <string name="title_activity_manage_account">Quản lý tài khoản</string>
+    <string name="map_permission_denied">Bạn cần phải đồng ý cấp quyền truy cập.</string>
+    <string name="open_camera">Chụp ảnh</string>
+    <string name="open_galery">Chọn hình từ thư viện</string>
+    <string name="confirmSetDefaultDishImage">Bạn có muốn đặt làm hình mặc định cho món ăn không?</string>
+    <string name="title_confirmSetDefaultDishImage">Món ăn chưa có hình mặc định</string>
+    <string name="ok">Đồng ý</string>
+    <string name="cancel">Hủy</string>
+    <string name="confirmDeleteAccount">Bạn có muốn xóa tài khoản không? Sau khi xóa sẽ không thể khôi phục.</string>
+    <string name="title_confirmDeleteAccount">Cảnh báo xóa tài khoản</string>
+    <string name="confirmDeleteRestaurant">Bạn có muốn xóa quán ăn này không? Sau khi xóa sẽ không thể khôi phục</string>
+    <string name="title_confirmDeleteRestaurant">Cảnh báo xóa quán ăn</string>
+    <string name="channel_name">Order</string>
+    <string name="ErrorEmptyInfo">Thông tin bắt buộc</string>
+    <string name="ErrorEmailNotValid">Email không hợp lệ</string>
+    <string name="ErrorPhoneNumberNotValid">Số điện thoại không hợp lệ</string>
+    <string name="ErrorPasswordNotMatch">Mật khẩu hiện tại không đúng</string>
+    <string name="ErrorDuplicatePass">Mật khẩu mới phải khác mật khẩu cũ</string>
+</resources>
