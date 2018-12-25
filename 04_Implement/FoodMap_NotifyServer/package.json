@@ -1,0 +1,25 @@
+{
+  "name": "FoodMap_NotifyServer",
+  "version": "1.0.0",
+  "description": "Server notify offer for foodmap app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phuocpr1998/order_server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Phuocpr1998/order_server/issues"
+  },
+  "homepage": "https://github.com/Phuocpr1998/order_server#readme",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*"
+  }
+}

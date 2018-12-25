@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context=".EditRestaurantActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/edit_restaurant_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Quản lý quán"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill" >
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabItemGeneral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CHUNG" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabItemDish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MÓN ĂN" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabItemOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ĐƠN ĐẶT HÀNG" />
+	
+			<android.support.design.widget.TabItem
+				android:id="@+id/tabItemDiscount"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="DISCOUNT" />
+			
+        </android.support.design.widget.TabLayout>
+    </android.support.v4.view.ViewPager>/
+</LinearLayout>
