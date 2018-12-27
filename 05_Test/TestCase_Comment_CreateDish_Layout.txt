@@ -1,15 +1,47 @@
-﻿-Comment layout
-	+Content rỗng mà nhấn submit
-	+Nhấn submit nhưng mất kết nối internet
+﻿﻿-Comment layout
+	+Chưa đăng nhập, Content rỗng và nhấn submit khi có kết nối internet
+	+Chưa đăng nhập, có nội dung và nhấn submit nhưng mất kết nối internet
+	+Chưa đăng nhập, có nội dung và nhấn submit khi có kết nối internet
+	+Đã đăng nhập, không có nội dung và nhấn submit khi có kết nối internet
+	+Đã đăng nhập, không có nội dung và nhấn submit khi không có kết nối internet
+	+Đã đăng nhập sau đó điền nội dung comment và nhấn submit khi có internet
 	+Load giao diện bình luận nhưng không kết nối internet
-	+Chưa đăng nhập mà bình luận
-	+
+	+Load giao diện khi có kết nối internet
 -Add dish layout
-	+Tên món ăn rỗng
-	+Giá món ăn rỗng
+	+Tên món ăn rỗng nhấn submit nhưng không có kết nối internet
+	+Tên món ăn rỗng nhấn submit khi có kết nối internet
+	+Tên món ăn và giá món ăn rỗng nhấn submit khi không có kết nối internet
+	+Tên món ăn và giá món ăn rỗng nhấn submit khi có kết nối internet
+	+Giá món ăn rỗng nhấn submit khi có kết nối internet
+	+Giá món ăn rỗng nhấn submit khi không có kết nối internet
+	+Giá món ăn và loại món ăn rỗng nhấn submit khi không có kết nối internet
+	+Giá món ăn và loại món ăn rỗng nhấn submit khi có kết nối internet
 	+Giá món ăn nhỏ hơn 0
-	+Giá món ăn không phải là số
+	+Giá món ăn không phải là số nhấn submit khi có kết nối internet
+	+Giá món ăn không phải là số nhấn submit khi không có kết nối internet
 	+Chưa đăng nhập mà thêm món ăn
 	+Loại món ăn rỗng
-	+Mất kết nối internet khi submit
+	+Tên món ăn, loại món ăn và giá món ăn rỗng
+	+Điền đầy đủ thông tin nhưng mất kết nối internet khi submit
 	+Load giao diện nhưng không kết nối internet
+	+Điền đầy đủ thông tin và nhấn submit khi có kết nối internet
+	+Load giao diện khi có kết nối internet
+-Add order layout
+	+Đặt hàng nhưng chủ nhà hàng offline
+	+Đặt hàng nhưng không có internet
+	+Đặt hàng nhưng chưa nhập số lượng
+	+Đặt hàng nhưng discount đã hết hạng
+	+Đặt hàng điền đầy đủ thông tin và có kết nối internet
+	+Đặt hàng khi có kết nối internet và discount vẫn còn giá trị sử dụng
+-Order layout
+	+Load data nhưng không có internet
+	+Xóa đơn hàng nhưng không có internet
+	+Đổi trạng thái đơn hàng nhưng không có internet
+	+Chọn xem tất cả nhưng không có internet
+	+Chọn xem đơn hàng theo ngày nhưng không có internet
+	+Chọn xem tất cả, có kết nối internet
+	+Chọn xem theo ngày, có kết nối internet
+	+Load data khi có kết nối internet
+	+Xóa đơn hàng khi có kết nối internet
+	+Đổi trạng thái đơn hàng khi có kết nối internet
+	
