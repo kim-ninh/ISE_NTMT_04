@@ -204,16 +204,11 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
         txtNFavorite.setText(Integer.toString(restaurant.getnFavorites()));
 
         //Set a number of shares
-        txtNFavorite.setText(Integer.toString(restaurant.getnShare()));
+        txtNShare.setText(Integer.toString(restaurant.getnShare()));
 
         //Set a number of rates
-        double averageRate = 0;
-        for(Map.Entry<String, Integer> kvp : restaurant.getRanks().entrySet()) {
-            averageRate += kvp.getValue();
-        }
-        if(restaurant.getRanks().size() != 0) {
-            txtNRate.setText(String.format("%.1f", averageRate / restaurant.getRanks().size()));
-        }
+        txtNRate.setText(String.format("%.1f", restaurant.getAverageRate()));
+
 
         //set Time and Status
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
@@ -441,7 +436,7 @@ public class RestaurantInfoActivity extends AppCompatActivity implements View.On
 
                                     if (code == ConstantCODE.SUCCESS) {
                                         //update data to local database
-                                        FoodMapManager.setFavoriteRestaurant(restaurant.getId(), Guest.getInstance().getEmail(), (int) rtbRate.getRating());
+                                        FoodMapManager.addRankRestaurant(restaurant.getId(), Guest.getInstance().getEmail(), (int) rtbRate.getRating());
 
                                         //reset rate average
                                         restaurant.getRanks().put(Guest.getInstance().getEmail(), (int) rtbRate.getRating());

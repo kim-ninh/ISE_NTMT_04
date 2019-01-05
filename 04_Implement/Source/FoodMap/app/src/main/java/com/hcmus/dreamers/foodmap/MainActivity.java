@@ -57,6 +57,9 @@ import com.hcmus.dreamers.foodmap.websocket.OrderSocket;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
@@ -187,21 +190,21 @@ public class MainActivity extends AppCompatActivity {
 
         // cài đặt marker vị trí
         this.mLocationOverlay = new MyLocationNewOverlay(mMap);
-        mMap.getOverlays().add(this.mLocationOverlay);
         Bitmap iconMyLocation = BitmapFactory.decodeResource(getResources(),R.drawable.ic_mylocation);
         this.mLocationOverlay.setPersonIcon(iconMyLocation);
         this.mLocationOverlay.enableMyLocation();
         this.mLocationOverlay.disableFollowLocation();
         this.mLocationOverlay.setOptionsMenuEnabled(true);
-        mapController.setCenter(this.mLocationOverlay.getMyLocation());
 
         mLocMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 100,
+        mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 100,
                 new LocationChange(mMap, mLocationOverlay, mapController));
 
+        mapController.setCenter(this.mLocationOverlay.getMyLocation());
+        mMap.getOverlays().add(this.mLocationOverlay);
     }
 
     // thêm một marker vào map
@@ -347,24 +350,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                        progressDialog.setMessage("Updating");
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
-
-                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
-                            @Override
-                            public void OnTaskComplete(Object response) {
-                                progressDialog.dismiss();
-                                int code = (int)response;
-                                if (code == FoodMapApiManager.SUCCESS){
-                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
-                                }
-                                else {
-                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                        updateData();
                         break;
                     case R.id.btnLogout:
                         Log.d(TAG, "onClick: btnLogout");
@@ -417,24 +403,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                        progressDialog.setMessage("Updating");
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
-
-                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
-                            @Override
-                            public void OnTaskComplete(Object response) {
-                                progressDialog.dismiss();
-                                int code = (int)response;
-                                if (code == FoodMapApiManager.SUCCESS){
-                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
-                                }
-                                else {
-                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                        updateData();
                         break;
                     case R.id.btnAbout:
                         Log.d(TAG, "onClick: btnAbout");
@@ -499,24 +468,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case  R.id.btnUpdate:
                         Log.d(TAG, "onClick: btnUpdate");
-                        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                        progressDialog.setMessage("Updating");
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
-
-                        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
-                            @Override
-                            public void OnTaskComplete(Object response) {
-                                progressDialog.dismiss();
-                                int code = (int)response;
-                                if (code == FoodMapApiManager.SUCCESS){
-                                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
-                                }
-                                else {
-                                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                        updateData();
                         break;
                     case R.id.btnLogout:
                         Log.d(TAG, "onClick: btnLogout");
@@ -588,6 +540,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    void clearAllMarkers(){
+        mMap.getOverlays().clear();
+        mMap.getOverlays().add(this.mLocationOverlay);
+    }
+
     void addMarkerRestaurant(){
         List<Restaurant> restaurants = FoodMapManager.getRestaurants();
         if (restaurants != null) {
@@ -617,4 +574,26 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    void updateData(){
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Updating");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        FoodMapApiManager.getRestaurant(MainActivity.this, new TaskCompleteCallBack() {
+            @Override
+            public void OnTaskComplete(Object response) {
+                int code = (int)response;
+                if (code == FoodMapApiManager.SUCCESS){
+                    clearAllMarkers();
+                    addMarkerRestaurant();
+                    Toast.makeText(MainActivity.this, "Cập nhât thông tin thành công!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Cập nhât thất bại!", Toast.LENGTH_LONG).show();
+                }
+                progressDialog.dismiss();
+            }
+        });
+    }
 }
