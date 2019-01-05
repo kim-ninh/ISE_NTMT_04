@@ -52,6 +52,6 @@
             android:layout_gravity="center_vertical"
             android:id="@+id/igvComment"
             android:layout_weight="2"
-            android:src="@drawable/ic_manager" />
+            android:src="@drawable/ic_send" />
     </LinearLayout>
 </LinearLayout>
