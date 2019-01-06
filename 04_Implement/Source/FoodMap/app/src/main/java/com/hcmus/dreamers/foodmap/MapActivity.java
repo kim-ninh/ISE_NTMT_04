@@ -113,6 +113,13 @@ public class MapActivity extends AppCompatActivity{
                 return;
             }
             Location location = mLocMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location == null)
+                location = mLocMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (location == null)
+            {
+                Toast.makeText(MapActivity.this, "Khong tim duoc vi tri hien tai", Toast.LENGTH_LONG).show();
+                MapActivity.this.finish();
+            }
             double lat = location.getLatitude();
             double lon = location.getLongitude();
             startPoint = new GeoPoint(lat, lon);
@@ -167,6 +174,7 @@ public class MapActivity extends AppCompatActivity{
         }
         mLocation = new LocationChange(MapActivity.this, mMap, mapController, false);
         mLocMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocation);
+        mLocMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocation);
     }
 
     private void addMarker(String title, String description, GeoPoint point){
